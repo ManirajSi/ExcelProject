@@ -28,6 +28,14 @@ export class ExcelPagesComponent {
             this.data = data.excelContents;
             this.groupData();
         });
+        this.reactService.sectionNav$.subscribe((navData) => {
+            if (navData) {
+                this.scrollToSection(
+                    navData.categoryIndex,
+                    navData.subCategoryIndex
+                );
+            }
+        });
     }
     data: any[] = [];
     // groupedData: Array<{
@@ -96,6 +104,7 @@ export class ExcelPagesComponent {
                 ),
             })
         );
+        this.reactService.setMenu(this.groupedData);
     }
 
     private replaceXframeWithIframe(content: string): SafeHtml {
@@ -132,5 +141,12 @@ export class ExcelPagesComponent {
 
     private sanitizeUrl(url: string): SafeUrl {
         return this.sanitizer.bypassSecurityTrustUrl(url);
+    }
+    scrollToSection(categoryIndex: number, subCategoryIndex: number) {
+        const sectionId = `section-${categoryIndex}-${subCategoryIndex}`;
+        const section = document.getElementById(sectionId);
+        if (section) {
+            section.scrollIntoView({ behavior: 'smooth' });
+        }
     }
 }

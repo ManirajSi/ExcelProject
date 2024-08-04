@@ -10,6 +10,7 @@ import { ReactService } from './service/react.service';
 export class AppMenuComponent implements OnInit {
     oldmodel: any[] = [];
     menu: any[] = [];
+    groupedData: any[] = [];
     @Input() model: any[] = [];
 
     constructor(
@@ -17,66 +18,33 @@ export class AppMenuComponent implements OnInit {
         private reactService: ReactService
     ) {
         this.reactService.menu$.subscribe((menu) => {
-            this.menu = menu;
-            this.model = menu;
+            this.groupedData = [];
+            this.groupedData = menu;
+            this.initializeSideNav();
         });
-        console.log(' this.model *****************>', this.model);
+    }
+    scrollToSection(categoryIndex: number, subCategoryIndex: number) {
+        this.reactService.setSectionNav({
+            categoryIndex: categoryIndex,
+            subCategoryIndex: subCategoryIndex,
+        });
     }
 
-    ngOnInit() {
-        this.model = [
-            {
-                label: 'Pages',
-                icon: 'pi pi-fw pi-briefcase',
-                items: [
-                    {
-                        label: 'Landing',
-                        icon: 'pi pi-fw pi-globe',
-                        routerLink: ['/landing'],
-                    },
-                    {
-                        label: 'Auth',
-                        icon: 'pi pi-fw pi-user',
-                        items: [
-                            {
-                                label: 'Login',
-                                icon: 'pi pi-fw pi-sign-in',
-                                routerLink: ['/auth/login'],
-                            },
-                            {
-                                label: 'Error',
-                                icon: 'pi pi-fw pi-times-circle',
-                                routerLink: ['/auth/error'],
-                            },
-                            {
-                                label: 'Access Denied',
-                                icon: 'pi pi-fw pi-lock',
-                                routerLink: ['/auth/access'],
-                            },
-                        ],
-                    },
-                    {
-                        label: 'Crud',
-                        icon: 'pi pi-fw pi-pencil',
-                        routerLink: ['/pages/crud'],
-                    },
-                    {
-                        label: 'Timeline',
-                        icon: 'pi pi-fw pi-calendar',
-                        routerLink: ['/pages/timeline'],
-                    },
-                    {
-                        label: 'Not Found',
-                        icon: 'pi pi-fw pi-exclamation-circle',
-                        routerLink: ['/notfound'],
-                    },
-                    {
-                        label: 'Empty',
-                        icon: 'pi pi-fw pi-circle-off',
-                        routerLink: ['/pages/empty'],
-                    },
-                ],
-            },
-        ];
+    ngOnInit() {}
+
+    initializeSideNav() {
+        this.model = [];
+        this.groupedData.forEach((category, i) => {
+            const categoryItem = {
+                label: category.category,
+                icon: 'pi pi-fw pi-folder',
+                items: category.subCategories.map((subCategory, j) => ({
+                    label: subCategory.subCategory,
+                    icon: 'pi pi-fw pi-file',
+                    command: () => this.scrollToSection(i, j),
+                })),
+            };
+            this.model.push(categoryItem);
+        });
     }
 }

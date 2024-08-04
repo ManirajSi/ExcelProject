@@ -50,19 +50,10 @@ export class AppTopBarComponent {
                 count++;
                 // }
             });
-            // Optionally, save the file
-            // saveAs(file, file.name);
-            //this.sideNavItemsForming(this.workSheetsJSON[1]);
             console.log('workSheetsJSON===>', this.workSheetsJSON);
             this.setExcelPageContent(this.workSheetsJSON[1]);
-
-            // this.signalTransService.setFile({
-            //     workSheetNames: this.workSheetNames,
-            //     workSheets: this.workSheets,
-            //     workSheetsJSON: this.workSheetsJSON,
-            // });
             this.infoSet();
-            this.sideNavItemsForming(this.workSheetsJSON[1]);
+            // this.sideNavItemsForming(this.workSheetsJSON[1]);
         };
         reader.readAsBinaryString(file);
     }
@@ -71,49 +62,57 @@ export class AppTopBarComponent {
         this.webName = specDetail[0]['Actions'];
         this.webLogo = specDetail[1]['Actions'];
     }
-    sideNavItemsForming(workSheetJSON: any) {
-        let sideNavItems = [];
-        workSheetJSON.forEach((element: any) => {
-            const label = element['Category'];
-            const existingItem = sideNavItems.find(
-                (item) => item.label === label
-            );
-            if (existingItem) {
-                existingItem.items.push({
-                    label: element['SubCategory'], // Assuming there's a 'SubAction' property or any other appropriate value
-                    icon: 'pi pi-fw pi-file',
-                    command: () => {
-                        console.log('sub-element===>', element);
-                    },
-                });
-            } else {
-                sideNavItems.push({
-                    label: label,
-                    icon: 'pi pi-fw pi-file',
-                    items: [
-                        {
-                            label: element['SubCategory'], // Assuming there's a 'SubAction' property or any other appropriate value
-                            icon: 'pi pi-fw pi-file',
-                            command: () => {
-                                console.log('sub-element===>', element);
-                            },
-                        },
-                    ],
-                    command: () => {
-                        console.log('element===>', element);
-                    },
-                });
-            }
-        });
-        // console.log('sideNavItems===>', sideNavItems);
-        this.reactService.setMenu(sideNavItems);
-    }
+    // sideNavItemsForming(workSheetJSON: any) {
+    //     let sideNavItems = [];
+    //     workSheetJSON.forEach((element: any) => {
+    //         const label = element['Category'];
+    //         const existingItem = sideNavItems.find(
+    //             (item) => item.label === label
+    //         );
+    //         if (existingItem) {
+    //             existingItem.items.push({
+    //                 label: element['SubCategory'], // Assuming there's a 'SubAction' property or any other appropriate value
+    //                 icon: 'pi pi-fw pi-file',
+    //                 command: () => {
+    //                     console.log('sub-element===>', element);
+    //                 },
+    //             });
+    //         } else {
+    //             sideNavItems.push({
+    //                 label: label,
+    //                 icon: 'pi pi-fw pi-file',
+    //                 items: [
+    //                     {
+    //                         label: element['SubCategory'], // Assuming there's a 'SubAction' property or any other appropriate value
+    //                         icon: 'pi pi-fw pi-file',
+    //                         command: () => {
+    //                             console.log('sub-element===>', element);
+    //                         },
+    //                     },
+    //                 ],
+    //                 command: () => {
+    //                     console.log('element===>', element);
+    //                 },
+    //             });
+    //         }
+    //     });
+    //     // console.log('sideNavItems===>', sideNavItems);
+    //     // this.reactService.setMenu(sideNavItems);
+    // }
     menuItemForming(menuItemName: string) {
         this.menuItems.push({
             label: menuItemName,
             icon: 'pi pi-star',
             command: () => {
-                console.log('menuItemName===>', menuItemName);
+                debugger;
+                const index: number = this.workSheetNames.indexOf(menuItemName);
+                console.log('this.workSheetNames===>', this.workSheetNames);
+                console.log('index===>', index);
+                console.log(
+                    'this.workSheetsJSON[index]===>',
+                    this.workSheetsJSON[index]
+                );
+                this.setExcelPageContent(this.workSheetsJSON[index]);
             },
         });
     }
