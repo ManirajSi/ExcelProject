@@ -30,9 +30,17 @@
                             "src/assets"
                         ],
                         "styles": [
-                            "src/styles.scss"
+                            "src/styles.scss",
+                            "node_modules/prismjs/themes/prism.css",
+                            "node_modules/slick-carousel/slick/slick.css",
+                            "node_modules/slick-carousel/slick/slick-theme.css"
                         ],
-                        "scripts": []
+                        "scripts": [
+                            "node_modules/prismjs/prism.js",
+                            "node_modules/prismjs/components/prism-typescript.min.js",
+                            "node_modules/jquery/dist/jquery.min.js",
+                            "node_modules/slick-carousel/slick/slick.min.js"
+                        ]
                     },
                     "configurations": {
                         "production": {
@@ -101,5 +109,8 @@
                 }
             }
         }
+    },
+    "cli": {
+      "analytics": "3814e62c-2b6a-4b92-90d5-2b76fa92505d"
     }
 }

@@ -1,0 +1,70 @@
+.doc-intro p {
+    font-size: 1.125rem;
+    color: var(--surface-900);
+    margin: 0;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin: 1.5rem 0 1rem;
+    font-family: inherit;
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--surface-900);
+}
+.codeStyle {
+    background-color: black;
+    color: white;
+}
+
+.slider-container {
+    position: relative;
+    max-width: 600px;
+    margin: auto;
+    text-align: center;
+}
+
+img {
+    width: 100%;
+    height: auto;
+}
+
+button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+button:first-of-type {
+    left: 0;
+}
+
+button:last-of-type {
+    right: 0;
+}
+h2 {
+    // margin-top: 20px;
+    color: #2c3e50;
+}
+
+h3 {
+    // margin-left: 20px;
+    color: #34495e;
+}
+
+div {
+    // margin-left: 40px;
+    color: #7f8c8d;
+}
