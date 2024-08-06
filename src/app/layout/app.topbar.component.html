@@ -35,10 +35,15 @@
                 layoutService.state.profileSidebarVisible
         }"
     >
-        <button class="p-link layout-topbar-button" (click)="onUploadClick()">
-            <i class="pi pi-upload"></i>
-            <span>upload</span>
-        </button>
+        <p-fileUpload
+            #fileUpload
+            name="myfile[]"
+            mode="basic"
+            [auto]="true"
+            styleClass="d-none"
+            accept=".xlsx, .xls, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+            (onSelect)="onFileSelect(fileUpload, $event)"
+        ></p-fileUpload>
         <button class="p-link layout-topbar-button">
             <i class="pi pi-user"></i>
             <span>Profile</span>
@@ -51,14 +56,4 @@
             <span>Settings</span>
         </button>
     </div>
-</div>
-<div [hidden]="true">
-    <p-fileUpload
-        #fileUpload
-        name="myfile[]"
-        mode="basic"
-        [auto]="true"
-        styleClass="d-none"
-        (onSelect)="onFileSelect($event)"
-    ></p-fileUpload>
 </div>

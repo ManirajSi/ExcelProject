@@ -5,6 +5,13 @@ import { RouterModule } from '@angular/router';
     imports: [
         RouterModule.forChild([
             {
+                path: '',
+                loadChildren: () =>
+                    import('./excel-pages/excel.module').then(
+                        (m) => m.ExcelModule
+                    ),
+            },
+            {
                 path: 'excel',
                 loadChildren: () =>
                     import('./excel-pages/excel.module').then(
