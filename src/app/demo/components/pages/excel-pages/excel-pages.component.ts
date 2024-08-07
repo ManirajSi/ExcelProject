@@ -57,13 +57,13 @@ export class ExcelPagesComponent {
         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTet87JrUNU4rB0LaPdsCUzByjZjLIXHhidjA&s',
     ];
     currentIndex: number = 0;
+    imageUrls: any[] = [];
     ngOnInit() {}
     private groupData() {
         const categoryMap = new Map<
             string,
             Map<string, (SafeHtml | string[])[]>
         >();
-
         this.data.forEach((item) => {
             const {
                 Category: category,
@@ -72,10 +72,8 @@ export class ExcelPagesComponent {
                 Content2: content2,
             } = item;
             const content = content1 + (content2 ? '\n' + content2 : '');
-
             const contentWithIframe = this.replaceXframeWithIframe(content);
-            const contentWithImages = this.extractImages(contentWithIframe);
-
+            const contentWithImage = this.extractImages(contentWithIframe);
             if (!categoryMap.has(category)) {
                 categoryMap.set(
                     category,
@@ -88,8 +86,7 @@ export class ExcelPagesComponent {
             if (!subCategoryMap.has(subCategory)) {
                 subCategoryMap.set(subCategory, []);
             }
-
-            subCategoryMap.get(subCategory)!.push(contentWithImages);
+            subCategoryMap.get(subCategory)!.push(contentWithImage);
         });
 
         // Convert Map to Array while preserving order
@@ -114,14 +111,12 @@ export class ExcelPagesComponent {
                 return `<iframe src="${url}" width="100%" height="400px" frameborder="0" allowfullscreen></iframe>`;
             }
         );
-
-        // Mark the HTML content as safe
         return this.sanitizer.bypassSecurityTrustHtml(updatedContent);
     }
 
-    private extractImages(content: SafeHtml): SafeHtml | string[] {
+    private extractImages(content: SafeHtml): string {
         const regex = /<ximage>\[(.*?)\]<\/ximage>/g;
-        const htmlContent = content.toString();
+        let htmlContent = content.toString();
         if (regex.test(htmlContent)) {
             // Extract URLs from the content
             const urlsString = htmlContent
@@ -130,9 +125,15 @@ export class ExcelPagesComponent {
             const urls = urlsString
                 .split(',')
                 .map((url) => url.trim().replace(/['"]/g, ''));
-            return urls;
+            this.imageUrls = [...this.imageUrls, ...urls];
+            htmlContent = htmlContent.replace(
+                /<ximage>(.*?)<\/ximage>/g,
+                (match, url) => {
+                    return '';
+                }
+            );
         }
-        return content;
+        return htmlContent;
     }
 
     isImageArray(content: SafeHtml | string[]): content is string[] {

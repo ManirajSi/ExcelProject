@@ -14,19 +14,21 @@
                         <div [id]="'section-' + i + '-' + j">
                             <h3>{{ subCategory.subCategory }}</h3>
                             <div *ngFor="let content of subCategory.contents">
+                                <div [innerHTML]="content"></div>
                                 <ng-container
-                                    *ngIf="
-                                        isImageArray(content);
-                                        else htmlContent
+                                    *ngTemplateOutlet="
+                                        htmlContent;
+                                        context: { $implicit: content }
                                     "
-                                >
+                                ></ng-container>
+                                <ng-template #htmlContent>
                                     <ngx-slick-carousel
                                         class="carousel"
                                         [config]="slideConfig"
                                     >
                                         <div
                                             ngxSlickItem
-                                            *ngFor="let imgUrl of content"
+                                            *ngFor="let imgUrl of imageUrls"
                                             class="slide"
                                         >
                                             <img
@@ -39,9 +41,6 @@
                                             />
                                         </div>
                                     </ngx-slick-carousel>
-                                </ng-container>
-                                <ng-template #htmlContent>
-                                    <div [innerHTML]="content"></div>
                                 </ng-template>
                             </div>
                         </div>
