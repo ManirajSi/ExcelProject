@@ -68,3 +68,16 @@ div {
     // margin-left: 40px;
     color: #7f8c8d;
 }
+//Make the YouTube Video Responsive and center
+
+.video-container {
+    display: flex; /* Use Flexbox for layout */
+    justify-content: center; /* Horizontally center the video */
+    // align-items: center; /* Vertically center the video */
+    height: 100vh; /* Set the height of the container */
+  }
+
+  iframe {
+    border: 2px solid #ccc;
+    border-radius: 8px;
+  }

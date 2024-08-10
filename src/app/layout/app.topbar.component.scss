@@ -1,0 +1,39 @@
+// /* styles.css or app.component.css */
+// .p-inputgroup {
+//     max-width: 400px;
+//     margin: 0 auto;
+//     padding: 1rem;
+//   }
+
+//   .p-inputgroup-addon .p-button {
+//     border: none;
+//     background-color: transparent;
+//   }
+
+//   .p-inputgroup-addon .pi {
+//     font-size: 1.2rem;
+//   }
+
+.p-inputgroup-addon {
+    background: #ffffff;
+    color: #ffffff;
+    border-top: 1px solid #ffffff;
+    border-left: 1px solid #ffffff;
+    border-bottom: 1px solid #ffffff;
+    padding: 0rem 0.5rem;
+    min-width: 3rem;
+}
+
+:host::ng-deep {
+    .p-inputgroup .p-inputtext,
+    .p-fluid .p-inputgroup .p-inputtext,
+    .p-inputgroup .p-inputwrapper,
+    .p-inputgroup .p-inputwrapper > .p-component {
+        flex: 1 1 auto;
+        width: 100%;
+    }
+}
+.custom-splitbutton .p-splitbutton-menu {
+    left: auto; /* Reset default left position */
+    right: 5; /* Align to the right */
+}

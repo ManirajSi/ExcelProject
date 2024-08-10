@@ -19,7 +19,12 @@ import { AppSidebarComponent } from './app.sidebar.component';
 import { AppLayoutComponent } from './app.layout.component';
 import { FileUploadModule } from 'primeng/fileupload';
 import { MenubarModule } from 'primeng/menubar';
-
+import { AutoCompleteModule } from 'primeng/autocomplete';
+import { SpeedDialModule } from 'primeng/speeddial';
+import { SplitButtonModule } from 'primeng/splitbutton';
+import { MessagesModule } from 'primeng/messages';
+import { ToastModule } from 'primeng/toast';
+import { RatingModule } from 'primeng/rating';
 @NgModule({
     declarations: [
         AppMenuitemComponent,
@@ -44,6 +49,12 @@ import { MenubarModule } from 'primeng/menubar';
         AppConfigModule,
         FileUploadModule,
         MenubarModule,
+        AutoCompleteModule,
+        SpeedDialModule,
+        SplitButtonModule,
+        MessagesModule,
+        ToastModule,
+        RatingModule,
     ],
     exports: [AppLayoutComponent],
 })

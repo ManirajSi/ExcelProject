@@ -1,6 +1,56 @@
 <div class="grid">
     <div class="col-12">
-        <div class="card px-6 py-6">
+        <div class="card px-3 py-3">
+            <!-- <div class="card"> -->
+            <div *ngIf="groupedData.length == 1" class="video-container">
+                <iframe
+                    width="1040"
+                    height="560"
+                    src="https://www.youtube.com/embed/3LCh2X8ZSo4"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen
+                >
+                </iframe>
+            </div>
+            <div>
+                <p-orderList
+                    [value]="products"
+                    [listStyle]="{ height: '25rem' }"
+                    header="List of Products"
+                >
+                    <ng-template let-product pTemplate="item">
+                        <div
+                            class="flex flex-wrap p-2 align-items-center gap-3"
+                        >
+                            <img
+                                src="assets/demo/images/product/excelImg.jpg"
+                                [alt]="product.name"
+                                class="w-4rem shadow-2 flex-shrink-0 border-round"
+                            />
+                            <div class="flex-1 flex flex-column gap-2">
+                                <span class="font-bold">{{
+                                    product.name
+                                }}</span>
+                                <div class="flex align-items-center gap-2">
+                                    <i class="pi pi-tag text-sm"></i>
+                                    <span>
+                                        {{ product.tags }}
+                                    </span>
+                                </div>
+                            </div>
+                            <span class="font-bold text-900">
+                                {{ product.type }}
+                                <p-rating
+                                    [(ngModel)]="value"
+                                    [cancel]="false"
+                                />
+                            </span>
+                        </div>
+                    </ng-template>
+                </p-orderList>
+            </div>
+            <!-- </div> -->
             <div *ngFor="let category of groupedData; let i = index">
                 <div>
                     <h2>{{ category.category }}</h2>
@@ -15,6 +65,21 @@
                             <h3>{{ subCategory.subCategory }}</h3>
                             <div *ngFor="let content of subCategory.contents">
                                 <div [innerHTML]="content"></div>
+                                <iframe
+                                    src="https://giphy.com/embed/1Ubd9114aI40RkYm74"
+                                    width="270"
+                                    height="480"
+                                    style=""
+                                    frameBorder="0"
+                                    class="giphy-embed"
+                                    allowFullScreen
+                                ></iframe>
+                                <p>
+                                    <a
+                                        href="https://giphy.com/gifs/ffa-fastforward-fastforwardamy-1Ubd9114aI40RkYm74"
+                                        >via GIPHY</a
+                                    >
+                                </p>
                                 <ng-container
                                     *ngTemplateOutlet="
                                         htmlContent;

@@ -58,6 +58,11 @@ export class ExcelPagesComponent {
     ];
     currentIndex: number = 0;
     imageUrls: any[] = [];
+    products: any[] = [
+        { name: 'Excel1', tags: 'tag1,tag2,tag3', type: 'Template1' },
+        { name: 'Excel2', tags: 'tag1,tag2,tag3', type: 'Template2' },
+        { name: 'Excel3', tags: 'tag1,tag2,tag3', type: 'Template3' },
+    ];
     ngOnInit() {}
     private groupData() {
         const categoryMap = new Map<

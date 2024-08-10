@@ -54,6 +54,13 @@ import { AppLayoutComponent } from './layout/app.layout.component';
                                 ).then((m) => m.PagesModule),
                         },
                         {
+                            path: 'login',
+                            loadChildren: () =>
+                                import(
+                                    '../app/demo/components/auth/login/login.module'
+                                ).then((m) => m.LoginModule),
+                        },
+                        {
                             path: '',
                             loadChildren: () =>
                                 import(
