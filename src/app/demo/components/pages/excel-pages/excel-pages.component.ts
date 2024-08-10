@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { SignalTransService } from 'src/app/layout/service/signal-trans.service';
 import { MenuItem } from 'primeng/api';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { ReactService } from 'src/app/layout/service/react.service';
 import { DomSanitizer, SafeHtml, SafeUrl } from '@angular/platform-browser';
+import { Subscription } from 'rxjs';
 
 interface GroupedData {
     category: string;
@@ -18,24 +19,41 @@ interface GroupedData {
     templateUrl: './excel-pages.component.html',
     styleUrl: './excel-pages.component.scss',
 })
-export class ExcelPagesComponent {
+export class ExcelPagesComponent implements OnInit, OnDestroy {
+    fileSubscription: Subscription = new Subscription();
+    sectionNavSubscription: Subscription = new Subscription();
+    searchSubscription: Subscription = new Subscription();
+    searchExcelText: string = '';
+    showWebsiteView: boolean = false;
     constructor(
-        private signalTransService: SignalTransService,
         private reactService: ReactService,
         private sanitizer: DomSanitizer
     ) {
-        this.reactService.file$.subscribe((data) => {
+        this.fileSubscription = this.reactService.file$.subscribe((data) => {
             this.data = data.excelContents;
             this.groupData();
         });
-        this.reactService.sectionNav$.subscribe((navData) => {
-            if (navData) {
-                this.scrollToSection(
-                    navData.categoryIndex,
-                    navData.subCategoryIndex
-                );
+        this.sectionNavSubscription = this.reactService.sectionNav$.subscribe(
+            (navData) => {
+                if (navData) {
+                    this.scrollToSection(
+                        navData.categoryIndex,
+                        navData.subCategoryIndex
+                    );
+                }
             }
-        });
+        );
+        this.fileSubscription = this.reactService.headerSearch$.subscribe(
+            (data) => {
+                debugger;
+                this.searchExcelText = data.name;
+            }
+        );
+    }
+    ngOnDestroy(): void {
+        this.fileSubscription.unsubscribe();
+        this.sectionNavSubscription.unsubscribe();
+        this.searchSubscription.unsubscribe();
     }
     data: any[] = [];
     // groupedData: Array<{
@@ -147,6 +165,10 @@ export class ExcelPagesComponent {
 
     private sanitizeUrl(url: string): SafeUrl {
         return this.sanitizer.bypassSecurityTrustUrl(url);
+    }
+    onExcelListClick() {
+        this.searchExcelText = '';
+        this.showWebsiteView = true;
     }
     scrollToSection(categoryIndex: number, subCategoryIndex: number) {
         const sectionId = `section-${categoryIndex}-${subCategoryIndex}`;

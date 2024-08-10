@@ -15,7 +15,7 @@
     <button
         #menubutton
         *ngIf="sideBarButton.show"
-        class="p-link layout-menu-button layout-topbar-button"
+        class="p-link layout-menu-button layout-topbar-button mr-2"
         (click)="layoutService.onMenuToggle()"
     >
         <i class="pi pi-bars"></i>
@@ -28,6 +28,12 @@
     >
         <i class="pi pi-ellipsis-v"></i>
     </button>
+    <p-splitButton
+        label="Save"
+        (onClick)="selectedActionCall()"
+        [model]="nestedActionitems"
+        class="mr-2 custom-splitbutton"
+    />
     <!-- app.component.html -->
     <div class="p-inputgroup">
         <p-autoComplete
@@ -40,18 +46,18 @@
         >
         </p-autoComplete>
         <span class="p-inputgroup-addon">
-            <button pButton type="button" icon="pi pi-search"></button>
+            <button
+                pButton
+                type="button"
+                icon="pi pi-search"
+                (click)="onSearchClick()"
+            ></button>
         </span>
     </div>
 
     <p-menubar *ngIf="menuItems.length > 0" [model]="menuItems" />
     <!-- <div><p-speedDial [model]="items" direction="down" /></div> -->
-    <p-splitButton
-        label="Save"
-        (onClick)="selectedActionCall()"
-        [model]="nestedActionitems"
-        class="mr-2 custom-splitbutton"
-    />
+
     <div
         #topbarmenu
         class="layout-topbar-menu"
@@ -72,11 +78,12 @@
         ></p-fileUpload>
         <button class="p-link layout-topbar-button" (click)="loginRedirect()">
             <img
+                *ngIf="isLoggedIn"
                 src="assets/layout/images/Primelogo-dark.PNG"
                 alt="Profile Image"
                 class="button-image"
             />
-            <!-- <i class="pi pi-user"></i> -->
+            <i *ngIf="!isLoggedIn" class="pi pi-user"></i>
             <span>Profile</span>
         </button>
         <button

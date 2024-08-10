@@ -4,6 +4,7 @@ import { LayoutService } from './service/app.layout.service';
 import * as XLSX from 'xlsx';
 import { ReactService } from './service/react.service';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-topbar',
@@ -23,6 +24,9 @@ export class AppTopBarComponent {
     webLogo: string = '';
     webName: string = '';
     sideBarButton: any = { show: true };
+    filteredItems: any[];
+    selectedItem: any;
+    isLoggedIn: boolean = false;
     autoCompleteitems = [
         { name: 'Emergencian feedback' },
         { name: 'SI system MG5 flowthrow' },
@@ -198,14 +202,24 @@ export class AppTopBarComponent {
         {
             label: 'Quit',
             icon: 'pi pi-fw pi-power-off',
+            command: () => {
+                this.isLoggedIn = false;
+            },
         },
     ];
-
+    loginSubscription: Subscription = new Subscription();
     constructor(
         public layoutService: LayoutService,
         private reactService: ReactService,
         private router: Router // private messageService: MessageService
-    ) {}
+    ) {
+        this.loginSubscription = this.reactService.loginInfo$.subscribe(
+            (data) => {
+                debugger;
+                this.isLoggedIn = data.isLoggedIn;
+            }
+        );
+    }
     onUploadClick() {
         this.fileUpload.basicFileInput.nativeElement.click();
     }
@@ -258,14 +272,16 @@ export class AppTopBarComponent {
         this.router.navigate(['login']);
     }
 
-    filteredItems: any[];
-    selectedItem: any;
-
     searchItems(event: any) {
         const query = event.query.toLowerCase();
         this.filteredItems = this.autoCompleteitems.filter((item) =>
             item.name.toLowerCase().includes(query)
         );
+    }
+    onSearchClick() {
+        this.reactService.setHeaderSearchSubject({
+            searchTags: this.selectedItem,
+        });
     }
     selectedActionCall() {}
     dowloadTemplate() {

@@ -3,6 +3,7 @@ import { LayoutService } from 'src/app/layout/service/app.layout.service';
 import { MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ReactService } from 'src/app/layout/service/react.service';
 
 @Component({
     selector: 'app-login',
@@ -29,7 +30,8 @@ export class LoginComponent {
     constructor(
         public layoutService: LayoutService,
         private messageService: MessageService,
-        private router: Router
+        private router: Router,
+        private reactService: ReactService
     ) {
         this.userForm = new FormGroup({
             email: new FormControl('', [Validators.required, Validators.email]),
@@ -58,6 +60,9 @@ export class LoginComponent {
             let detail = '';
             if (this.actionType == 'Login') {
                 detail = 'User Login successfully';
+                this.reactService.setLoginInfo({
+                    isLoggedIn: true,
+                });
                 this.router.navigate(['/']);
             } else {
                 detail = 'Successfully created your account';
