@@ -16,10 +16,23 @@ import { IconService } from './demo/service/icon.service';
 import { NodeService } from './demo/service/node.service';
 import { PhotoService } from './demo/service/photo.service';
 import { HighlightCodeDirective } from './directives/highlight-code.directive';
+import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 
+import { AngularFireModule } from '@angular/fire/compat';
+import { AngularFireAuthModule } from '@angular/fire/compat/auth';
+import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
+
+import { environment } from 'src/environments/environment';
 @NgModule({
     declarations: [AppComponent, NotfoundComponent, HighlightCodeDirective],
-    imports: [AppRoutingModule, AppLayoutModule],
+    imports: [
+        AppRoutingModule,
+        AppLayoutModule,
+        AngularFireModule.initializeApp(environment.firebaseConfig),
+        AngularFireStorageModule,
+        AngularFireAuthModule,
+        AngularFirestoreModule,
+    ],
     providers: [
         { provide: LocationStrategy, useClass: PathLocationStrategy },
         CountryService,

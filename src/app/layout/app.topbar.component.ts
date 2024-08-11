@@ -4,8 +4,11 @@ import { LayoutService } from './service/app.layout.service';
 import * as XLSX from 'xlsx';
 import { ReactService } from './service/react.service';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
-
+import { Observable, Subscription } from 'rxjs';
+import { AngularFireStorage } from '@angular/fire/compat/storage';
+import { finalize, map, switchMap } from 'rxjs/operators';
+import { StorageService } from './service/storage.service';
+import { HttpClient } from '@angular/common/http';
 @Component({
     selector: 'app-topbar',
     templateUrl: './app.topbar.component.html',
@@ -27,16 +30,7 @@ export class AppTopBarComponent {
     filteredItems: any[];
     selectedItem: any;
     isLoggedIn: boolean = false;
-    autoCompleteitems = [
-        { name: 'Emergencian feedback' },
-        { name: 'SI system MG5 flowthrow' },
-        { name: 'Common code use' },
-        { name: 'heierarchy' },
-        { name: 'sidha site' },
-        { name: 'Nail art' },
-        { name: 'Tailoring' },
-        { name: 'Public site ' },
-    ];
+    autoCompleteitems = [];
     selectedAction: string = 'Template1';
     speedDialitems = [
         {
@@ -208,43 +202,142 @@ export class AppTopBarComponent {
         },
     ];
     loginSubscription: Subscription = new Subscription();
+    selectedExcelInfoSubscription: Subscription = new Subscription();
+    filePath: string;
+    downloadURL: string;
+    files: string[] = [];
+    directory = 'excel';
+    excelData: any;
     constructor(
         public layoutService: LayoutService,
         private reactService: ReactService,
-        private router: Router // private messageService: MessageService
+        private storage: AngularFireStorage,
+        private storageService: StorageService,
+        private router: Router, // private messageService: MessageService
+        private http: HttpClient
     ) {
         this.loginSubscription = this.reactService.loginInfo$.subscribe(
             (data) => {
-                debugger;
                 this.isLoggedIn = data.isLoggedIn;
             }
         );
+        this.selectedExcelInfoSubscription =
+            this.reactService.selectedExcelInfo$.subscribe((data) => {
+                console.log('selectFileSubscription==>', data);
+                // this.downloadAndReadFile(data.fileName);
+                this.readExcelFile('');
+            });
+    }
+    ngOnInit() {
+        this.loadFiles();
+    }
+    ngOnDestroy(): void {
+        this.loginSubscription.unsubscribe();
+        this.selectedExcelInfoSubscription.unsubscribe();
+    }
+    loadFiles() {
+        this.autoCompleteitems = [];
+        this.storageService.listFiles(this.directory).subscribe((files) => {
+            console.log('files====>', files);
+            this.files = files;
+            this.files.forEach((file: any) => {
+                this.autoCompleteitems.push({ name: file });
+                console.log(
+                    'this.autoCompleteitems===>s',
+                    this.autoCompleteitems
+                );
+            });
+        });
+    }
+    readExcelFile(url: string) {
+        this.http
+            .get(
+                'https://firebasestorage.googleapis.com/v0/b/excelendsite.appspot.com/o/excel%2FMyTrainerWebsite.xlsx?alt=media&token=8bd777d6-37b1-456d-9d59-ff61146a6622',
+                { responseType: 'arraybuffer' }
+            )
+            .subscribe((data) => {
+                const workbook = XLSX.read(new Uint8Array(data), {
+                    type: 'array',
+                });
+                const firstSheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[firstSheetName];
+                const excelData = XLSX.utils.sheet_to_json(worksheet, {
+                    header: 1,
+                });
+                console.log(excelData);
+            });
+    }
+    downloadAndReadFile(filename: string) {
+        const filePath = `${this.directory}/${filename}`;
+        console.log('filePath===>', filePath);
+        this.storageService.downloadFileAsBlob(filePath).subscribe((blob) => {
+            console.log('blob===>', blob);
+            debugger;
+            const reader = new FileReader();
+            reader.onload = (e: any) => {
+                const bstr: string = e.target.result;
+                const workbook = XLSX.read(bstr, { type: 'binary' });
+                const firstSheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[firstSheetName];
+                this.excelData = XLSX.utils.sheet_to_json(worksheet, {
+                    header: 1,
+                });
+                console.log('this.excelData====>', this.excelData);
+            };
+            reader.readAsBinaryString(blob);
+        });
+    }
+
+    downloadFile(filename: string) {
+        const filePath = `${this.directory}/${filename}`;
+        this.storageService.downloadFile(filePath).subscribe((url) => {
+            window.open(url, '_blank');
+        });
+    }
+    uploadFile(event: any) {
+        const file = event.files[0];
+        const filePath = `excel/${file.name}`;
+        const fileRef = this.storage.ref(filePath);
+        const task = this.storage.upload(filePath, file);
+        task.snapshotChanges()
+            .pipe(
+                finalize(() => {
+                    fileRef.getDownloadURL().subscribe((url) => {
+                        this.downloadURL = url;
+                        debugger;
+                        console.log('File available at: ', this.downloadURL);
+                        debugger;
+                    });
+                })
+            )
+            .subscribe();
     }
     onUploadClick() {
         this.fileUpload.basicFileInput.nativeElement.click();
     }
     onFileSelect(ref: any, event: any) {
-        const file: File = event.files[0];
-        const reader: FileReader = new FileReader();
-        reader.onload = (e: any) => {
-            const bstr: string = e.target.result;
-            const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
-            this.workSheetNames = wb.SheetNames;
-            let count = 0;
-            this.workSheetNames.forEach((workSheet: string) => {
-                const ws: XLSX.WorkSheet = wb.Sheets[workSheet];
-                this.workSheets.push(ws);
-                this.workSheetsJSON.push(XLSX.utils.sheet_to_json(ws));
-                if (count > 0) {
-                    this.menuItemForming(workSheet);
-                }
-                count++;
-            });
-            this.setExcelPageContent(this.workSheetsJSON[1]);
-            this.infoSet();
-        };
-        reader.readAsBinaryString(file);
-        ref.clear();
+        this.uploadFile(event);
+        // const file: File = event.files[0];
+        // const reader: FileReader = new FileReader();
+        // reader.onload = (e: any) => {
+        //     const bstr: string = e.target.result;
+        //     const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
+        //     this.workSheetNames = wb.SheetNames;
+        //     let count = 0;
+        //     this.workSheetNames.forEach((workSheet: string) => {
+        //         const ws: XLSX.WorkSheet = wb.Sheets[workSheet];
+        //         this.workSheets.push(ws);
+        //         this.workSheetsJSON.push(XLSX.utils.sheet_to_json(ws));
+        //         if (count > 0) {
+        //             this.menuItemForming(workSheet);
+        //         }
+        //         count++;
+        //     });
+        //     this.setExcelPageContent(this.workSheetsJSON[1]);
+        //     this.infoSet();
+        // };
+        // reader.readAsBinaryString(file);
+        // ref.clear();
     }
     infoSet() {
         let specDetail = this.workSheetsJSON[0];
@@ -261,7 +354,6 @@ export class AppTopBarComponent {
             },
         });
     }
-
     setExcelPageContent(content: any) {
         this.reactService.setFile({
             excelContents: content,
@@ -271,7 +363,6 @@ export class AppTopBarComponent {
     loginRedirect() {
         this.router.navigate(['login']);
     }
-
     searchItems(event: any) {
         const query = event.query.toLowerCase();
         this.filteredItems = this.autoCompleteitems.filter((item) =>
@@ -279,8 +370,16 @@ export class AppTopBarComponent {
         );
     }
     onSearchClick() {
+        let selectedFiles: any[] = [];
+        this.files.forEach((file: any) => {
+            if (file.includes(this.selectedItem.name)) {
+                console.log('file====>', file);
+                selectedFiles.push(file);
+            }
+        });
         this.reactService.setHeaderSearchSubject({
             searchTags: this.selectedItem,
+            selectedFiles: selectedFiles,
         });
     }
     selectedActionCall() {}

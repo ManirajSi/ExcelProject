@@ -26,15 +26,15 @@ const analytics = getAnalytics(app);
 
 export const environment = {
     production: false,
-    // firebaseConfig: {
-    //     apiKey: 'AIzaSyDESkwu4S7pKw_I4bLMPIiD7htqUf8Qn1k',
-    //     authDomain: 'excelendsite.firebaseapp.com',
-    //     projectId: 'excelendsite',
-    //     storageBucket: 'excelendsite.appspot.com',
-    //     messagingSenderId: '694155650321',
-    //     appId: '1:694155650321:web:e54e99382ad44bf640d8b0',
-    //     measurementId: 'G-4HEYGL4QY4',
-    // },
+    firebaseConfig: {
+        apiKey: 'AIzaSyDESkwu4S7pKw_I4bLMPIiD7htqUf8Qn1k',
+        authDomain: 'excelendsite.firebaseapp.com',
+        projectId: 'excelendsite',
+        storageBucket: 'excelendsite.appspot.com',
+        messagingSenderId: '694155650321',
+        appId: '1:694155650321:web:e54e99382ad44bf640d8b0',
+        measurementId: 'G-4HEYGL4QY4',
+    },
 };
 
 /*

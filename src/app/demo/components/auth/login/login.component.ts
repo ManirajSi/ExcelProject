@@ -46,7 +46,6 @@ export class LoginComponent {
         });
     }
     signupLoginClick() {
-        debugger;
         this.actionType == 'Login'
             ? (this.actionType = 'Sign Up')
             : (this.actionType = 'Login');

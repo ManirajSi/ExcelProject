@@ -20,6 +20,9 @@ export class ReactService {
     private loginInfoSubject = new BehaviorSubject<any | null>(null);
     loginInfo$ = this.loginInfoSubject.asObservable();
 
+    private selectedExcelSubject = new BehaviorSubject<any | null>(null);
+    selectedExcelInfo$ = this.selectedExcelSubject.asObservable();
+
     setFile(file: any): void {
         this.fileSubject.next(file);
     }
@@ -34,5 +37,8 @@ export class ReactService {
     }
     setLoginInfo(loginInfo: any): void {
         this.loginInfoSubject.next(loginInfo);
+    }
+    setExcelInfo(excelInfo: any): void {
+        this.selectedExcelSubject.next(excelInfo);
     }
 }

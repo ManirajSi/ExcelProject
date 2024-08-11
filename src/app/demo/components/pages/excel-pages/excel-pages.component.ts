@@ -6,6 +6,7 @@ import { saveAs } from 'file-saver';
 import { ReactService } from 'src/app/layout/service/react.service';
 import { DomSanitizer, SafeHtml, SafeUrl } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
+import { StorageService } from 'src/app/layout/service/storage.service';
 
 interface GroupedData {
     category: string;
@@ -25,36 +26,7 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
     searchSubscription: Subscription = new Subscription();
     searchExcelText: string = '';
     showWebsiteView: boolean = false;
-    constructor(
-        private reactService: ReactService,
-        private sanitizer: DomSanitizer
-    ) {
-        this.fileSubscription = this.reactService.file$.subscribe((data) => {
-            this.data = data.excelContents;
-            this.groupData();
-        });
-        this.sectionNavSubscription = this.reactService.sectionNav$.subscribe(
-            (navData) => {
-                if (navData) {
-                    this.scrollToSection(
-                        navData.categoryIndex,
-                        navData.subCategoryIndex
-                    );
-                }
-            }
-        );
-        this.fileSubscription = this.reactService.headerSearch$.subscribe(
-            (data) => {
-                debugger;
-                this.searchExcelText = data.name;
-            }
-        );
-    }
-    ngOnDestroy(): void {
-        this.fileSubscription.unsubscribe();
-        this.sectionNavSubscription.unsubscribe();
-        this.searchSubscription.unsubscribe();
-    }
+    selectedFiles: any[] = [];
     data: any[] = [];
     // groupedData: Array<{
     //     category: string;
@@ -78,10 +50,51 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
     imageUrls: any[] = [];
     products: any[] = [
         { name: 'Excel1', tags: 'tag1,tag2,tag3', type: 'Template1' },
-        { name: 'Excel2', tags: 'tag1,tag2,tag3', type: 'Template2' },
-        { name: 'Excel3', tags: 'tag1,tag2,tag3', type: 'Template3' },
     ];
+    directory = 'excel';
+    constructor(
+        private reactService: ReactService,
+        private sanitizer: DomSanitizer,
+        private storageService: StorageService
+    ) {
+        this.fileSubscription = this.reactService.file$.subscribe((data) => {
+            this.data = data.excelContents;
+            this.groupData();
+        });
+        this.sectionNavSubscription = this.reactService.sectionNav$.subscribe(
+            (navData) => {
+                if (navData) {
+                    this.scrollToSection(
+                        navData.categoryIndex,
+                        navData.subCategoryIndex
+                    );
+                }
+            }
+        );
+        this.searchSubscription = this.reactService.headerSearch$.subscribe(
+            (data) => {
+                this.products = [];
+                console.log('searchSubscription===>', data);
+                this.selectedFiles = data.selectedFiles;
+                this.searchExcelText = data.searchTags.name;
+                this.selectedFiles.forEach((file) => {
+                    this.products.push({
+                        name: file,
+                        tags: 'tag1,tag2,tag3',
+                        type: 'Template1',
+                    });
+                });
+            }
+        );
+    }
+    ngOnDestroy(): void {
+        this.fileSubscription.unsubscribe();
+        this.sectionNavSubscription.unsubscribe();
+        this.searchSubscription.unsubscribe();
+    }
+
     ngOnInit() {}
+
     private groupData() {
         const categoryMap = new Map<
             string,
@@ -166,9 +179,18 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
     private sanitizeUrl(url: string): SafeUrl {
         return this.sanitizer.bypassSecurityTrustUrl(url);
     }
-    onExcelListClick() {
+    onExcelListClick(file: any) {
+        console.log('fileName===>', file.name);
         this.searchExcelText = '';
         this.showWebsiteView = true;
+        //  this.downloadFile(file.name);
+        this.reactService.setExcelInfo({ fileName: file.name });
+    }
+    downloadFile(filename: string) {
+        const filePath = `${this.directory}/${filename}`;
+        this.storageService.downloadFile(filePath).subscribe((url) => {
+            window.open(url, '_blank');
+        });
     }
     scrollToSection(categoryIndex: number, subCategoryIndex: number) {
         const sectionId = `section-${categoryIndex}-${subCategoryIndex}`;
