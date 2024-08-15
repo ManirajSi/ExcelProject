@@ -23,6 +23,17 @@
     padding: 0rem 0.1rem;
     min-width: 3rem;
 }
+.p-inputgroup {
+    display: flex;
+    align-items: stretch;
+    width: 30%;
+}
+.menu-div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
 
 :host::ng-deep {
     .p-inputgroup .p-inputtext,

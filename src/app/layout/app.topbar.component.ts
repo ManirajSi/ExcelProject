@@ -13,6 +13,7 @@ import { HttpClient } from '@angular/common/http';
     selector: 'app-topbar',
     templateUrl: './app.topbar.component.html',
     styleUrl: './app.topbar.component.scss',
+    providers: [MessageService],
 })
 export class AppTopBarComponent {
     items!: MenuItem[];
@@ -25,8 +26,8 @@ export class AppTopBarComponent {
     @ViewChild('topbarmenubutton') topbarMenuButton!: ElementRef;
     @ViewChild('topbarmenu') menu!: ElementRef;
     webLogo: string = '';
-    webName: string = '';
-    sideBarButton: any = { show: true };
+    webName: string = 'Excelend Site';
+    sideBarButton: any = { show: false };
     filteredItems: any[];
     selectedItem: any;
     isLoggedIn: boolean = false;
@@ -57,14 +58,40 @@ export class AppTopBarComponent {
     ];
     nestedActionitems = [
         {
+            label: 'Upload',
+            icon: 'pi pi-th-large',
+            items: [
+                {
+                    label: 'Preview',
+                    icon: 'pi pi-th-large',
+                    command: () => {
+                        this.browseSelectFile();
+                    },
+                },
+                {
+                    label: 'Save',
+                    icon: 'pi pi-th-large',
+                    command: () => {
+                        if (!this.selectedFile) {
+                            this.showToast(2, 'File not selected for saving');
+                            this.browseSelectFile();
+                        } else {
+                            if (this.isLoggedIn) {
+                                this.saveConfimration();
+                            } else {
+                                this.showToast(
+                                    2,
+                                    'Please login to save the file'
+                                );
+                            }
+                        }
+                    },
+                },
+            ],
+        },
+        {
             label: 'Templates',
             icon: 'pi pi-th-large',
-            command: () => {
-                !this.selectedAction.includes('Template')
-                    ? (this.selectedAction = 'Template1')
-                    : this.selectedAction;
-                this.dowloadTemplate();
-            },
             items: [
                 {
                     label: 'Template1',
@@ -94,99 +121,18 @@ export class AppTopBarComponent {
                 },
             ],
         },
-        {
-            label: 'Edit',
-            icon: 'pi pi-fw pi-pencil',
-            items: [
-                {
-                    label: 'Left',
-                    icon: 'pi pi-fw pi-align-left',
-                    items: [
-                        {
-                            label: 'Bookmark',
-                            icon: 'pi pi-fw pi-bookmark',
-                        },
-                        {
-                            label: 'Video',
-                            icon: 'pi pi-fw pi-video',
-                        },
-                    ],
-                },
-                {
-                    label: 'Right',
-                    icon: 'pi pi-fw pi-align-right',
-                },
-                {
-                    label: 'Center',
-                    icon: 'pi pi-fw pi-align-center',
-                },
-                {
-                    label: 'Justify',
-                    icon: 'pi pi-fw pi-align-justify',
-                },
-            ],
-        },
+
         {
             label: 'Users',
             icon: 'pi pi-fw pi-user',
             items: [
                 {
-                    label: 'New',
+                    label: 'Login',
                     icon: 'pi pi-fw pi-user-plus',
                 },
                 {
-                    label: 'Delete',
+                    label: 'Logout',
                     icon: 'pi pi-fw pi-user-minus',
-                },
-                {
-                    label: 'Search',
-                    icon: 'pi pi-fw pi-users',
-                    items: [
-                        {
-                            label: 'Filter',
-                            icon: 'pi pi-fw pi-filter',
-                            items: [
-                                {
-                                    label: 'Print',
-                                    icon: 'pi pi-fw pi-print',
-                                },
-                            ],
-                        },
-                        {
-                            icon: 'pi pi-fw pi-bars',
-                            label: 'List',
-                        },
-                    ],
-                },
-            ],
-        },
-        {
-            label: 'Events',
-            icon: 'pi pi-fw pi-calendar',
-            items: [
-                {
-                    label: 'Edit',
-                    icon: 'pi pi-fw pi-pencil',
-                    items: [
-                        {
-                            label: 'Save',
-                            icon: 'pi pi-fw pi-calendar-plus',
-                        },
-                        {
-                            label: 'Delete',
-                            icon: 'pi pi-fw pi-calendar-minus',
-                        },
-                    ],
-                },
-                {
-                    label: 'Archieve',
-                    icon: 'pi pi-fw pi-calendar-times',
-                    items: [
-                        {
-                            label: 'Remove',
-                            icon: 'pi pi-fw pi-calendar-minus',
-                        },
-                    ],
                 },
             ],
         },
@@ -208,13 +154,20 @@ export class AppTopBarComponent {
     files: string[] = [];
     directory = 'excel';
     excelData: any;
+    recetAction: string = 'Upload';
+    selectedFile: File = new File([], '');
+    selectedFileEvent: any;
+    visible: boolean = false;
+    dialogboxContent: string[] = [];
+    dialogAction: string = 'save';
     constructor(
         public layoutService: LayoutService,
         private reactService: ReactService,
         private storage: AngularFireStorage,
         private storageService: StorageService,
-        private router: Router, // private messageService: MessageService
-        private http: HttpClient
+        private router: Router,
+        private http: HttpClient,
+        private messageService: MessageService
     ) {
         this.loginSubscription = this.reactService.loginInfo$.subscribe(
             (data) => {
@@ -224,78 +177,73 @@ export class AppTopBarComponent {
         this.selectedExcelInfoSubscription =
             this.reactService.selectedExcelInfo$.subscribe((data) => {
                 console.log('selectFileSubscription==>', data);
-                // this.downloadAndReadFile(data.fileName);
-                this.readExcelFile('');
+                this.downloadAndReadFile(data.fileName);
             });
     }
     ngOnInit() {
         this.loadFiles();
     }
-    ngOnDestroy(): void {
-        this.loginSubscription.unsubscribe();
-        this.selectedExcelInfoSubscription.unsubscribe();
+    recentActionCall() {
+        switch (this.recetAction) {
+            case 'Preview':
+                this.browseSelectFile();
+                break;
+            case 'Save':
+                if (this.isLoggedIn) {
+                    this.saveConfimration();
+                }
+                break;
+            case 'Download':
+                this.downloadFile(this.selectedItem.name);
+                break;
+            case 'Search':
+                this.onSearchClick();
+                break;
+            default:
+                break;
+        }
     }
-    loadFiles() {
-        this.autoCompleteitems = [];
-        this.storageService.listFiles(this.directory).subscribe((files) => {
-            console.log('files====>', files);
-            this.files = files;
-            this.files.forEach((file: any) => {
-                this.autoCompleteitems.push({ name: file });
-                console.log(
-                    'this.autoCompleteitems===>s',
-                    this.autoCompleteitems
-                );
+    browseSelectFile() {
+        this.fileUpload.basicFileInput.nativeElement.click();
+    }
+    fileSelectAndPreview(ref: any, event: any) {
+        this.sideBarButton.show = true;
+        const file: File = event.files[0];
+        this.selectedFile = file;
+        this.selectedFileEvent = event;
+        const reader: FileReader = new FileReader();
+        reader.onload = (e: any) => {
+            console.log('e.target.result====>', e.target.result);
+            const bstr: string = e.target.result;
+            const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
+            this.workSheetNames = wb.SheetNames;
+            let count = 0;
+            this.workSheetNames.forEach((workSheet: string) => {
+                const ws: XLSX.WorkSheet = wb.Sheets[workSheet];
+                this.workSheets.push(ws);
+                this.workSheetsJSON.push(XLSX.utils.sheet_to_json(ws));
+                if (count > 0) {
+                    this.menuItemForming(workSheet);
+                }
+                count++;
             });
-        });
+            this.setExcelPageContent(this.workSheetsJSON[1]);
+            this.infoSet();
+        };
+        reader.readAsBinaryString(file);
+        ref.clear();
     }
-    readExcelFile(url: string) {
-        this.http
-            .get(
-                'https://firebasestorage.googleapis.com/v0/b/excelendsite.appspot.com/o/excel%2FMyTrainerWebsite.xlsx?alt=media&token=8bd777d6-37b1-456d-9d59-ff61146a6622',
-                { responseType: 'arraybuffer' }
-            )
-            .subscribe((data) => {
-                const workbook = XLSX.read(new Uint8Array(data), {
-                    type: 'array',
-                });
-                const firstSheetName = workbook.SheetNames[0];
-                const worksheet = workbook.Sheets[firstSheetName];
-                const excelData = XLSX.utils.sheet_to_json(worksheet, {
-                    header: 1,
-                });
-                console.log(excelData);
-            });
-    }
-    downloadAndReadFile(filename: string) {
-        const filePath = `${this.directory}/${filename}`;
-        console.log('filePath===>', filePath);
-        this.storageService.downloadFileAsBlob(filePath).subscribe((blob) => {
-            console.log('blob===>', blob);
-            debugger;
-            const reader = new FileReader();
-            reader.onload = (e: any) => {
-                const bstr: string = e.target.result;
-                const workbook = XLSX.read(bstr, { type: 'binary' });
-                const firstSheetName = workbook.SheetNames[0];
-                const worksheet = workbook.Sheets[firstSheetName];
-                this.excelData = XLSX.utils.sheet_to_json(worksheet, {
-                    header: 1,
-                });
-                console.log('this.excelData====>', this.excelData);
-            };
-            reader.readAsBinaryString(blob);
-        });
-    }
+    // previewFromExcel(file: any) {
 
-    downloadFile(filename: string) {
-        const filePath = `${this.directory}/${filename}`;
-        this.storageService.downloadFile(filePath).subscribe((url) => {
-            window.open(url, '_blank');
-        });
+    // }
+    saveConfimration() {
+        let content = ['Are you sure you want to save the file?'];
+        this.dialogAction = 'save';
+        this.showDialog(content);
     }
-    uploadFile(event: any) {
-        const file = event.files[0];
+    saveFileInCloud() {
+        debugger;
+        const file = this.selectedFileEvent.currentFiles[0];
         const filePath = `excel/${file.name}`;
         const fileRef = this.storage.ref(filePath);
         const task = this.storage.upload(filePath, file);
@@ -304,40 +252,50 @@ export class AppTopBarComponent {
                 finalize(() => {
                     fileRef.getDownloadURL().subscribe((url) => {
                         this.downloadURL = url;
-                        debugger;
-                        console.log('File available at: ', this.downloadURL);
-                        debugger;
+                        this.showToast(1, 'File saved successfully');
                     });
                 })
             )
             .subscribe();
     }
-    onUploadClick() {
-        this.fileUpload.basicFileInput.nativeElement.click();
+    loadFiles() {
+        this.autoCompleteitems = [];
+        this.storageService.listFiles(this.directory).subscribe((files) => {
+            this.files = files;
+            this.files.forEach((file: any) => {
+                this.autoCompleteitems.push({ name: file });
+            });
+        });
     }
-    onFileSelect(ref: any, event: any) {
-        this.uploadFile(event);
-        // const file: File = event.files[0];
-        // const reader: FileReader = new FileReader();
-        // reader.onload = (e: any) => {
-        //     const bstr: string = e.target.result;
-        //     const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
-        //     this.workSheetNames = wb.SheetNames;
-        //     let count = 0;
-        //     this.workSheetNames.forEach((workSheet: string) => {
-        //         const ws: XLSX.WorkSheet = wb.Sheets[workSheet];
-        //         this.workSheets.push(ws);
-        //         this.workSheetsJSON.push(XLSX.utils.sheet_to_json(ws));
-        //         if (count > 0) {
-        //             this.menuItemForming(workSheet);
-        //         }
-        //         count++;
-        //     });
-        //     this.setExcelPageContent(this.workSheetsJSON[1]);
-        //     this.infoSet();
-        // };
-        // reader.readAsBinaryString(file);
-        // ref.clear();
+    downloadAndReadFile(filename: string) {
+        const filePath = `${this.directory}/${filename}`;
+        this.storageService.downloadFileAsBlob(filePath).subscribe((blob) => {
+            const reader = new FileReader();
+            reader.onload = (e: any) => {
+                const bstr: string = e.target.result;
+                const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
+                this.workSheetNames = wb.SheetNames;
+                let count = 0;
+                this.workSheetNames.forEach((workSheet: string) => {
+                    const ws: XLSX.WorkSheet = wb.Sheets[workSheet];
+                    this.workSheets.push(ws);
+                    this.workSheetsJSON.push(XLSX.utils.sheet_to_json(ws));
+                    if (count > 0) {
+                        this.menuItemForming(workSheet);
+                    }
+                    count++;
+                });
+                this.setExcelPageContent(this.workSheetsJSON[1]);
+                this.infoSet();
+            };
+            reader.readAsBinaryString(blob);
+        });
+    }
+    downloadFile(filename: string) {
+        const filePath = `${this.directory}/${filename}`;
+        this.storageService.downloadFile(filePath).subscribe((url) => {
+            window.open(url, '_blank');
+        });
     }
     infoSet() {
         let specDetail = this.workSheetsJSON[0];
@@ -382,7 +340,6 @@ export class AppTopBarComponent {
             selectedFiles: selectedFiles,
         });
     }
-    selectedActionCall() {}
     dowloadTemplate() {
         if (this.selectedAction.includes('Template')) {
             // this.messageService.add({
@@ -397,5 +354,37 @@ export class AppTopBarComponent {
             //     detail: 'Invalid Action',
             // });
         }
+    }
+    showToast(type: number, message: string) {
+        switch (type) {
+            case 1:
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Success',
+                    detail: message,
+                });
+                break;
+            case 2:
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: message,
+                });
+                break;
+        }
+    }
+    showDialog(content: string[] = []) {
+        this.dialogboxContent = content;
+        this.visible = true;
+    }
+    dialogConfirm() {
+        if (this.dialogAction === 'save') {
+            this.saveFileInCloud();
+        }
+        this.visible = false;
+    }
+    ngOnDestroy(): void {
+        this.loginSubscription.unsubscribe();
+        this.selectedExcelInfoSubscription.unsubscribe();
     }
 }

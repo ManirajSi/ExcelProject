@@ -1,4 +1,4 @@
-<!-- <p-toast /> -->
+<p-toast />
 <div class="layout-topbar">
     <a class="layout-topbar-logo" routerLink="">
         <img
@@ -29,12 +29,16 @@
         <i class="pi pi-ellipsis-v"></i>
     </button>
     <p-splitButton
-        label="Save"
-        (onClick)="selectedActionCall()"
+        label="Upload"
+        (onClick)="recentActionCall()"
         [model]="nestedActionitems"
         class="mr-2 custom-splitbutton"
     />
     <!-- app.component.html -->
+    <div class="menu-div">
+        <p-menubar *ngIf="menuItems.length > 0" [model]="menuItems" />
+    </div>
+    <!-- <div><p-speedDial [model]="items" direction="down" /></div> -->
     <div class="p-inputgroup">
         <p-autoComplete
             [(ngModel)]="selectedItem"
@@ -54,10 +58,6 @@
             ></button>
         </span>
     </div>
-
-    <p-menubar *ngIf="menuItems.length > 0" [model]="menuItems" />
-    <!-- <div><p-speedDial [model]="items" direction="down" /></div> -->
-
     <div
         #topbarmenu
         class="layout-topbar-menu"
@@ -67,6 +67,7 @@
         }"
     >
         <p-fileUpload
+            [hidden]="true"
             #fileUpload
             [pTooltip]="'upload your excel to Preview'"
             name="myfile[]"
@@ -74,7 +75,7 @@
             [auto]="true"
             styleClass="d-none"
             accept=".xlsx, .xls, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-            (onSelect)="onFileSelect(fileUpload, $event)"
+            (onSelect)="fileSelectAndPreview(fileUpload, $event)"
         ></p-fileUpload>
         <button class="p-link layout-topbar-button" (click)="loginRedirect()">
             <img
@@ -95,3 +96,30 @@
         </button>
     </div>
 </div>
+<!-- Dialog box -->
+<p-dialog
+    header="Edit Profile"
+    [modal]="true"
+    [(visible)]="visible"
+    [style]="{ width: '25rem' }"
+>
+    <span class="p-text-secondary block mb-5">{{
+        this.dialogboxContent[0]
+    }}</span>
+    <!-- <div class="flex align-items-center gap-3 mb-3">
+        <label for="username" class="font-semibold w-6rem">Username</label>
+        <input pInputText id="username" class="flex-auto" autocomplete="off" />
+    </div>
+    <div class="flex align-items-center gap-3 mb-5">
+        <label for="email" class="font-semibold w-6rem">Email</label>
+        <input pInputText id="email" class="flex-auto" autocomplete="off" />
+    </div> -->
+    <div class="flex justify-content-end gap-2">
+        <p-button
+            label="Cancel"
+            severity="secondary"
+            (onClick)="visible = false"
+        />
+        <p-button label="Confirm" (onClick)="dialogConfirm()" />
+    </div>
+</p-dialog>
