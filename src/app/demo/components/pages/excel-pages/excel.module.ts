@@ -5,6 +5,12 @@ import { ExcelPagesComponent } from './excel-pages.component';
 import { SlickCarouselModule } from 'ngx-slick-carousel';
 import { OrderListModule } from 'primeng/orderlist';
 import { RatingModule } from 'primeng/rating';
+import { ButtonModule } from 'primeng/button';
+import { MessagesModule } from 'primeng/messages';
+import { CardModule } from 'primeng/card';
+import { TabViewModule } from 'primeng/tabview';
+import { GalleriaModule } from 'primeng/galleria';
+
 @NgModule({
     declarations: [ExcelPagesComponent],
     imports: [
@@ -13,6 +19,11 @@ import { RatingModule } from 'primeng/rating';
         SlickCarouselModule,
         OrderListModule,
         RatingModule,
+        ButtonModule,
+        MessagesModule,
+        CardModule,
+        TabViewModule,
+        GalleriaModule,
     ],
 })
 export class ExcelModule {}

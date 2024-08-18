@@ -7,6 +7,7 @@ import { ReactService } from 'src/app/layout/service/react.service';
 import { DomSanitizer, SafeHtml, SafeUrl } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
 import { StorageService } from 'src/app/layout/service/storage.service';
+import { DataService } from 'src/app/demo/service/data.service';
 
 interface GroupedData {
     category: string;
@@ -41,25 +42,37 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
         autoplay: true,
         autoplaySpeed: 3000,
     };
-    images: string[] = [
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmEDjAExxzBNFclSu2rLISZKw-0NCzroHepQ&s',
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTI8cXM0JZINDcpwaVv91pdLEp7zHw8ObnFpQ&s',
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTet87JrUNU4rB0LaPdsCUzByjZjLIXHhidjA&s',
-    ];
+    // images: string[] = [
+    //     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmEDjAExxzBNFclSu2rLISZKw-0NCzroHepQ&s',
+    //     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTI8cXM0JZINDcpwaVv91pdLEp7zHw8ObnFpQ&s',
+    //     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTet87JrUNU4rB0LaPdsCUzByjZjLIXHhidjA&s',
+    // ];
     currentIndex: number = 0;
     imageUrls: any[] = [];
     products: any[] = [
         { name: 'Excel1', tags: 'tag1,tag2,tag3', type: 'Template1' },
     ];
     directory = 'excel';
+    showAddVideo: boolean = true;
+    showExcelsTable: boolean = false;
+    showExcelContent: boolean = false;
+    images: any[] | undefined;
+    responsiveOptions: any[] | undefined;
     constructor(
         private reactService: ReactService,
         private sanitizer: DomSanitizer,
-        private storageService: StorageService
+        private storageService: StorageService,
+        private dataService: DataService
     ) {
+        //Subscription call for get file from local and cloud
         this.fileSubscription = this.reactService.file$.subscribe((data) => {
-            this.data = data.excelContents;
-            this.groupData();
+            if (data) {
+                this.showAddVideo = false;
+                this.showExcelContent = true;
+                this.showExcelsTable = false;
+                this.data = data.excelContents;
+                this.groupData();
+            }
         });
         this.sectionNavSubscription = this.reactService.sectionNav$.subscribe(
             (navData) => {
@@ -73,56 +86,122 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
         );
         this.searchSubscription = this.reactService.headerSearch$.subscribe(
             (data) => {
-                this.products = [];
-                console.log('searchSubscription===>', data);
-                this.selectedFiles = data.selectedFiles;
-                this.searchExcelText = data.searchTags.name;
-                this.selectedFiles.forEach((file) => {
-                    this.products.push({
-                        name: file,
-                        tags: 'tag1,tag2,tag3',
-                        type: 'Template1',
+                if (data) {
+                    this.showAddVideo = false;
+                    this.showExcelContent = false;
+                    this.showExcelsTable = true;
+                    this.products = [];
+                    this.selectedFiles = data.selectedFiles;
+                    this.searchExcelText = data.searchTags.name;
+                    this.selectedFiles.forEach((file) => {
+                        this.products.push({
+                            name: file,
+                            tags: 'tag1,tag2,tag3',
+                            type: 'Template1',
+                        });
                     });
-                });
+                }
             }
         );
     }
-    ngOnDestroy(): void {
-        this.fileSubscription.unsubscribe();
-        this.sectionNavSubscription.unsubscribe();
-        this.searchSubscription.unsubscribe();
+    ngOnInit() {
+        this.getImages();
     }
-
-    ngOnInit() {}
-
-    private groupData() {
+    getImages() {
+        this.dataService.getImages().then((images) => (this.images = images));
+        this.responsiveOptions = [
+            {
+                breakpoint: '1024px',
+                numVisible: 5,
+            },
+            {
+                breakpoint: '768px',
+                numVisible: 3,
+            },
+            {
+                breakpoint: '560px',
+                numVisible: 1,
+            },
+        ];
+    }
+    groupData() {
         const categoryMap = new Map<
             string,
             Map<string, (SafeHtml | string[])[]>
         >();
+
         this.data.forEach((item) => {
-            const {
-                Category: category,
-                SubCategory: subCategory,
-                Content1: content1,
-                Content2: content2,
-            } = item;
-            const content = content1 + (content2 ? '\n' + content2 : '');
-            const contentWithIframe = this.replaceXframeWithIframe(content);
-            const contentWithImage = this.extractImages(contentWithIframe);
+            console.log('item====>', item);
+            let category: string = '';
+            let subCategory: string = '';
+            let textContent: string[] = [];
+            let noteContent: string[] = [];
+            let codeContent: string[] = [];
+            let imageContent: string[] = [];
+            let videoContent: string[] = [];
+            let gifContent: string[] = [];
+            let urlRefContent: string[] = [];
+            Object.keys(item).forEach((key) => {
+                let keyName = key.toLowerCase().trim();
+                if (keyName.includes('col2')) {
+                    category = item[key]; // Assign the value to category if the key contains "col1"
+                } else if (keyName.includes('col3')) {
+                    subCategory = item[key]; // Assign the value to subCategory if the key contains "col3"
+                } else {
+                    if (!keyName.includes('col1')) {
+                        if (keyName.includes('xlcontents')) {
+                            textContent.push(item[key]); // Assign the value to content if the key contains "col5"
+                        }
+                        if (keyName.includes('xlcodes')) {
+                            codeContent.push(item[key]); // Assign the value to content if the key contains "col5"
+                        }
+                        if (keyName.includes('xlnotes')) {
+                            noteContent.push(
+                                '<b>Note</b><br><span style="margin-left: 10px;">' +
+                                    item[key] +
+                                    '</span>'
+                            ); // Assign the value to content if the key contains "col5"
+                        }
+                        if (keyName.includes('xlimages')) {
+                            imageContent.push(item[key]); // Assign the value to content if the key contains "col5"
+                        }
+                        if (keyName.includes('xlgifs')) {
+                            gifContent.push(item[key]); // Assign the value to content if the key contains "col5"
+                        }
+                        if (keyName.includes('xlvideos')) {
+                            videoContent.push(item[key]); // Assign the value to content if the key contains "col5"
+                        }
+                        if (keyName.includes('xlframes')) {
+                            urlRefContent.push(item[key]); // Assign the value to content if the key contains "col5"
+                        }
+                    }
+                }
+            });
+            //const content = item.column3 + (item.column4 ? '\n' + item.column5 : '');
+            // content = this.replaceXLTagsWithHtml(content);
+            // console.log('content replaceXLTagsWithHtml====>', content);
+            //const contentWithIframe = this.replaceXframeWithIframe(content);
+            //const contentWithImage = this.extractImages(contentWithIframe);
             if (!categoryMap.has(category)) {
                 categoryMap.set(
                     category,
                     new Map<string, (SafeHtml | string[])[]>()
                 );
             }
-
             const subCategoryMap = categoryMap.get(category)!;
-
             if (!subCategoryMap.has(subCategory)) {
                 subCategoryMap.set(subCategory, []);
             }
-            subCategoryMap.get(subCategory)!.push(contentWithImage);
+            subCategoryMap.get(subCategory)!.push({
+                textContent: textContent,
+                codeContent: codeContent,
+                noteContent: noteContent,
+                imageContent: imageContent,
+                videoContent: videoContent,
+                gifContent: gifContent,
+                urlRefContent: urlRefContent,
+            });
+            console.log('subCategoryMap====>', subCategoryMap);
         });
 
         // Convert Map to Array while preserving order
@@ -137,10 +216,25 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
                 ),
             })
         );
+        console.log('this.groupedData ====>', this.groupedData);
         this.reactService.setMenu(this.groupedData);
     }
-
-    private replaceXframeWithIframe(content: string): SafeHtml {
+    replaceXLTagsWithHtml(content: string): string {
+        let updatedContent = content.replace(
+            /<xcode>(.*?)<\/xcode>/g,
+            (match, code) => {
+                return `<div class="code-card">
+                                        <pre>
+                                            <code class="language-html">
+                                            ${code}
+                                        </code>
+                                        </pre>
+                                    </div>`;
+            }
+        );
+        return updatedContent;
+    }
+    replaceXframeWithIframe(content: string): SafeHtml {
         const updatedContent = content.replace(
             /<xframe>(.*?)<\/xframe>/g,
             (match, url) => {
@@ -149,8 +243,7 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
         );
         return this.sanitizer.bypassSecurityTrustHtml(updatedContent);
     }
-
-    private extractImages(content: SafeHtml): string {
+    extractImages(content: SafeHtml): string {
         const regex = /<ximage>\[(.*?)\]<\/ximage>/g;
         let htmlContent = content.toString();
         if (regex.test(htmlContent)) {
@@ -171,23 +264,23 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
         }
         return htmlContent;
     }
-
     isImageArray(content: SafeHtml | string[]): content is string[] {
         return Array.isArray(content);
     }
-
-    private sanitizeUrl(url: string): SafeUrl {
+    sanitizeUrl(url: string): SafeUrl {
         return this.sanitizer.bypassSecurityTrustUrl(url);
     }
     onExcelListClick(file: any) {
-        console.log('fileName===>', file.name);
-        this.searchExcelText = '';
-        this.showWebsiteView = true;
-        //  this.downloadFile(file.name);
-        this.reactService.setExcelInfo({ fileName: file.name });
+        if (file) {
+            this.showExcelContent = true;
+            this.showExcelsTable = false;
+            this.searchExcelText = '';
+            this.showWebsiteView = true;
+            this.reactService.setExcelInfo({ fileName: file.name });
+        }
     }
-    downloadFile(filename: string) {
-        const filePath = `${this.directory}/${filename}`;
+    downloadFile(file: any) {
+        const filePath = `${this.directory}/${file.name}`;
         this.storageService.downloadFile(filePath).subscribe((url) => {
             window.open(url, '_blank');
         });
@@ -198,5 +291,10 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
         if (section) {
             section.scrollIntoView({ behavior: 'smooth' });
         }
+    }
+    ngOnDestroy(): void {
+        this.fileSubscription.unsubscribe();
+        this.sectionNavSubscription.unsubscribe();
+        this.searchSubscription.unsubscribe();
     }
 }

@@ -26,13 +26,18 @@
 .p-inputgroup {
     display: flex;
     align-items: stretch;
-    width: 30%;
+    width: 40%;
 }
 .menu-div {
     display: flex;
     align-items: center;
     justify-content: center;
     width: 100%;
+}
+@media screen and (max-width: 992px) {
+    .topbarHeading {
+        display: none;
+    }
 }
 
 :host::ng-deep {

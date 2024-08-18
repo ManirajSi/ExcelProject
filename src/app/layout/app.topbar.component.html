@@ -1,6 +1,6 @@
 <p-toast />
 <div class="layout-topbar">
-    <a class="layout-topbar-logo" routerLink="">
+    <a class="layout-topbar-logo" routerLink="" (click)="gotoHome()">
         <img
             src="assets/layout/images/{{
                 layoutService.config().colorScheme === 'light'
@@ -9,7 +9,7 @@
             }}.PNG"
             alt="logo"
         />
-        <span>{{ webName }}</span>
+        <span class="topbarHeading">{{ webName }}</span>
     </a>
 
     <button
@@ -40,7 +40,7 @@
     </div>
     <!-- <div><p-speedDial [model]="items" direction="down" /></div> -->
     <div class="p-inputgroup">
-        <p-autoComplete
+        <!-- <p-autoComplete
             [(ngModel)]="selectedItem"
             [suggestions]="filteredItems"
             (completeMethod)="searchItems($event)"
@@ -48,7 +48,15 @@
             [forceSelection]="true"
             placeholder="Search..."
         >
-        </p-autoComplete>
+        </p-autoComplete> -->
+        <p-dropdown
+            [options]="autoCompleteitems"
+            [(ngModel)]="selectedItem"
+            [showClear]="true"
+            placeholder="Select a Excel content"
+            [editable]="true"
+            optionLabel="name"
+        />
         <span class="p-inputgroup-addon">
             <button
                 pButton
@@ -91,7 +99,7 @@
             class="p-link layout-topbar-button"
             [routerLink]="'/documentation'"
         >
-            <i class="pi pi-cog"></i>
+            <i class="pi pi-spin pi-cog" style="font-size: 2rem"></i>
             <span>Settings</span>
         </button>
     </div>

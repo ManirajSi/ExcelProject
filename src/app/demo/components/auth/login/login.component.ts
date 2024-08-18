@@ -54,7 +54,6 @@ export class LoginComponent {
             : (this.signupLoginText = 'Sign Up');
     }
     onSubmit() {
-        console.log('this.userForm===>', this.userForm);
         if (this.userForm.valid) {
             let detail = '';
             if (this.actionType == 'Login') {
@@ -79,5 +78,8 @@ export class LoginComponent {
                 detail: 'Form not valid check the fields',
             });
         }
+    }
+    backToPage() {
+        this.router.navigate(['/']);
     }
 }

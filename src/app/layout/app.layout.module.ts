@@ -26,6 +26,7 @@ import { MessagesModule } from 'primeng/messages';
 import { ToastModule } from 'primeng/toast';
 import { RatingModule } from 'primeng/rating';
 import { DialogModule } from 'primeng/dialog';
+import { DropdownModule } from 'primeng/dropdown';
 @NgModule({
     declarations: [
         AppMenuitemComponent,
@@ -57,6 +58,7 @@ import { DialogModule } from 'primeng/dialog';
         ToastModule,
         RatingModule,
         DialogModule,
+        DropdownModule,
     ],
     exports: [AppLayoutComponent],
 })

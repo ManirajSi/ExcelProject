@@ -171,17 +171,23 @@ export class AppTopBarComponent {
     ) {
         this.loginSubscription = this.reactService.loginInfo$.subscribe(
             (data) => {
-                this.isLoggedIn = data.isLoggedIn;
+                if (data) {
+                    this.isLoggedIn = data.isLoggedIn;
+                }
             }
         );
         this.selectedExcelInfoSubscription =
             this.reactService.selectedExcelInfo$.subscribe((data) => {
-                console.log('selectFileSubscription==>', data);
-                this.downloadAndReadFile(data.fileName);
+                if (data) {
+                    this.downloadAndReadFile(data.fileName);
+                }
             });
     }
     ngOnInit() {
         this.loadFiles();
+    }
+    gotoHome() {
+        this.router.navigate(['']);
     }
     recentActionCall() {
         switch (this.recetAction) {
@@ -213,7 +219,6 @@ export class AppTopBarComponent {
         this.selectedFileEvent = event;
         const reader: FileReader = new FileReader();
         reader.onload = (e: any) => {
-            console.log('e.target.result====>', e.target.result);
             const bstr: string = e.target.result;
             const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
             this.workSheetNames = wb.SheetNames;
@@ -221,7 +226,8 @@ export class AppTopBarComponent {
             this.workSheetNames.forEach((workSheet: string) => {
                 const ws: XLSX.WorkSheet = wb.Sheets[workSheet];
                 this.workSheets.push(ws);
-                this.workSheetsJSON.push(XLSX.utils.sheet_to_json(ws));
+                let renamedJson = this.renameKeys(XLSX.utils.sheet_to_json(ws));
+                this.workSheetsJSON.push(renamedJson);
                 if (count > 0) {
                     this.menuItemForming(workSheet);
                 }
@@ -233,16 +239,26 @@ export class AppTopBarComponent {
         reader.readAsBinaryString(file);
         ref.clear();
     }
-    // previewFromExcel(file: any) {
-
-    // }
+    renameKeys(jsonData: any) {
+        let newJsonData = [];
+        jsonData.forEach((row, rowIndex) => {
+            const newRow = {};
+            let colIndex = 1;
+            for (const key in row) {
+                const newKey = `col${colIndex}|${key}`;
+                newRow[newKey] = row[key];
+                colIndex++;
+            }
+            newJsonData.push(newRow);
+        });
+        return newJsonData;
+    }
     saveConfimration() {
         let content = ['Are you sure you want to save the file?'];
         this.dialogAction = 'save';
         this.showDialog(content);
     }
     saveFileInCloud() {
-        debugger;
         const file = this.selectedFileEvent.currentFiles[0];
         const filePath = `excel/${file.name}`;
         const fileRef = this.storage.ref(filePath);
@@ -331,7 +347,6 @@ export class AppTopBarComponent {
         let selectedFiles: any[] = [];
         this.files.forEach((file: any) => {
             if (file.includes(this.selectedItem.name)) {
-                console.log('file====>', file);
                 selectedFiles.push(file);
             }
         });

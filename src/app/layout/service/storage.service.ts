@@ -25,8 +25,6 @@ export class StorageService {
     }
     downloadFileAsBlob(filePath: string): Observable<Blob> {
         const ref = this.storage.ref(filePath);
-        console.log('ref====>', ref);
-        console.log('ref.getDownloadURL====>', ref.getDownloadURL());
         return ref.getDownloadURL().pipe(
             tap((url) => console.log('Download URL:', url)), // Log the URL
             switchMap((url) =>
@@ -40,7 +38,6 @@ export class StorageService {
                 })
             ),
             catchError((error) => {
-                console.error('Error downloading file:', error);
                 return throwError(() => new Error('Failed to download file.'));
             })
         );

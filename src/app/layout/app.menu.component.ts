@@ -18,9 +18,11 @@ export class AppMenuComponent implements OnInit {
         private reactService: ReactService
     ) {
         this.reactService.menu$.subscribe((menu) => {
-            this.groupedData = [];
-            this.groupedData = menu;
-            this.initializeSideNav();
+            if (menu) {
+                this.groupedData = [];
+                this.groupedData = menu;
+                this.initializeSideNav();
+            }
         });
     }
     scrollToSection(categoryIndex: number, subCategoryIndex: number) {

@@ -20,20 +20,16 @@
                         "outputPath": "dist/sakai-ng",
                         "index": "src/index.html",
                         "main": "src/main.ts",
-                        "polyfills": [
-                            "zone.js"
-                        ],
+                        "polyfills": ["zone.js"],
                         "tsConfig": "tsconfig.app.json",
                         "inlineStyleLanguage": "scss",
-                        "assets": [
-                            "src/favicon.ico",
-                            "src/assets"
-                        ],
+                        "assets": ["src/favicon.ico", "src/assets"],
                         "styles": [
                             "src/styles.scss",
                             "node_modules/prismjs/themes/prism.css",
                             "node_modules/slick-carousel/slick/slick.css",
-                            "node_modules/slick-carousel/slick/slick-theme.css"
+                            "node_modules/slick-carousel/slick/slick-theme.css",
+                            "node_modules/primeicons/primeicons.css"
                         ],
                         "scripts": [
                             "node_modules/prismjs/prism.js",
@@ -90,20 +86,12 @@
                 "test": {
                     "builder": "@angular-devkit/build-angular:karma",
                     "options": {
-                        "polyfills": [
-                            "zone.js",
-                            "zone.js/testing"
-                        ],
+                        "polyfills": ["zone.js", "zone.js/testing"],
                         "tsConfig": "tsconfig.spec.json",
                         "karmaConfig": "karma.conf.js",
                         "inlineStyleLanguage": "scss",
-                        "assets": [
-                            "src/favicon.ico",
-                            "src/assets"
-                        ],
-                        "styles": [
-                            "src/styles.scss"
-                        ],
+                        "assets": ["src/favicon.ico", "src/assets"],
+                        "styles": ["src/styles.scss"],
                         "scripts": []
                     }
                 }
@@ -111,6 +99,6 @@
         }
     },
     "cli": {
-      "analytics": "3814e62c-2b6a-4b92-90d5-2b76fa92505d"
+        "analytics": "3814e62c-2b6a-4b92-90d5-2b76fa92505d"
     }
 }
