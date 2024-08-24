@@ -4,11 +4,16 @@ import { MenuItem } from 'primeng/api';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { ReactService } from 'src/app/layout/service/react.service';
-import { DomSanitizer, SafeHtml, SafeUrl } from '@angular/platform-browser';
+import {
+    DomSanitizer,
+    SafeHtml,
+    SafeResourceUrl,
+    SafeUrl,
+} from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
 import { StorageService } from 'src/app/layout/service/storage.service';
 import { DataService } from 'src/app/demo/service/data.service';
-
+declare var Prism: any;
 interface GroupedData {
     category: string;
     subCategories: Array<{
@@ -107,6 +112,9 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.getImages();
     }
+    ngAfterViewInit() {
+        Prism.highlightAll(); // Trigger Prism to highlight the code
+    }
     getImages() {
         this.dataService.getImages().then((images) => (this.images = images));
         this.responsiveOptions = [
@@ -131,16 +139,15 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
         >();
 
         this.data.forEach((item) => {
-            console.log('item====>', item);
             let category: string = '';
             let subCategory: string = '';
             let textContent: string[] = [];
             let noteContent: string[] = [];
             let codeContent: string[] = [];
             let imageContent: string[] = [];
-            let videoContent: string[] = [];
+            let videoContent: SafeResourceUrl[] = [];
             let gifContent: string[] = [];
-            let urlRefContent: string[] = [];
+            let urlRefContent: SafeResourceUrl[] = [];
             Object.keys(item).forEach((key) => {
                 let keyName = key.toLowerCase().trim();
                 if (keyName.includes('col2')) {
@@ -148,38 +155,67 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
                 } else if (keyName.includes('col3')) {
                     subCategory = item[key]; // Assign the value to subCategory if the key contains "col3"
                 } else {
-                    if (!keyName.includes('col1')) {
-                        if (keyName.includes('xlcontents')) {
-                            textContent.push(item[key]); // Assign the value to content if the key contains "col5"
-                        }
-                        if (keyName.includes('xlcodes')) {
-                            codeContent.push(item[key]); // Assign the value to content if the key contains "col5"
-                        }
-                        if (keyName.includes('xlnotes')) {
-                            noteContent.push(
-                                '<b>Note</b><br><span style="margin-left: 10px;">' +
-                                    item[key] +
-                                    '</span>'
-                            ); // Assign the value to content if the key contains "col5"
-                        }
-                        if (keyName.includes('xlimages')) {
-                            imageContent.push(item[key]); // Assign the value to content if the key contains "col5"
-                        }
-                        if (keyName.includes('xlgifs')) {
-                            gifContent.push(item[key]); // Assign the value to content if the key contains "col5"
-                        }
-                        if (keyName.includes('xlvideos')) {
-                            videoContent.push(item[key]); // Assign the value to content if the key contains "col5"
-                        }
-                        if (keyName.includes('xlframes')) {
-                            urlRefContent.push(item[key]); // Assign the value to content if the key contains "col5"
-                        }
+                    if (keyName.includes('xlcontents')) {
+                        textContent.push(item[key].replace(/\r\n/g, '</br>')); // Assign the value to content if the key contains "col5"
+                    }
+                    if (keyName.includes('xlcodes')) {
+                        let codetext: string = item[key].replace(
+                            /\r\n/g,
+                            '</br>'
+                        );
+                        codeContent.push(codetext);
+                        // codeContent.push(item[key]); // Assign the value to content if the key contains "col5"
+                    }
+                    if (keyName.includes('xlnotes')) {
+                        noteContent.push(
+                            '<b>Note</b><br><span style="margin-left: 10px;">' +
+                                item[key] +
+                                '</span>'
+                        ); // Assign the value to content if the key contains "col5"
+                    }
+                    if (keyName.includes('xlimages')) {
+                        let imgArr: string[] = item[key]
+                            .replace(/\r\n/g, '')
+                            .split(',');
+                        imageContent.push(...imgArr); // Assign the value to content if the key contains "col5"
+                    }
+                    if (keyName.includes('xlgifs')) {
+                        let gifArr: string[] = item[key]
+                            .replace(/\r\n/g, '')
+                            .split(',');
+                        gifContent.push(...gifArr); // Assign the value to content if the key contains "col5"
+                    }
+                    if (keyName.includes('xlvideos')) {
+                        let videoArr: string[] = item[key]
+                            .replace(/\r\n/g, '')
+                            .split(',');
+                        videoArr.forEach((videodata) => {
+                            let safeurl: SafeResourceUrl =
+                                this.sanitizer.bypassSecurityTrustResourceUrl(
+                                    videodata
+                                );
+                            videoContent.push(safeurl);
+                        });
+                        // Assign the value to content if the key contains "col5"
+                    }
+                    if (keyName.includes('xlframes')) {
+                        let urlArr: string[] = item[key]
+                            .replace(/\r\n/g, '')
+                            .split(',');
+                        urlArr.forEach((videodata) => {
+                            let safeurl: SafeResourceUrl =
+                                this.sanitizer.bypassSecurityTrustResourceUrl(
+                                    videodata
+                                );
+                            urlRefContent.push(safeurl);
+                        });
+
+                        // Assign the value to content if the key contains "col5"
                     }
                 }
             });
             //const content = item.column3 + (item.column4 ? '\n' + item.column5 : '');
             // content = this.replaceXLTagsWithHtml(content);
-            // console.log('content replaceXLTagsWithHtml====>', content);
             //const contentWithIframe = this.replaceXframeWithIframe(content);
             //const contentWithImage = this.extractImages(contentWithIframe);
             if (!categoryMap.has(category)) {
@@ -201,7 +237,6 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
                 gifContent: gifContent,
                 urlRefContent: urlRefContent,
             });
-            console.log('subCategoryMap====>', subCategoryMap);
         });
 
         // Convert Map to Array while preserving order
@@ -216,7 +251,6 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
                 ),
             })
         );
-        console.log('this.groupedData ====>', this.groupedData);
         this.reactService.setMenu(this.groupedData);
     }
     replaceXLTagsWithHtml(content: string): string {

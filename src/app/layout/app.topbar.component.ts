@@ -59,18 +59,18 @@ export class AppTopBarComponent {
     nestedActionitems = [
         {
             label: 'Upload',
-            icon: 'pi pi-th-large',
+            icon: 'pi pi-upload',
             items: [
                 {
                     label: 'Preview',
-                    icon: 'pi pi-th-large',
+                    icon: 'pi pi-window-maximize',
                     command: () => {
                         this.browseSelectFile();
                     },
                 },
                 {
                     label: 'Save',
-                    icon: 'pi pi-th-large',
+                    icon: 'pi pi-save',
                     command: () => {
                         if (!this.selectedFile) {
                             this.showToast(2, 'File not selected for saving');
@@ -98,7 +98,7 @@ export class AppTopBarComponent {
                     icon: 'pi pi-th-large',
                     command: () => {
                         this.selectedAction = 'Template1';
-                        this.dowloadTemplate();
+                        this.dowloadTemplate('Template1');
                     },
                 },
                 {
@@ -106,7 +106,7 @@ export class AppTopBarComponent {
                     icon: 'pi pi-th-large',
                     command: () => {
                         this.selectedAction = 'Template2';
-                        this.dowloadTemplate();
+                        this.dowloadTemplate('Template2');
                     },
                 },
                 {
@@ -117,6 +117,7 @@ export class AppTopBarComponent {
                     icon: 'pi pi-th-large',
                     command: () => {
                         this.selectedAction = 'Template3';
+                        this.dowloadTemplate('Template3');
                     },
                 },
             ],
@@ -133,6 +134,28 @@ export class AppTopBarComponent {
                 {
                     label: 'Logout',
                     icon: 'pi pi-fw pi-user-minus',
+                },
+            ],
+        },
+        {
+            label: 'RedirectSites',
+            icon: 'pi pi-fw pi-user',
+            items: [
+                {
+                    label: 'Create Gif',
+                    icon: 'pi pi-fw pi-user-plus',
+                    command: () => {
+                        this.urlRedirection('https://ezgif.com/maker');
+                    },
+                },
+                {
+                    label: 'Goolge Photos Direct Link',
+                    icon: 'pi pi-fw pi-user-minus',
+                    command: () => {
+                        this.urlRedirection(
+                            'https://www.labnol.org/embed/google/photos/'
+                        );
+                    },
                 },
             ],
         },
@@ -185,6 +208,9 @@ export class AppTopBarComponent {
     }
     ngOnInit() {
         this.loadFiles();
+    }
+    urlRedirection(url: string) {
+        window.open(url, '_blank');
     }
     gotoHome() {
         this.router.navigate(['']);
@@ -321,7 +347,7 @@ export class AppTopBarComponent {
     menuItemForming(menuItemName: string) {
         this.menuItems.push({
             label: menuItemName,
-            icon: 'pi pi-star',
+            icon: 'pi pi-fw pi-file',
             command: () => {
                 const index: number = this.workSheetNames.indexOf(menuItemName);
                 this.setExcelPageContent(this.workSheetsJSON[index]);
@@ -355,20 +381,12 @@ export class AppTopBarComponent {
             selectedFiles: selectedFiles,
         });
     }
-    dowloadTemplate() {
-        if (this.selectedAction.includes('Template')) {
-            // this.messageService.add({
-            //     severity: 'success',
-            //     summary: 'Success',
-            //     detail: this.selectedAction + 'Downloaded successfully',
-            // });
-        } else {
-            // this.messageService.add({
-            //     severity: 'error',
-            //     summary: 'Error',
-            //     detail: 'Invalid Action',
-            // });
-        }
+    dowloadTemplate(templateName: string) {
+        let directory = 'templates';
+        const filePath = `${directory}/${templateName}.xlsx`;
+        this.storageService.downloadFile(filePath).subscribe((url) => {
+            window.open(url, '_self');
+        });
     }
     showToast(type: number, message: string) {
         switch (type) {

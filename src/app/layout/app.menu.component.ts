@@ -40,9 +40,12 @@ export class AppMenuComponent implements OnInit {
             const categoryItem = {
                 label: category.category,
                 icon: 'pi pi-fw pi-folder',
+                styleClass: 'category-label', // Assign CSS class
                 items: category.subCategories.map((subCategory, j) => ({
                     label: subCategory.subCategory,
-                    icon: 'pi pi-fw pi-file',
+                    icon: 'pi pi-star',
+                    //  styleClass: 'subcategory-label', // Assign CSS class
+                    style: { color: '#ff6384' }, // Assign inline style
                     command: () => this.scrollToSection(i, j),
                 })),
             };

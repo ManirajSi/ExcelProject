@@ -10,6 +10,8 @@ import { MessagesModule } from 'primeng/messages';
 import { CardModule } from 'primeng/card';
 import { TabViewModule } from 'primeng/tabview';
 import { GalleriaModule } from 'primeng/galleria';
+import { PanelModule } from 'primeng/panel';
+import { ImageModule } from 'primeng/image';
 
 @NgModule({
     declarations: [ExcelPagesComponent],
@@ -24,6 +26,8 @@ import { GalleriaModule } from 'primeng/galleria';
         CardModule,
         TabViewModule,
         GalleriaModule,
+        PanelModule,
+        ImageModule,
     ],
 })
 export class ExcelModule {}

@@ -6,10 +6,12 @@
             [item]="item"
             [index]="i"
             [root]="true"
+            [ngClass]="item.styleClass"
+            [ngStyle]="item.style"
         ></li>
         <li *ngIf="item.separator" class="menu-separator"></li>
     </ng-container>
-    <li>
+    <!-- <li>
         <a href="https://www.primefaces.org/primeblocks-ng/#/">
             <img
                 src="assets/layout/images/{{
@@ -21,5 +23,5 @@
                 class="w-full mt-3"
             />
         </a>
-    </li>
+    </li> -->
 </ul>

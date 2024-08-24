@@ -60,7 +60,7 @@
             <div *ngIf="showExcelContent">
                 <div *ngFor="let category of groupedData; let i = index">
                     <div>
-                        <h2>{{ category.category }}</h2>
+                        <h2 class="text-blue-700">{{ category.category }}</h2>
                         <div
                             *ngFor="
                                 let subCategory of category.subCategories;
@@ -69,7 +69,9 @@
                         >
                             <!-- Assign a unique ID based on indices -->
                             <div [id]="'section-' + i + '-' + j">
-                                <h4>{{ subCategory.subCategory }}</h4>
+                                <h4 class="text-blue-700">
+                                    {{ subCategory.subCategory }}
+                                </h4>
                                 <div
                                     *ngFor="let content of subCategory.contents"
                                 >
@@ -80,222 +82,248 @@
                                         ></div>
                                     </div>
                                     <div *ngIf="content.codeContent.length > 0">
-                                        <div class="code-card">
-                                            <pre><code class="language-javascript" >{{content.codeContent[0]}}s</code></pre>
+                                        <!-- <div class="code-card">
+                                            <pre><code class="language-html" >{{content.codeContent[0]}}</code></pre>
+                                        </div> -->
+                                        <div class="code-card2 shadow-4">
+                                            <span
+                                                [innerHTML]="
+                                                    content.codeContent[0]
+                                                "
+                                            >
+                                            </span>
                                         </div>
                                     </div>
-                                    <div *ngIf="content.noteContent.length > 0">
+                                    <div
+                                        class="mb-2"
+                                        *ngIf="content.noteContent.length > 0"
+                                    >
                                         <p-card
                                             [style]="noteStyle"
-                                            class="text-blue-400 w-6"
+                                            class="text-blue-400 w-6 shadow-4"
                                         >
                                             <p
-                                                class="text-blue-400"
+                                                class="text-blue-400 ml-2"
                                                 [innerHTML]="
                                                     content.noteContent[0]
                                                 "
                                             ></p>
                                         </p-card>
                                     </div>
-                                    <p-tabView styleClass="tabview-custom">
-                                        <p-tabPanel>
-                                            <ng-template pTemplate="header">
-                                                <div
-                                                    class="flex align-items-center gap-2"
-                                                >
-                                                    <i
-                                                        class="pi pi-images"
-                                                        style="color: slateblue"
-                                                    ></i>
-                                                    <span
-                                                        class="font-bold white-space-nowrap m-0"
-                                                    >
-                                                        Images
-                                                    </span>
-                                                </div>
-                                            </ng-template>
-                                            <p-galleria
-                                                [(value)]="images"
-                                                [responsiveOptions]="
-                                                    responsiveOptions
-                                                "
-                                                [containerStyle]="{
-                                                    'max-width': '540px'
-                                                }"
-                                                [numVisible]="5"
-                                            >
-                                                <ng-template
-                                                    pTemplate="item"
-                                                    let-item
-                                                >
-                                                    <img
-                                                        [src]="
-                                                            item.itemImageSrc
-                                                        "
-                                                        style="width: 100%"
-                                                    />
-                                                </ng-template>
-                                                <ng-template
-                                                    pTemplate="thumbnail"
-                                                    let-item
-                                                >
-                                                    <div
-                                                        class="grid grid-nogutter justify-content-center"
-                                                    >
-                                                        <img
-                                                            [src]="
-                                                                item.thumbnailImageSrc
-                                                            "
-                                                        />
-                                                    </div>
-                                                </ng-template>
-                                            </p-galleria>
-                                        </p-tabPanel>
-                                        <p-tabPanel header="Header II">
-                                            <ng-template pTemplate="header">
-                                                <div
-                                                    class="flex align-items-center gap-2"
-                                                >
-                                                    <i
-                                                        class="pi pi-sparkles"
-                                                        style="color: slateblue"
-                                                    ></i>
-                                                    <span
-                                                        class="font-bold white-space-nowrap m-0"
-                                                    >
-                                                        Gifs
-                                                    </span>
-                                                </div>
-                                            </ng-template>
-                                            <img
-                                                src="https://media.wired.com/photos/59326d5344db296121d6aee9/master/w_1920,c_limit/8552.gif"
-                                                alt="Loading..."
-                                            />
-                                        </p-tabPanel>
-                                        <p-tabPanel header="Header III">
-                                            <ng-template pTemplate="header">
-                                                <div
-                                                    class="flex align-items-center gap-2"
-                                                >
-                                                    <i
-                                                        class="pi pi-play-circle"
-                                                        style="color: slateblue"
-                                                    ></i>
-                                                    <span
-                                                        class="font-bold white-space-nowrap m-0"
-                                                    >
-                                                        Videos
-                                                    </span>
-                                                </div>
-                                            </ng-template>
-                                            <iframe
-                                                width="1020"
-                                                height="560"
-                                                src="https://www.youtube.com/embed/29F5gZsD4wQ"
-                                                frameborder="0"
-                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                                allowfullscreen
-                                            >
-                                            </iframe>
-                                        </p-tabPanel>
-                                        <p-tabPanel header="Header III">
-                                            <ng-template pTemplate="header">
-                                                <div
-                                                    class="flex align-items-center gap-2"
-                                                >
-                                                    <i
-                                                        class="pi pi-link"
-                                                        style="color: slateblue"
-                                                    ></i>
-                                                    <span
-                                                        class="font-bold white-space-nowrap m-0"
-                                                    >
-                                                        Frames
-                                                    </span>
-                                                    <p-badge value="2" />
-                                                </div>
-                                            </ng-template>
-                                            <p-panel header="Embedded Content">
-                                                <iframe
-                                                    src="https://primeng.org/playground"
-                                                    width="100%"
-                                                    height="600px"
-                                                    frameborder="0"
-                                                    allowfullscreen
-                                                >
-                                                </iframe>
-                                            </p-panel>
-                                        </p-tabPanel>
-                                    </p-tabView>
-                                    <!--<div *ngIf="content.imageContent[0]">
-                                        <div
-                                            [innerHTML]="
-                                                content.imageContent[0]
-                                            "
-                                        ></div>
-                                    </div>
-                                    <div *ngIf="content.videoContent[0]">
-                                        <div
-                                            [innerHTML]="
-                                                content.videoContent[0]
-                                            "
-                                        ></div>
-                                    </div>
-                                    <div *ngIf="content.gifContent[0]">
-                                        <div
-                                            [innerHTML]="content.gifContent[0]"
-                                        ></div>
-                                    </div>
-                                    <div *ngIf="content.urlRefContent[0]">
-                                        <div
-                                            [innerHTML]="
+                                    <p-panel
+                                        header="References"
+                                        [toggleable]="true"
+                                        *ngIf="
+                                            content.imageContent[0] ||
+                                            content.gifContent[0] ||
+                                            content.videoContent[0] ||
+                                            content.urlRefContent[0]
+                                        "
+                                    >
+                                        <p-tabView
+                                            *ngIf="
+                                                content.imageContent[0] ||
+                                                content.gifContent[0] ||
+                                                content.videoContent[0] ||
                                                 content.urlRefContent[0]
                                             "
-                                        ></div>
-                                    </div> -->
-
-                                    <!-- <iframe
-                                        src="https://giphy.com/embed/1Ubd9114aI40RkYm74"
-                                        width="270"
-                                        height="480"
-                                        style=""
-                                        frameBorder="0"
-                                        class="giphy-embed"
-                                        allowFullScreen
-                                    ></iframe> -->
-                                    <!-- <p>
-                                        <a
-                                            href="https://giphy.com/gifs/ffa-fastforward-fastforwardamy-1Ubd9114aI40RkYm74"
-                                            >via GIPHY</a
+                                            styleClass="tabview-custom"
                                         >
-                                    </p> -->
-                                    <ng-container
-                                        *ngTemplateOutlet="
-                                            htmlContent;
-                                            context: { $implicit: content }
-                                        "
-                                    ></ng-container>
-                                    <ng-template #htmlContent>
-                                        <ngx-slick-carousel
-                                            class="carousel"
-                                            [config]="slideConfig"
-                                        >
-                                            <div
-                                                ngxSlickItem
-                                                *ngFor="let imgUrl of imageUrls"
-                                                class="slide"
+                                            <p-tabPanel
+                                                *ngIf="content.imageContent[0]"
+                                                header="Images"
                                             >
-                                                <img
-                                                    [src]="sanitizeUrl(imgUrl)"
-                                                    alt="Image"
-                                                    style="
-                                                        width: 100%;
-                                                        height: auto;
-                                                    "
-                                                />
-                                            </div>
-                                        </ngx-slick-carousel>
-                                    </ng-template>
+                                                <ng-template pTemplate="header">
+                                                    <div
+                                                        class="flex align-items-center gap-2"
+                                                    >
+                                                        <i
+                                                            class="pi pi-images"
+                                                            style="
+                                                                color: slateblue;
+                                                            "
+                                                        ></i>
+                                                        <span
+                                                            class="font-bold white-space-nowrap m-0"
+                                                        >
+                                                            Images
+                                                        </span>
+                                                    </div>
+                                                </ng-template>
+                                                <div
+                                                    class="flex justify-content-center align-content-center"
+                                                >
+                                                    <p-galleria
+                                                        [(value)]="
+                                                            content.imageContent
+                                                        "
+                                                        [responsiveOptions]="
+                                                            responsiveOptions
+                                                        "
+                                                        [containerStyle]="{
+                                                    'max-width': '1050px',
+
+                                                }"
+                                                        [numVisible]="5"
+                                                    >
+                                                        <ng-template
+                                                            pTemplate="item"
+                                                            let-item
+                                                        >
+                                                            <img
+                                                                [src]="item"
+                                                                style="
+                                                                    width: 150%;
+                                                                    height: 450px;
+                                                                "
+                                                            />
+                                                        </ng-template>
+                                                        <ng-template
+                                                            pTemplate="thumbnail"
+                                                            let-item
+                                                        >
+                                                            <div
+                                                                class="grid grid-nogutter justify-content-center"
+                                                            >
+                                                                <img
+                                                                    [src]="item"
+                                                                    style="
+                                                                        width: 100%;
+                                                                        height: 50px;
+                                                                    "
+                                                                />
+                                                            </div>
+                                                        </ng-template>
+                                                    </p-galleria>
+                                                </div>
+                                            </p-tabPanel>
+                                            <p-tabPanel
+                                                *ngIf="content.gifContent[0]"
+                                                header="Gifs"
+                                            >
+                                                <ng-template pTemplate="header">
+                                                    <div
+                                                        class="flex align-items-center gap-2"
+                                                    >
+                                                        <i
+                                                            class="pi pi-sparkles"
+                                                            style="
+                                                                color: slateblue;
+                                                            "
+                                                        ></i>
+                                                        <span
+                                                            class="font-bold white-space-nowrap m-0"
+                                                        >
+                                                            Gifs
+                                                        </span>
+                                                    </div>
+                                                </ng-template>
+                                                <div
+                                                    class="flex justify-content-center align-content-center"
+                                                >
+                                                    <!-- <img [src]="content.gifContent[0]" style="
+                                                        width: 75%;
+                                                        height: 500px;
+                                                    " alt="Loading..." /> -->
+                                                    <!-- <img src="https://imgur.com/4JvsIZG" style="
+                                                        width: 75%;
+                                                        height: 500px;
+                                                    " alt="Loading..." /> -->
+                                                    <!-- <img src="https://drive.usercontent.google.com/download?id=1aAhFbYIEJ4cKRUOT2RzNsDKiGekqIGKl&export=view&authuser=0"
+                                                        alt="Sample Image"> -->
+                                                    <iframe
+                                                        src="https://drive.google.com/uc?export=view&id=1uEpd4IzXgwCzfxwivCTzbM5_ViMPLjZY"
+                                                        width="640"
+                                                        height="480"
+                                                    ></iframe>
+                                                    <img
+                                                        src="https://drive.google.com/uc?export=view&id=1uEpd4IzXgwCzfxwivCTzbM5_ViMPLjZY"
+                                                        alt="Description of Image"
+                                                    />
+                                                    <p-image
+                                                        src="https://drive.google.com/uc?export=view&id=1uEpd4IzXgwCzfxwivCTzbM5_ViMPLjZY"
+                                                        alt="Google Drive Image"
+                                                    ></p-image>
+                                                </div>
+                                            </p-tabPanel>
+                                            <p-tabPanel
+                                                *ngIf="content.videoContent[0]"
+                                                header="Videos"
+                                            >
+                                                <ng-template pTemplate="header">
+                                                    <div
+                                                        class="flex align-items-center gap-2"
+                                                    >
+                                                        <i
+                                                            class="pi pi-play-circle"
+                                                            style="
+                                                                color: slateblue;
+                                                            "
+                                                        ></i>
+                                                        <span
+                                                            class="font-bold white-space-nowrap m-0"
+                                                        >
+                                                            Videos
+                                                        </span>
+                                                    </div>
+                                                </ng-template>
+                                                <div
+                                                    class="flex justify-content-center align-content-center"
+                                                >
+                                                    <iframe
+                                                        width="1020"
+                                                        height="500"
+                                                        [src]="
+                                                            content
+                                                                .videoContent[0]
+                                                        "
+                                                        frameborder="0"
+                                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                        allowfullscreen
+                                                    >
+                                                    </iframe>
+                                                </div>
+                                            </p-tabPanel>
+                                            <p-tabPanel
+                                                *ngIf="content.urlRefContent[0]"
+                                                header="URLs"
+                                            >
+                                                <ng-template pTemplate="header">
+                                                    <div
+                                                        class="flex align-items-center gap-2"
+                                                    >
+                                                        <i
+                                                            class="pi pi-link"
+                                                            style="
+                                                                color: slateblue;
+                                                            "
+                                                        ></i>
+                                                        <span
+                                                            class="font-bold white-space-nowrap m-0"
+                                                        >
+                                                            Frames
+                                                        </span>
+                                                        <p-badge value="2" />
+                                                    </div>
+                                                </ng-template>
+                                                <div
+                                                    class="flex justify-content-center align-content-center"
+                                                >
+                                                    <iframe
+                                                        [src]="
+                                                            content
+                                                                .urlRefContent[0]
+                                                        "
+                                                        width="100%"
+                                                        height="500px"
+                                                        frameborder="0"
+                                                        allowfullscreen
+                                                    >
+                                                    </iframe>
+                                                </div>
+                                            </p-tabPanel>
+                                        </p-tabView>
+                                    </p-panel>
                                 </div>
                             </div>
                         </div>

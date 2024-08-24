@@ -90,7 +90,7 @@ iframe {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 16px;
     margin: 20px auto;
-    max-width: 600px;
+    max-width: 100%;
     font-family: "Courier New", Courier, monospace;
     position: relative;
     overflow: hidden;
@@ -107,6 +107,18 @@ iframe {
     border-radius: 4px;
     font-size: 0.85rem;
     font-weight: bold;
+}
+.code-card2 {
+    background-color: #ffffff;
+    color: #557fda;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    margin: 20px auto;
+    max-width: 100%;
+    font-family: "Courier New", Courier, monospace;
+    position: relative;
+    overflow: hidden;
 }
 
 pre {
