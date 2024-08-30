@@ -11,8 +11,8 @@
         ></li>
         <li *ngIf="item.separator" class="menu-separator"></li>
     </ng-container>
-    <!-- <li>
-        <a href="https://www.primefaces.org/primeblocks-ng/#/">
+    <li>
+        <!-- <a href="https://www.primefaces.org/primeblocks-ng/#/">
             <img
                 src="assets/layout/images/{{
                     layoutService.config().colorScheme === 'light'
@@ -22,6 +22,16 @@
                 alt="Prime Blocks"
                 class="w-full mt-3"
             />
-        </a>
-    </li> -->
+        </a> -->
+        <p-paginator
+            (onPageChange)="onPageChange($event)"
+            [first]="first"
+            [rows]="rows"
+            [totalRecords]="120"
+            [showCurrentPageReport]="false"
+            [showPageLinks]="false"
+            [showJumpToPageDropdown]="false"
+        />
+    </li>
+    <!-- currentPageReportTemplate="Showing {first} to {last} of {totalRecords}" -->
 </ul>

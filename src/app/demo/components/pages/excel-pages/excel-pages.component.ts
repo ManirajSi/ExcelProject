@@ -34,10 +34,6 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
     showWebsiteView: boolean = false;
     selectedFiles: any[] = [];
     data: any[] = [];
-    // groupedData: Array<{
-    //     category: string;
-    //     subCategories: Array<{ subCategory: string; contents: SafeHtml[] }>;
-    // }> = [];
     groupedData: GroupedData[] = [];
     slideConfig = {
         slidesToShow: 1,
@@ -72,10 +68,12 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
         //Subscription call for get file from local and cloud
         this.fileSubscription = this.reactService.file$.subscribe((data) => {
             if (data) {
+                debugger;
                 this.showAddVideo = false;
                 this.showExcelContent = true;
                 this.showExcelsTable = false;
                 this.data = data.excelContents;
+                console.log('this.data===>', this.data);
                 this.groupData();
             }
         });
@@ -92,6 +90,7 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
         this.searchSubscription = this.reactService.headerSearch$.subscribe(
             (data) => {
                 if (data) {
+                    debugger;
                     this.showAddVideo = false;
                     this.showExcelContent = false;
                     this.showExcelsTable = true;
@@ -133,11 +132,11 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
         ];
     }
     groupData() {
+        console.log('this.data 2===>', this.data);
         const categoryMap = new Map<
             string,
             Map<string, (SafeHtml | string[])[]>
         >();
-
         this.data.forEach((item) => {
             let category: string = '';
             let subCategory: string = '';
@@ -168,7 +167,7 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
                     }
                     if (keyName.includes('xlnotes')) {
                         noteContent.push(
-                            '<b>Note</b><br><span style="margin-left: 10px;">' +
+                            '<span style="margin-left: 10px;">' +
                                 item[key] +
                                 '</span>'
                         ); // Assign the value to content if the key contains "col5"
@@ -238,7 +237,7 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
                 urlRefContent: urlRefContent,
             });
         });
-
+        console.log('this.groupedData====>', this.groupedData);
         // Convert Map to Array while preserving order
         this.groupedData = Array.from(categoryMap.entries()).map(
             ([category, subCategoryMap]) => ({

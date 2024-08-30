@@ -53,3 +53,11 @@
     left: auto; /* Reset default left position */
     right: 5; /* Align to the right */
 }
+
+.dropdown-left .p-splitbutton-menu {
+    left: auto;
+    right: 100%; /* Position the menu to the left of the button */
+    transform: translateX(
+        -8px
+    ); /* Adjust spacing between button and menu if needed */
+}

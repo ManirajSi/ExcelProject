@@ -28,6 +28,7 @@
         "@fullcalendar/interaction": "^6.0.3",
         "@fullcalendar/timegrid": "^6.0.3",
         "chart.js": "^3.3.2",
+        "exceljs": "^4.4.0",
         "file-saver": "^2.0.5",
         "firebase": "^9.23.0",
         "jquery": "^3.7.1",

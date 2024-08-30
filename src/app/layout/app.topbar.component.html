@@ -32,7 +32,7 @@
         label="Upload"
         (onClick)="recentActionCall()"
         [model]="nestedActionitems"
-        class="mr-2 custom-splitbutton"
+        class="mr-2 custom-splitbutton dropdown-left"
     />
     <!-- app.component.html -->
     <div class="menu-div">
@@ -85,7 +85,7 @@
             accept=".xlsx, .xls, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
             (onSelect)="fileSelectAndPreview(fileUpload, $event)"
         ></p-fileUpload>
-        <button class="p-link layout-topbar-button" (click)="loginRedirect()">
+        <!-- <button class="p-link layout-topbar-button" (click)="loginRedirect()">
             <img
                 *ngIf="isLoggedIn"
                 src="assets/layout/images/Primelogo-dark.PNG"
@@ -98,10 +98,10 @@
         <button
             class="p-link layout-topbar-button"
             [routerLink]="'/documentation'"
-        >
+         >
             <i class="pi pi-spin pi-cog" style="font-size: 2rem"></i>
             <span>Settings</span>
-        </button>
+        </button> -->
     </div>
 </div>
 <!-- Dialog box -->

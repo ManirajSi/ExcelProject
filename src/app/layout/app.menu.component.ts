@@ -11,6 +11,8 @@ export class AppMenuComponent implements OnInit {
     oldmodel: any[] = [];
     menu: any[] = [];
     groupedData: any[] = [];
+    first = 0;
+    rows = 5;
     @Input() model: any[] = [];
 
     constructor(
@@ -51,5 +53,8 @@ export class AppMenuComponent implements OnInit {
             };
             this.model.push(categoryItem);
         });
+    }
+    onPageChange(event: any) {
+        console.log(event);
     }
 }

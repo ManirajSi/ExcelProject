@@ -9,6 +9,7 @@ import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { finalize, map, switchMap } from 'rxjs/operators';
 import { StorageService } from './service/storage.service';
 import { HttpClient } from '@angular/common/http';
+import * as ExcelJS from 'exceljs';
 @Component({
     selector: 'app-topbar',
     templateUrl: './app.topbar.component.html',
@@ -27,7 +28,7 @@ export class AppTopBarComponent {
     @ViewChild('topbarmenu') menu!: ElementRef;
     webLogo: string = '';
     webName: string = 'Excelend Site';
-    sideBarButton: any = { show: false };
+    sideBarButton: any = { show: true };
     filteredItems: any[];
     selectedItem: any;
     isLoggedIn: boolean = false;
@@ -130,6 +131,9 @@ export class AppTopBarComponent {
                 {
                     label: 'Login',
                     icon: 'pi pi-fw pi-user-plus',
+                    command: () => {
+                        this.loginRedirect();
+                    },
                 },
                 {
                     label: 'Logout',
@@ -243,6 +247,9 @@ export class AppTopBarComponent {
         const file: File = event.files[0];
         this.selectedFile = file;
         this.selectedFileEvent = event;
+        this.workSheetNames = [];
+        this.workSheets = [];
+        this.workSheetsJSON = [];
         const reader: FileReader = new FileReader();
         reader.onload = (e: any) => {
             const bstr: string = e.target.result;
@@ -259,6 +266,23 @@ export class AppTopBarComponent {
                 }
                 count++;
             });
+            // wb.SheetNames.forEach((sheetName) => {
+            //     const worksheet = wb.Sheets[sheetName];
+            //     const sheetId = wb.SheetNames.indexOf(sheetName);
+            //     const sheetData: any[] = [];
+            //     worksheet.eachRow((row, rowIndex) => {
+            //         const rowData: any = {};
+            //         row.eachCell((cell, colNumber) => {
+            //             let cellValue = cell.text;
+            //             if (cell.font && cell.font.bold) {
+            //                 cellValue = `<b>${cellValue}</b>`;
+            //             }
+            //             rowData[`Column${colNumber}`] = cellValue;
+            //         });
+            //         sheetData.push(rowData);
+            //         console.log('sheetData==>', sheetData);
+            //     });
+            // });
             this.setExcelPageContent(this.workSheetsJSON[1]);
             this.infoSet();
         };
@@ -313,6 +337,9 @@ export class AppTopBarComponent {
         const filePath = `${this.directory}/${filename}`;
         this.storageService.downloadFileAsBlob(filePath).subscribe((blob) => {
             const reader = new FileReader();
+            this.workSheetNames = [];
+            this.workSheets = [];
+            this.workSheetsJSON = [];
             reader.onload = (e: any) => {
                 const bstr: string = e.target.result;
                 const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
@@ -321,7 +348,10 @@ export class AppTopBarComponent {
                 this.workSheetNames.forEach((workSheet: string) => {
                     const ws: XLSX.WorkSheet = wb.Sheets[workSheet];
                     this.workSheets.push(ws);
-                    this.workSheetsJSON.push(XLSX.utils.sheet_to_json(ws));
+                    let renamedJson = this.renameKeys(
+                        XLSX.utils.sheet_to_json(ws)
+                    );
+                    this.workSheetsJSON.push(renamedJson);
                     if (count > 0) {
                         this.menuItemForming(workSheet);
                     }
