@@ -68,7 +68,6 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
         //Subscription call for get file from local and cloud
         this.fileSubscription = this.reactService.file$.subscribe((data) => {
             if (data) {
-                debugger;
                 this.showAddVideo = false;
                 this.showExcelContent = true;
                 this.showExcelsTable = false;
@@ -90,7 +89,6 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
         this.searchSubscription = this.reactService.headerSearch$.subscribe(
             (data) => {
                 if (data) {
-                    debugger;
                     this.showAddVideo = false;
                     this.showExcelContent = false;
                     this.showExcelsTable = true;

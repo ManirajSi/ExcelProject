@@ -33,11 +33,11 @@ import { AppLayoutComponent } from './layout/app.layout.component';
                                 ).then((m) => m.UtilitiesModule),
                         },
                         {
-                            path: 'documentation',
+                            path: 'settings',
                             loadChildren: () =>
                                 import(
-                                    './demo/components/documentation/documentation.module'
-                                ).then((m) => m.DocumentationModule),
+                                    './layout/settings/settings.module'
+                                ).then((m) => m.SettingsModule),
                         },
                         {
                             path: 'blocks',

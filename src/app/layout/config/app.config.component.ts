@@ -3,6 +3,7 @@ import { LayoutService } from '../service/app.layout.service';
 import { MenuService } from '../app.menu.service';
 import { MenuItem } from 'primeng/api';
 import { FormControl, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 interface City {
     name: string;
     code: string;
@@ -14,10 +15,12 @@ interface AutoCompleteCompleteEvent {
 @Component({
     selector: 'app-config',
     templateUrl: './app.config.component.html',
+    styleUrls: ['./app.config.component.scss'],
 })
 export class AppConfigComponent {
     @Input() minimal: boolean = false;
-
+    sidenavChk: boolean = false;
+    paginationChecked: boolean = false;
     scales: number[] = [12, 13, 14, 15, 16];
     nestedActionitems = [
         {
@@ -102,9 +105,12 @@ export class AppConfigComponent {
     ];
     constructor(
         public layoutService: LayoutService,
-        public menuService: MenuService
+        public menuService: MenuService,
+        public router: Router
     ) {}
-
+    goToSettings() {
+        // this.router.navigate('');
+    }
     get visible(): boolean {
         return this.layoutService.state.configSidebarVisible;
     }
@@ -199,74 +205,93 @@ export class AppConfigComponent {
             { name: 'Istanbul', code: 'IST' },
             { name: 'Paris', code: 'PRS' },
         ];
-        this.items = [
-            {
-                label: 'Mail',
-                icon: 'pi pi-envelope',
-                badge: '5',
-                items: [
-                    {
-                        label: 'Compose',
-                        icon: 'pi pi-file-edit',
-                        shortcut: '⌘+N',
-                        items: [
-                            {
-                                label: 'Profile',
-                                icon: 'pi pi-user',
-                                shortcut: '⌘+W',
-                                items: [
-                                    {
-                                        label: 'Settings',
-                                        icon: 'pi pi-cog',
-                                        shortcut: '⌘+O',
-                                    },
-                                    {
-                                        label: 'Privacy',
-                                        icon: 'pi pi-shield',
-                                        shortcut: '⌘+P',
-                                    },
-                                ],
-                            },
-                        ],
-                    },
-                    {
-                        label: 'Inbox',
-                        icon: 'pi pi-inbox',
-                        badge: '5',
-                        items: [],
-                    },
-                    {
-                        label: 'Sent',
-                        icon: 'pi pi-send',
-                        shortcut: '⌘+S',
-                        items: [],
-                    },
-                    {
-                        label: 'Trash',
-                        icon: 'pi pi-trash',
-                        shortcut: '⌘+T',
-                        items: [],
-                    },
-                ],
-            },
-            {
-                label: 'Reports',
-                icon: 'pi pi-chart-bar',
-                shortcut: '⌘+R',
-                items: [
-                    {
-                        label: 'Sales',
-                        icon: 'pi pi-chart-line',
-                        badge: '3',
-                    },
-                    {
-                        label: 'Products',
-                        icon: 'pi pi-list',
-                        badge: '6',
-                    },
-                ],
-            },
-        ];
+        // this.items = [
+        //     {
+        //         label: 'Mail',
+        //         icon: 'pi pi-envelope',
+        //         badge: '5',
+        //         items: [
+        //             {
+        //                 label: 'Compose',
+        //                 icon: 'pi pi-file-edit',
+        //                 shortcut: '⌘+N',
+        //                 items: [
+        //                     {
+        //                         label: 'Profile',
+        //                         icon: 'pi pi-user',
+        //                         shortcut: '⌘+W',
+        //                         items: [
+        //                             {
+        //                                 label: 'Settings',
+        //                                 icon: 'pi pi-cog',
+        //                                 shortcut: '⌘+O',
+        //                             },
+        //                             {
+        //                                 label: 'Privacy',
+        //                                 icon: 'pi pi-shield',
+        //                                 shortcut: '⌘+P',
+        //                             },
+        //                             {
+        //                                 label: 'Switch Option',
+        //                                 icon: 'pi pi-fw pi-cog',
+        //                                 template: (item) => {
+        //                                     return `
+        //                                     <div class="p-field-checkbox">
+        //                                       <p-inputSwitch [(ngModel)]="switchValue"></p-inputSwitch>
+        //                                       <label for="switch">Enable Option</label>
+        //                                     </div>
+        //                                   `;
+        //                                 },
+        //                             },
+        //                         ],
+        //                     },
+        //                 ],
+        //             },
+        //             {
+        //                 label: 'Inbox',
+        //                 icon: 'pi pi-inbox',
+        //                 badge: '5',
+        //                 template: (item) => {
+        //                     return `
+        //                     <div class="p-field-checkbox">
+        //                       <p-inputSwitch [(ngModel)]="switchValue"></p-inputSwitch>
+        //                       <label for="switch">Enable Option</label>
+        //                     </div>
+        //                   `;
+        //                 },
+        //             },
+        //             {
+        //                 label: 'Sent',
+        //                 icon: 'pi pi-send',
+        //                 shortcut: '⌘+S',
+        //                 items: [],
+        //             },
+        //             {
+        //                 label: 'Trash',
+        //                 icon: 'pi pi-trash',
+        //                 shortcut: '⌘+T',
+        //                 items: [],
+        //             },
+        //         ],
+        //     },
+        //     {
+        //         label: 'Reports',
+        //         icon: 'pi pi-chart-bar',
+        //         shortcut: '⌘+R',
+        //         items: [
+        //             {
+        //                 label: 'Sales',
+        //                 icon: 'pi pi-chart-line',
+        //                 badge: '3',
+        //             },
+        //             {
+        //                 label: 'Products',
+        //                 icon: 'pi pi-list',
+        //                 badge: '6',
+        //             },
+        //         ],
+        //     },
+        // ];
     }
     countries: any[] | undefined;
 

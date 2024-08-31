@@ -12,9 +12,8 @@
     [transitionOptions]="'.3s cubic-bezier(0, 0, 0.2, 1)'"
     styleClass="layout-config-sidebar w-20rem"
 >
-    <h5>General Settings</h5>
-    <div class="flex align-items-center">
-        <p-panelMenu [model]="items" styleClass="w-full md:w-20rem">
+    <!-- <div class="flex align-items-center"> -->
+    <!-- <p-panelMenu [model]="items" styleClass="w-full md:w-20rem">
             <ng-template pTemplate="item" let-item>
                 <a
                     pRipple
@@ -37,12 +36,30 @@
                     </span>
                 </a>
             </ng-template>
-        </p-panelMenu>
-    </div>
-    <h5>Search Settings</h5>
+        </p-panelMenu> -->
+    <p-accordion [activeIndex]="0">
+        <p-accordionTab header="General Settings">
+            <button
+                pButton
+                pRipple
+                label="Go To Settings"
+                class="p-button-primary w-full"
+                (click)="goToSettings()"
+            ></button>
+            <div class="flex justify-content-between align-content-center mt-4">
+                <span>Pagination</span
+                ><p-inputSwitch [(ngModel)]="paginationChecked" />
+            </div>
+            <div class="flex justify-content-between align-content-center mt-4">
+                <span>SideNav</span><p-inputSwitch [(ngModel)]="sidenavChk" />
+            </div>
+        </p-accordionTab>
+    </p-accordion>
+    <!-- </div> -->
+
     <div class="flex align-items-center">
         <p-accordion [activeIndex]="0">
-            <p-accordionTab header="Header I">
+            <p-accordionTab header="Search Settings">
                 <p-dropdown
                     [options]="cities"
                     [(ngModel)]="selectedCity"
@@ -50,7 +67,6 @@
                     [editable]="true"
                     optionLabel="name"
                     [showClear]="true"
-                    class="mb-2"
                 />
                 <!-- <p-autoComplete
                     formControlName="selectedCountry"
@@ -65,13 +81,12 @@
                     [editable]="true"
                     optionLabel="name"
                     [showClear]="true"
-                    class="mb-2"
                 />
                 <button
                     pButton
                     pRipple
-                    label="Submit"
-                    class="p-button-success"
+                    label="Search"
+                    class="p-button-primary w-full"
                 ></button>
             </p-accordionTab>
         </p-accordion>
