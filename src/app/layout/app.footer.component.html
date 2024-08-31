@@ -1,5 +1,25 @@
-<div class="layout-footer">
-    <img src="assets/layout/images/{{layoutService.config().colorScheme === 'light' ? 'logo-dark' : 'logo-white'}}.svg" alt="Logo" height="20" class="mr-2"/>
-    by
-    <span class="font-medium ml-2">PrimeNG</span>
+<div class="layout-footer layout-footer-style">
+    <!-- <img
+        src="assets/layout/images/{{
+            layoutService.config().colorScheme === 'light'
+                ? 'logo-dark'
+                : 'logo-white'
+        }}.svg"
+        alt="Logo"
+        height="20"
+        class="mr-2"
+    /> -->
+    <!-- by
+    <span class="font-medium ml-2">PrimeNG</span> -->
+    <p-paginator
+        (onPageChange)="onPageChange($event)"
+        [first]="first"
+        [rows]="rows"
+        [totalRecords]="120"
+        [rowsPerPageOptions]="[10, 20, 30]"
+        [showCurrentPageReport]="false"
+        [showPageLinks]="true"
+        [pageLinkSize]="3"
+        [showJumpToPageDropdown]="true"
+    />
 </div>
