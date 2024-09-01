@@ -109,7 +109,7 @@ export class AppConfigComponent {
         public router: Router
     ) {}
     goToSettings() {
-        // this.router.navigate('');
+        this.router.navigate(['/settings']);
     }
     get visible(): boolean {
         return this.layoutService.state.configSidebarVisible;

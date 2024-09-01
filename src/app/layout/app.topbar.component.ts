@@ -10,6 +10,7 @@ import { finalize, map, switchMap } from 'rxjs/operators';
 import { StorageService } from './service/storage.service';
 import { HttpClient } from '@angular/common/http';
 import * as ExcelJS from 'exceljs';
+import { SettingsConst } from '../language/common.constants';
 @Component({
     selector: 'app-topbar',
     templateUrl: './app.topbar.component.html',
@@ -288,6 +289,9 @@ export class AppTopBarComponent {
         };
         reader.readAsBinaryString(file);
         ref.clear();
+    }
+    setSettingInfo(content: any) {
+        SettingsConst.excelInput = content;
     }
     renameKeys(jsonData: any) {
         let newJsonData = [];

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { MenuItem } from 'primeng/api/menuitem';
+import { SettingsConst } from 'src/app/language/common.constants';
 
 @Component({
     templateUrl: './settings.component.html',

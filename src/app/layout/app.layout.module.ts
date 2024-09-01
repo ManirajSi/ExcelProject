@@ -28,7 +28,7 @@ import { RatingModule } from 'primeng/rating';
 import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
 import { PaginatorModule } from 'primeng/paginator';
-
+import { ReactiveFormsModule } from '@angular/forms';
 @NgModule({
     declarations: [
         AppMenuitemComponent,
@@ -62,6 +62,7 @@ import { PaginatorModule } from 'primeng/paginator';
         DialogModule,
         DropdownModule,
         PaginatorModule,
+        ReactiveFormsModule,
     ],
     exports: [AppLayoutComponent],
 })
