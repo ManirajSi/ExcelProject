@@ -4,7 +4,15 @@ import { MenuService } from '../app.menu.service';
 import { MenuItem } from 'primeng/api';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-interface City {
+interface Field {
+    name: string;
+    code: string;
+}
+interface Action {
+    name: string;
+    code: string;
+}
+interface Match {
     name: string;
     code: string;
 }
@@ -103,6 +111,10 @@ export class AppConfigComponent {
             icon: 'pi pi-fw pi-power-off',
         },
     ];
+    fields: Field[] | undefined;
+    actions: Action[] | undefined;
+    matches: Match[] | undefined;
+    selectedCity: Field | undefined;
     constructor(
         public layoutService: LayoutService,
         public menuService: MenuService,
@@ -198,12 +210,24 @@ export class AppConfigComponent {
         this.formGroup = new FormGroup({
             selectedCountry: new FormControl<object | null>(null),
         });
-        this.cities = [
-            { name: 'New York', code: 'NY' },
-            { name: 'Rome', code: 'RM' },
-            { name: 'London', code: 'LDN' },
-            { name: 'Istanbul', code: 'IST' },
-            { name: 'Paris', code: 'PRS' },
+        this.fields = [
+            { name: 'Field1', code: 'Field1' },
+            { name: 'Field2', code: 'Field1' },
+            { name: 'Field3', code: 'Field1' },
+            { name: 'Field4', code: 'Field1' },
+            { name: 'Field5', code: 'Field1' },
+        ];
+        this.actions = [
+            { name: 'Starts With', code: 'Field1' },
+            { name: 'Contains', code: 'Field1' },
+            { name: 'Not Contains', code: 'Field1' },
+            { name: 'Ends With', code: 'Field1' },
+            { name: 'Equals', code: 'Field1' },
+            { name: 'Not Equals', code: 'Field1' },
+        ];
+        this.matches = [
+            { name: 'Match All', code: 'Match All' },
+            { name: 'Match Any', code: 'Match Any' },
         ];
         // this.items = [
         //     {
@@ -337,8 +361,4 @@ export class AppConfigComponent {
     private areAllItemsExpanded(): boolean {
         return this.items.every((menuItem) => menuItem.expanded);
     }
-
-    cities: City[] | undefined;
-
-    selectedCity: City | undefined;
 }

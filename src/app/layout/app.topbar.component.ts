@@ -96,7 +96,7 @@ export class AppTopBarComponent {
             icon: 'pi pi-th-large',
             items: [
                 {
-                    label: 'Template1',
+                    label: 'AllInOne',
                     icon: 'pi pi-th-large',
                     command: () => {
                         this.selectedAction = 'Template1';
@@ -104,7 +104,18 @@ export class AppTopBarComponent {
                     },
                 },
                 {
-                    label: 'Template2',
+                    separator: true,
+                },
+                {
+                    label: 'TrainingSite',
+                    icon: 'pi pi-th-large',
+                    command: () => {
+                        this.selectedAction = 'Template3';
+                        this.dowloadTemplate('Template3');
+                    },
+                },
+                {
+                    label: 'FeedbackSite',
                     icon: 'pi pi-th-large',
                     command: () => {
                         this.selectedAction = 'Template2';
@@ -112,10 +123,39 @@ export class AppTopBarComponent {
                     },
                 },
                 {
-                    separator: true,
+                    label: 'PublicSite',
+                    icon: 'pi pi-th-large',
+                    command: () => {
+                        this.selectedAction = 'Template3';
+                        this.dowloadTemplate('Template3');
+                    },
                 },
                 {
-                    label: 'Template3',
+                    label: 'GameSite',
+                    icon: 'pi pi-th-large',
+                    command: () => {
+                        this.selectedAction = 'Template3';
+                        this.dowloadTemplate('Template3');
+                    },
+                },
+                {
+                    label: 'ExpenseManager',
+                    icon: 'pi pi-th-large',
+                    command: () => {
+                        this.selectedAction = 'Template3';
+                        this.dowloadTemplate('Template3');
+                    },
+                },
+                {
+                    label: 'TimeManager',
+                    icon: 'pi pi-th-large',
+                    command: () => {
+                        this.selectedAction = 'Template3';
+                        this.dowloadTemplate('Template3');
+                    },
+                },
+                {
+                    label: 'DataAnalyser',
                     icon: 'pi pi-th-large',
                     command: () => {
                         this.selectedAction = 'Template3';

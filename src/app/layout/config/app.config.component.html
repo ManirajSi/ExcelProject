@@ -61,27 +61,32 @@
         <p-accordion [activeIndex]="0">
             <p-accordionTab header="Search Settings">
                 <p-dropdown
-                    [options]="cities"
-                    [(ngModel)]="selectedCity"
-                    placeholder="Select a City"
+                    [options]="matches"
+                    placeholder="Select a matching type"
                     [editable]="true"
                     optionLabel="name"
                     [showClear]="true"
                 />
-                <!-- <p-autoComplete
-                    formControlName="selectedCountry"
+                <p-dropdown
+                    [options]="fields"
+                    placeholder="Select a field name"
+                    [editable]="true"
+                    optionLabel="name"
+                    [showClear]="true"
+                />
+                <p-autoComplete
                     [suggestions]="filteredCountries"
                     (completeMethod)="filterCountry($event)"
                     field="name"
-                /> -->
+                />
                 <p-dropdown
-                    [options]="cities"
-                    [(ngModel)]="selectedCity"
-                    placeholder="Select a City"
+                    [options]="actions"
+                    placeholder="Select a action type"
                     [editable]="true"
                     optionLabel="name"
                     [showClear]="true"
                 />
+
                 <button
                     pButton
                     pRipple
