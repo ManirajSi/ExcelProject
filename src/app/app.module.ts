@@ -17,12 +17,16 @@ import { NodeService } from './demo/service/node.service';
 import { PhotoService } from './demo/service/photo.service';
 import { HighlightCodeDirective } from './directives/highlight-code.directive';
 import { AngularFireStorageModule } from '@angular/fire/compat/storage';
-
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
-
 import { environment } from 'src/environments/environment';
+import { StoreModule } from '@ngrx/store';
+import {
+    //counterReducer,
+    settingReducer,
+} from './store/reducer';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 @NgModule({
     declarations: [AppComponent, NotfoundComponent, HighlightCodeDirective],
     imports: [
@@ -32,6 +36,11 @@ import { environment } from 'src/environments/environment';
         AngularFireStorageModule,
         AngularFireAuthModule,
         AngularFirestoreModule,
+        StoreModule.forRoot({
+            settings: settingReducer,
+            // countReducer: counterReducer,
+        }),
+        StoreDevtoolsModule.instrument({ maxAge: 25 }),
     ],
     providers: [
         { provide: LocationStrategy, useClass: PathLocationStrategy },

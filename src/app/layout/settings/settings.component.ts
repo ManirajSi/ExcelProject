@@ -1,7 +1,13 @@
 import { Component } from '@angular/core';
 import { MenuItem } from 'primeng/api/menuitem';
 import { SettingsConst } from 'src/app/language/common.constants';
-
+import { Store } from '@ngrx/store';
+import { settingState } from '../../store/state';
+import {
+    updateSettingsInfo,
+    //countUpdateInfo
+} from '../../store/actions';
+import { tap } from 'rxjs';
 @Component({
     templateUrl: './settings.component.html',
     styleUrls: ['./settings.component.scss'],
@@ -10,7 +16,46 @@ export class SettingsComponent {
     items: MenuItem[] | undefined;
     paginationChecked: boolean = false;
     sidenavChk: boolean = false;
+    // setting$ = this.store.select((state: settingState) => state.settingInfo);
+    setting$ = this.store.select((state: any) => state.settings.settingInfo);
+    constructor(private store: Store<settingState>) {
+        this.setting$
+            .pipe(
+                tap((settingsInfo) => {
+                    debugger;
+                    console.log('settingsInfo:', settingsInfo);
+                })
+            )
+            .subscribe((settingsInfo) => {
+                debugger;
+                console.log('settingsInfo:', settingsInfo); // This will log the actual count value
+            });
+    }
+    increment() {
+        debugger;
+        this.store.dispatch(updateSettingsInfo({ settingInfo: { count: 10 } }));
+        // this.store.dispatch(countUpdateInfo({ count: 10 }));
+    }
+
+    onSwitch() {
+        debugger;
+        console.log(' setting$1 ', this.setting$);
+        this.increment();
+        console.log(' setting$2 ', this.setting$);
+    }
     ngOnInit() {
+        // this.setting$
+        //     .pipe(
+        //         tap((settingsInfo) => {
+        //             debugger;
+        //             console.log('settingsInfo:', settingsInfo);
+        //         })
+        //     )
+        //     .subscribe((settingsInfo) => {
+        //         debugger;
+        //         console.log('settingsInfo:', settingsInfo); // This will log the actual count value
+        //     });
+
         this.items = [
             {
                 key: '0',

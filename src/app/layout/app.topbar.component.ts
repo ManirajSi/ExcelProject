@@ -11,6 +11,9 @@ import { StorageService } from './service/storage.service';
 import { HttpClient } from '@angular/common/http';
 import * as ExcelJS from 'exceljs';
 import { SettingsConst } from '../language/common.constants';
+import { settingState } from '../store/state';
+import { Store } from '@ngrx/store';
+import { updateSettingsInfo } from '../store/actions';
 @Component({
     selector: 'app-topbar',
     templateUrl: './app.topbar.component.html',
@@ -235,7 +238,8 @@ export class AppTopBarComponent {
         private storageService: StorageService,
         private router: Router,
         private http: HttpClient,
-        private messageService: MessageService
+        private messageService: MessageService,
+        private store: Store<{ settingsInfo: settingState }>
     ) {
         this.loginSubscription = this.reactService.loginInfo$.subscribe(
             (data) => {
@@ -324,6 +328,13 @@ export class AppTopBarComponent {
             //         console.log('sheetData==>', sheetData);
             //     });
             // });
+            debugger;
+            // this.store.dispatch(
+            //     updateSettingsInfo({ settingsInfo: this.workSheetsJSON[0] })
+            // );
+            this.store.dispatch(
+                updateSettingsInfo({ settingInfo: { count: 1 } })
+            );
             this.setExcelPageContent(this.workSheetsJSON[1]);
             this.infoSet();
         };
