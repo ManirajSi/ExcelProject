@@ -147,15 +147,15 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
             let urlRefContent: SafeResourceUrl[] = [];
             Object.keys(item).forEach((key) => {
                 let keyName = key.toLowerCase().trim();
-                if (keyName.includes('col2')) {
+                if (keyName.toLowerCase().includes('xlcategory')) {
                     category = item[key]; // Assign the value to category if the key contains "col1"
-                } else if (keyName.includes('col3')) {
+                } else if (keyName.toLowerCase().includes('xlsubcategory')) {
                     subCategory = item[key]; // Assign the value to subCategory if the key contains "col3"
                 } else {
-                    if (keyName.includes('xlcontents')) {
+                    if (keyName.toLowerCase().includes('xlcontent')) {
                         textContent.push(item[key].replace(/\r\n/g, '</br>')); // Assign the value to content if the key contains "col5"
                     }
-                    if (keyName.includes('xlcodes')) {
+                    if (keyName.toLowerCase().includes('xlcode')) {
                         let codetext: string = item[key].replace(
                             /\r\n/g,
                             '</br>'
@@ -163,26 +163,26 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
                         codeContent.push(codetext);
                         // codeContent.push(item[key]); // Assign the value to content if the key contains "col5"
                     }
-                    if (keyName.includes('xlnotes')) {
+                    if (keyName.toLowerCase().includes('xlnote')) {
                         noteContent.push(
                             '<span style="margin-left: 10px;">' +
                                 item[key] +
                                 '</span>'
                         ); // Assign the value to content if the key contains "col5"
                     }
-                    if (keyName.includes('xlimages')) {
+                    if (keyName.toLowerCase().includes('xlimage')) {
                         let imgArr: string[] = item[key]
                             .replace(/\r\n/g, '')
                             .split(',');
                         imageContent.push(...imgArr); // Assign the value to content if the key contains "col5"
                     }
-                    if (keyName.includes('xlgifs')) {
+                    if (keyName.toLowerCase().includes('xlgif')) {
                         let gifArr: string[] = item[key]
                             .replace(/\r\n/g, '')
                             .split(',');
                         gifContent.push(...gifArr); // Assign the value to content if the key contains "col5"
                     }
-                    if (keyName.includes('xlvideos')) {
+                    if (keyName.toLowerCase().includes('xlvideo')) {
                         let videoArr: string[] = item[key]
                             .replace(/\r\n/g, '')
                             .split(',');
@@ -195,7 +195,7 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
                         });
                         // Assign the value to content if the key contains "col5"
                     }
-                    if (keyName.includes('xlframes')) {
+                    if (keyName.toLowerCase().includes('xlframe')) {
                         let urlArr: string[] = item[key]
                             .replace(/\r\n/g, '')
                             .split(',');

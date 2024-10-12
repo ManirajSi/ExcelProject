@@ -33,7 +33,7 @@ export class SettingsComponent {
     }
     increment() {
         debugger;
-        this.store.dispatch(updateSettingsInfo({ settingInfo: { count: 10 } }));
+        this.store.dispatch(updateSettingsInfo({ settingInfo: { count: 1 } }));
         // this.store.dispatch(countUpdateInfo({ count: 10 }));
     }
 

@@ -231,6 +231,8 @@ export class AppTopBarComponent {
     visible: boolean = false;
     dialogboxContent: string[] = [];
     dialogAction: string = 'save';
+    templateSettings: any;
+    sheets: any[] = [];
     constructor(
         public layoutService: LayoutService,
         private reactService: ReactService,
@@ -295,21 +297,42 @@ export class AppTopBarComponent {
         this.workSheetNames = [];
         this.workSheets = [];
         this.workSheetsJSON = [];
+        this.sheets = [];
         const reader: FileReader = new FileReader();
         reader.onload = (e: any) => {
             const bstr: string = e.target.result;
             const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
             this.workSheetNames = wb.SheetNames;
             let count = 0;
+            let worksheetIndex: number = 0;
             this.workSheetNames.forEach((workSheet: string) => {
                 const ws: XLSX.WorkSheet = wb.Sheets[workSheet];
                 this.workSheets.push(ws);
-                let renamedJson = this.renameKeys(XLSX.utils.sheet_to_json(ws));
+                if (
+                    worksheetIndex == 0 &&
+                    workSheet.toLowerCase() == 'templatesettings'
+                ) {
+                    localStorage.setItem(
+                        'templateSetting',
+                        JSON.stringify(XLSX.utils.sheet_to_json(ws))
+                    );
+                    this.templateSettings = XLSX.utils.sheet_to_json(ws);
+                    this.templateSettings.forEach((rowdata: any) => {
+                        if (rowdata.XLKeys.toLowerCase().includes('sheet')) {
+                            this.sheets.push(JSON.parse(rowdata['XLValues']));
+                        }
+                    });
+                }
+                let renamedJson = this.renameKeys(
+                    XLSX.utils.sheet_to_json(ws),
+                    worksheetIndex
+                );
                 this.workSheetsJSON.push(renamedJson);
                 if (count > 0) {
                     this.menuItemForming(workSheet);
                 }
                 count++;
+                worksheetIndex++;
             });
             // wb.SheetNames.forEach((sheetName) => {
             //     const worksheet = wb.Sheets[sheetName];
@@ -328,7 +351,6 @@ export class AppTopBarComponent {
             //         console.log('sheetData==>', sheetData);
             //     });
             // });
-            debugger;
             // this.store.dispatch(
             //     updateSettingsInfo({ settingsInfo: this.workSheetsJSON[0] })
             // );
@@ -344,18 +366,24 @@ export class AppTopBarComponent {
     setSettingInfo(content: any) {
         SettingsConst.excelInput = content;
     }
-    renameKeys(jsonData: any) {
+    renameKeys(jsonData: any, sheetIndex: number) {
         let newJsonData = [];
-        jsonData.forEach((row, rowIndex) => {
-            const newRow = {};
-            let colIndex = 1;
-            for (const key in row) {
-                const newKey = `col${colIndex}|${key}`;
-                newRow[newKey] = row[key];
-                colIndex++;
-            }
-            newJsonData.push(newRow);
-        });
+        let templcols: any[] = [];
+        if (sheetIndex != 0) {
+            templcols = this.sheets[0]['Columns'];
+            jsonData.forEach((row, rowIndex) => {
+                const newRow = {};
+                let colIndex = 0;
+                for (const key in row) {
+                    const newKey = `col${colIndex}|${key}|${templcols[colIndex]['type']}`;
+                    newRow[newKey] = row[key];
+                    colIndex++;
+                }
+                newJsonData.push(newRow);
+            });
+        } else {
+            newJsonData = jsonData;
+        }
         return newJsonData;
     }
     saveConfimration() {
@@ -400,11 +428,13 @@ export class AppTopBarComponent {
                 const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
                 this.workSheetNames = wb.SheetNames;
                 let count = 0;
+                let worksheetIndex: number = 0;
                 this.workSheetNames.forEach((workSheet: string) => {
                     const ws: XLSX.WorkSheet = wb.Sheets[workSheet];
                     this.workSheets.push(ws);
                     let renamedJson = this.renameKeys(
-                        XLSX.utils.sheet_to_json(ws)
+                        XLSX.utils.sheet_to_json(ws),
+                        worksheetIndex
                     );
                     this.workSheetsJSON.push(renamedJson);
                     if (count > 0) {
