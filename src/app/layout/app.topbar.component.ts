@@ -302,66 +302,67 @@ export class AppTopBarComponent {
         reader.onload = (e: any) => {
             const bstr: string = e.target.result;
             const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
-            this.workSheetNames = wb.SheetNames;
-            let count = 0;
-            let worksheetIndex: number = 0;
-            this.workSheetNames.forEach((workSheet: string) => {
-                const ws: XLSX.WorkSheet = wb.Sheets[workSheet];
-                this.workSheets.push(ws);
-                if (
-                    worksheetIndex == 0 &&
-                    workSheet.toLowerCase() == 'templatesettings'
-                ) {
-                    localStorage.setItem(
-                        'templateSetting',
-                        JSON.stringify(XLSX.utils.sheet_to_json(ws))
-                    );
-                    this.templateSettings = XLSX.utils.sheet_to_json(ws);
-                    this.templateSettings.forEach((rowdata: any) => {
-                        if (rowdata.XLKeys.toLowerCase().includes('sheet')) {
-                            this.sheets.push(JSON.parse(rowdata['XLValues']));
-                        }
-                    });
-                }
-                let renamedJson = this.renameKeys(
-                    XLSX.utils.sheet_to_json(ws),
-                    worksheetIndex
-                );
-                this.workSheetsJSON.push(renamedJson);
-                if (count > 0) {
-                    this.menuItemForming(workSheet);
-                }
-                count++;
-                worksheetIndex++;
-            });
-            // wb.SheetNames.forEach((sheetName) => {
-            //     const worksheet = wb.Sheets[sheetName];
-            //     const sheetId = wb.SheetNames.indexOf(sheetName);
-            //     const sheetData: any[] = [];
-            //     worksheet.eachRow((row, rowIndex) => {
-            //         const rowData: any = {};
-            //         row.eachCell((cell, colNumber) => {
-            //             let cellValue = cell.text;
-            //             if (cell.font && cell.font.bold) {
-            //                 cellValue = `<b>${cellValue}</b>`;
-            //             }
-            //             rowData[`Column${colNumber}`] = cellValue;
-            //         });
-            //         sheetData.push(rowData);
-            //         console.log('sheetData==>', sheetData);
-            //     });
-            // });
-            // this.store.dispatch(
-            //     updateSettingsInfo({ settingsInfo: this.workSheetsJSON[0] })
-            // );
-            this.store.dispatch(
-                updateSettingsInfo({ settingInfo: { count: 1 } })
-            );
-            this.setExcelPageContent(this.workSheetsJSON[1]);
-            this.infoSet();
+            this.readFiles(wb);
         };
         reader.readAsBinaryString(file);
         ref.clear();
+    }
+    readFiles(wb: any) {
+        this.workSheetNames = wb.SheetNames;
+        let count = 0;
+        let worksheetIndex: number = 0;
+        this.workSheetNames.forEach((workSheet: string) => {
+            const ws: XLSX.WorkSheet = wb.Sheets[workSheet];
+            this.workSheets.push(ws);
+            if (
+                worksheetIndex == 0 &&
+                workSheet.toLowerCase() == 'templatesettings'
+            ) {
+                localStorage.setItem(
+                    'templateSetting',
+                    JSON.stringify(XLSX.utils.sheet_to_json(ws))
+                );
+                this.templateSettings = XLSX.utils.sheet_to_json(ws);
+                this.templateSettings.forEach((rowdata: any) => {
+                    if (rowdata.XLKeys.toLowerCase().includes('sheet')) {
+                        this.sheets.push(JSON.parse(rowdata['XLValues']));
+                    }
+                });
+            }
+            let renamedJson = this.renameKeys(
+                XLSX.utils.sheet_to_json(ws),
+                worksheetIndex
+            );
+            this.workSheetsJSON.push(renamedJson);
+            if (count > 0) {
+                this.menuItemForming(workSheet);
+            }
+            count++;
+            worksheetIndex++;
+        });
+        // wb.SheetNames.forEach((sheetName) => {
+        //     const worksheet = wb.Sheets[sheetName];
+        //     const sheetId = wb.SheetNames.indexOf(sheetName);
+        //     const sheetData: any[] = [];
+        //     worksheet.eachRow((row, rowIndex) => {
+        //         const rowData: any = {};
+        //         row.eachCell((cell, colNumber) => {
+        //             let cellValue = cell.text;
+        //             if (cell.font && cell.font.bold) {
+        //                 cellValue = `<b>${cellValue}</b>`;
+        //             }
+        //             rowData[`Column${colNumber}`] = cellValue;
+        //         });
+        //         sheetData.push(rowData);
+        //         console.log('sheetData==>', sheetData);
+        //     });
+        // });
+        // this.store.dispatch(
+        //     updateSettingsInfo({ settingsInfo: this.workSheetsJSON[0] })
+        // );
+        this.store.dispatch(updateSettingsInfo({ settingInfo: { count: 1 } }));
+        this.setExcelPageContent(this.workSheetsJSON[1]);
+        this.infoSet();
     }
     setSettingInfo(content: any) {
         SettingsConst.excelInput = content;
@@ -426,24 +427,7 @@ export class AppTopBarComponent {
             reader.onload = (e: any) => {
                 const bstr: string = e.target.result;
                 const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
-                this.workSheetNames = wb.SheetNames;
-                let count = 0;
-                let worksheetIndex: number = 0;
-                this.workSheetNames.forEach((workSheet: string) => {
-                    const ws: XLSX.WorkSheet = wb.Sheets[workSheet];
-                    this.workSheets.push(ws);
-                    let renamedJson = this.renameKeys(
-                        XLSX.utils.sheet_to_json(ws),
-                        worksheetIndex
-                    );
-                    this.workSheetsJSON.push(renamedJson);
-                    if (count > 0) {
-                        this.menuItemForming(workSheet);
-                    }
-                    count++;
-                });
-                this.setExcelPageContent(this.workSheetsJSON[1]);
-                this.infoSet();
+                this.readFiles(wb);
             };
             reader.readAsBinaryString(blob);
         });
