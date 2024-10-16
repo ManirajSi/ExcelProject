@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { SignalTransService } from 'src/app/layout/service/signal-trans.service';
-import { MenuItem } from 'primeng/api';
+import { MenuItem, Message } from 'primeng/api';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { ReactService } from 'src/app/layout/service/react.service';
@@ -59,6 +59,7 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
     showExcelContent: boolean = false;
     images: any[] | undefined;
     responsiveOptions: any[] | undefined;
+    messages: Message[] | undefined;
     constructor(
         private reactService: ReactService,
         private sanitizer: DomSanitizer,
@@ -164,11 +165,7 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
                         // codeContent.push(item[key]); // Assign the value to content if the key contains "col5"
                     }
                     if (keyName.toLowerCase().includes('xlnote')) {
-                        noteContent.push(
-                            '<span style="margin-left: 10px;">' +
-                                item[key] +
-                                '</span>'
-                        ); // Assign the value to content if the key contains "col5"
+                        noteContent.push(item[key]);
                     }
                     if (keyName.toLowerCase().includes('xlimage')) {
                         let imgArr: string[] = item[key]
@@ -330,6 +327,19 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
                 top: sectionPosition,
                 behavior: 'smooth',
             });
+        }
+    }
+    checkString(str: string) {
+        let strarray: string[] = str.split(':');
+        let strval = strarray[0].toLowerCase();
+        if (strval.includes('note')) {
+            return 'info';
+        } else if (strval.includes('caution')) {
+            return 'error';
+        } else if (strval.includes('warning')) {
+            return 'warn';
+        } else {
+            return 'success';
         }
     }
     ngOnDestroy(): void {
