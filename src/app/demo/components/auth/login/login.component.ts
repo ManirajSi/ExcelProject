@@ -8,16 +8,7 @@ import { ReactService } from 'src/app/layout/service/react.service';
 @Component({
     selector: 'app-login',
     templateUrl: './login.component.html',
-    styles: [
-        `
-            :host ::ng-deep .pi-eye,
-            :host ::ng-deep .pi-eye-slash {
-                transform: scale(1.6);
-                margin-right: 1rem;
-                color: var(--primary-color) !important;
-            }
-        `,
-    ],
+    styleUrls: ['./login.component.scss'],
     providers: [MessageService],
 })
 export class LoginComponent {
@@ -57,11 +48,26 @@ export class LoginComponent {
         if (this.userForm.valid) {
             let detail = '';
             if (this.actionType == 'Login') {
-                detail = 'User Login successfully';
-                this.reactService.setLoginInfo({
-                    isLoggedIn: true,
-                });
-                this.router.navigate(['/']);
+                if (
+                    this.userForm.get('email').value == 'test@mail.com' &&
+                    this.userForm.get('password').value == 'test123'
+                ) {
+                    localStorage.setItem(
+                        'email',
+                        this.userForm.get('email').value
+                    );
+                    localStorage.setItem(
+                        'password',
+                        this.userForm.get('password').value
+                    );
+                    detail = 'User Login successfully';
+                    this.reactService.setLoginInfo({
+                        isLoggedIn: true,
+                    });
+                    this.router.navigate(['/']);
+                } else {
+                    detail = 'Login detail not matched';
+                }
             } else {
                 detail = 'Successfully created your account';
                 this.signupLoginClick();

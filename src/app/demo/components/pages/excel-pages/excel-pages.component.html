@@ -41,11 +41,11 @@
                                 </div>
                             </div>
                             <span class="font-bold text-900">
-                                {{ product.type }}
-                                <p-rating
+                                <!-- {{ product.type }} -->
+                                <!-- <p-rating
                                     [(ngModel)]="value"
                                     [cancel]="false"
-                                />
+                                /> -->
                                 <p-button
                                     icon="pi pi-download"
                                     [loading]="loading"
@@ -163,7 +163,7 @@
                                                         [containerStyle]="{
                                                     'max-width': '1050px',
 
-                                                }"
+                                                      }"
                                                         [numVisible]="5"
                                                     >
                                                         <ng-template
@@ -220,7 +220,19 @@
                                                 </ng-template>
                                                 <div
                                                     class="flex justify-content-center align-content-center"
-                                                ></div>
+                                                >
+                                                    <img
+                                                        [src]="
+                                                            content
+                                                                .gifContent[0]
+                                                        "
+                                                        style="
+                                                            width: 90%;
+                                                            height: 500px;
+                                                        "
+                                                        alt="GIF Image"
+                                                    />
+                                                </div>
                                             </p-tabPanel>
                                             <p-tabPanel
                                                 *ngIf="content.videoContent[0]"
@@ -248,7 +260,7 @@
                                                 >
                                                     <iframe
                                                         width="1020"
-                                                        height="500"
+                                                        height="460"
                                                         [src]="
                                                             content
                                                                 .videoContent[0]
@@ -291,7 +303,7 @@
                                                                 .urlRefContent[0]
                                                         "
                                                         width="100%"
-                                                        height="500px"
+                                                        height="400px"
                                                         frameborder="0"
                                                         allowfullscreen
                                                     >

@@ -81,7 +81,11 @@ export class AppTopBarComponent {
                             this.showToast(2, 'File not selected for saving');
                             this.browseSelectFile();
                         } else {
-                            if (this.isLoggedIn) {
+                            if (
+                                localStorage.getItem('email') ==
+                                    'test@mail.com' &&
+                                localStorage.getItem('password') == 'test123'
+                            ) {
                                 this.saveConfimration();
                             } else {
                                 this.showToast(
@@ -188,6 +192,13 @@ export class AppTopBarComponent {
                         );
                     },
                 },
+                {
+                    label: 'imgur Link for gif and image',
+                    icon: 'pi pi-fw pi-user-minus',
+                    command: () => {
+                        this.urlRedirection('https://imgur.com/');
+                    },
+                },
             ],
         },
         {
@@ -207,6 +218,10 @@ export class AppTopBarComponent {
                 {
                     label: 'Logout',
                     icon: 'pi pi-fw pi-user-minus',
+                    command: () => {
+                        localStorage.removeItem('email');
+                        localStorage.removeItem('password');
+                    },
                 },
             ],
         },
