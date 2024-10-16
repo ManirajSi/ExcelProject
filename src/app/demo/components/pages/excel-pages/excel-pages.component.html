@@ -77,9 +77,22 @@
                                 >
                                     <!-- <div style="display: none;">[property]=binding</div> -->
                                     <div *ngIf="content.textContent.length > 0">
-                                        <div
+                                        <span
                                             [innerHTML]="content.textContent[0]"
-                                        ></div>
+                                        >
+                                        </span>
+                                        <span class="ml-2"
+                                            ><p-toggleButton
+                                                formControlName="checked"
+                                                offIcon="pi pi-volume-off"
+                                                onIcon="pi pi-volume-up"
+                                                (onChange)="
+                                                    onToggle(
+                                                        $event,
+                                                        content.textContent[0]
+                                                    )
+                                                "
+                                        /></span>
                                     </div>
                                     <div *ngIf="content.codeContent.length > 0">
                                         <!-- <div class="code-card">

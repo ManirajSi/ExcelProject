@@ -13,6 +13,7 @@ import {
 import { Subscription } from 'rxjs';
 import { StorageService } from 'src/app/layout/service/storage.service';
 import { DataService } from 'src/app/demo/service/data.service';
+import { TextToSpeechService } from 'src/app/services/text-to-speech.service';
 declare var Prism: any;
 interface GroupedData {
     category: string;
@@ -64,7 +65,8 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
         private reactService: ReactService,
         private sanitizer: DomSanitizer,
         private storageService: StorageService,
-        private dataService: DataService
+        private dataService: DataService,
+        private textToSpeechService: TextToSpeechService
     ) {
         //Subscription call for get file from local and cloud
         this.fileSubscription = this.reactService.file$.subscribe((data) => {
@@ -107,6 +109,13 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
             }
         );
     }
+    textToSpeak: string = '';
+    selectedLanguage: string = 'en-US'; // Default to English
+    languages = [
+        { label: 'English (US)', value: 'en-US' },
+        { label: 'Tamil', value: 'ta-IN' },
+        // Add more languages if needed
+    ];
     ngOnInit() {
         this.getImages();
     }
@@ -154,57 +163,72 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
                     subCategory = item[key]; // Assign the value to subCategory if the key contains "col3"
                 } else {
                     if (keyName.toLowerCase().includes('xlcontent')) {
-                        textContent.push(item[key].replace(/\r\n/g, '</br>')); // Assign the value to content if the key contains "col5"
+                        if (item[key]?.trim().toLowerCase() != 'x') {
+                            textContent.push(
+                                item[key].replace(/\r\n/g, '</br>')
+                            ); // Assign the value to content if the key contains "col5"
+                        }
                     }
                     if (keyName.toLowerCase().includes('xlcode')) {
-                        let codetext: string = item[key].replace(
-                            /\r\n/g,
-                            '</br>'
-                        );
-                        codeContent.push(codetext);
+                        if (item[key]?.trim().toLowerCase() != 'x') {
+                            let codetext: string = item[key].replace(
+                                /\r\n/g,
+                                '</br>'
+                            );
+                            codeContent.push(codetext);
+                        }
                         // codeContent.push(item[key]); // Assign the value to content if the key contains "col5"
                     }
                     if (keyName.toLowerCase().includes('xlnote')) {
-                        noteContent.push(item[key]);
+                        if (item[key]?.trim().toLowerCase() != 'x') {
+                            noteContent.push(item[key]);
+                        }
                     }
                     if (keyName.toLowerCase().includes('xlimage')) {
-                        let imgArr: string[] = item[key]
-                            .replace(/\r\n/g, '')
-                            .split(',');
-                        imageContent.push(...imgArr); // Assign the value to content if the key contains "col5"
+                        if (item[key]?.trim().toLowerCase() != 'x') {
+                            let imgArr: string[] = item[key]
+                                .replace(/\r\n/g, '')
+                                .split(',');
+                            imageContent.push(...imgArr); // Assign the value to content if the key contains "col5"
+                        }
                     }
                     if (keyName.toLowerCase().includes('xlgif')) {
-                        let gifArr: string[] = item[key]
-                            .replace(/\r\n/g, '')
-                            .split(',');
-                        gifContent.push(...gifArr); // Assign the value to content if the key contains "col5"
+                        if (item[key]?.trim().toLowerCase() != 'x') {
+                            let gifArr: string[] = item[key]
+                                .replace(/\r\n/g, '')
+                                .split(',');
+                            gifContent.push(...gifArr); // Assign the value to content if the key contains "col5"
+                        }
                     }
                     if (keyName.toLowerCase().includes('xlvideo')) {
-                        let videoArr: string[] = item[key]
-                            .replace(/\r\n/g, '')
-                            .split(',');
-                        videoArr.forEach((videodata) => {
-                            let safeurl: SafeResourceUrl =
-                                this.sanitizer.bypassSecurityTrustResourceUrl(
-                                    videodata
-                                );
-                            videoContent.push(safeurl);
-                        });
-                        // Assign the value to content if the key contains "col5"
+                        if (item[key]?.trim().toLowerCase() != 'x') {
+                            let videoArr: string[] = item[key]
+                                .replace(/\r\n/g, '')
+                                .split(',');
+                            videoArr.forEach((videodata) => {
+                                let safeurl: SafeResourceUrl =
+                                    this.sanitizer.bypassSecurityTrustResourceUrl(
+                                        videodata
+                                    );
+                                videoContent.push(safeurl);
+                            });
+                            // Assign the value to content if the key contains "col5"
+                        }
                     }
                     if (keyName.toLowerCase().includes('xlframe')) {
-                        let urlArr: string[] = item[key]
-                            .replace(/\r\n/g, '')
-                            .split(',');
-                        urlArr.forEach((videodata) => {
-                            let safeurl: SafeResourceUrl =
-                                this.sanitizer.bypassSecurityTrustResourceUrl(
-                                    videodata
-                                );
-                            urlRefContent.push(safeurl);
-                        });
-
-                        // Assign the value to content if the key contains "col5"
+                        if (item[key]?.trim().toLowerCase() != 'x') {
+                            let urlArr: string[] = item[key]
+                                .replace(/\r\n/g, '')
+                                .split(',');
+                            urlArr.forEach((videodata) => {
+                                let safeurl: SafeResourceUrl =
+                                    this.sanitizer.bypassSecurityTrustResourceUrl(
+                                        videodata
+                                    );
+                                urlRefContent.push(safeurl);
+                            });
+                            // Assign the value to content if the key contains "col5"
+                        }
                     }
                 }
             });
@@ -341,6 +365,20 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
         } else {
             return 'success';
         }
+    }
+    onToggle(event: any, text: any) {
+        if (event.checked) {
+            this.textToSpeechService.speak(
+                this.removeHtmlTags(text),
+                this.selectedLanguage
+            );
+        } else {
+            this.textToSpeechService.stop();
+        }
+    }
+    removeHtmlTags(stringWithHTML: string) {
+        let stringWithoutHTML = stringWithHTML.replace(/<[^>]*>/g, '');
+        return stringWithoutHTML;
     }
     ngOnDestroy(): void {
         this.fileSubscription.unsubscribe();

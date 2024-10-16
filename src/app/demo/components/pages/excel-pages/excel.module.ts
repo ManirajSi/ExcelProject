@@ -12,6 +12,7 @@ import { TabViewModule } from 'primeng/tabview';
 import { GalleriaModule } from 'primeng/galleria';
 import { PanelModule } from 'primeng/panel';
 import { ImageModule } from 'primeng/image';
+import { ToggleButtonModule } from 'primeng/togglebutton';
 
 @NgModule({
     declarations: [ExcelPagesComponent],
@@ -28,6 +29,7 @@ import { ImageModule } from 'primeng/image';
         GalleriaModule,
         PanelModule,
         ImageModule,
+        ToggleButtonModule,
     ],
 })
 export class ExcelModule {}

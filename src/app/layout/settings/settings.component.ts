@@ -22,23 +22,19 @@ export class SettingsComponent {
         this.setting$
             .pipe(
                 tap((settingsInfo) => {
-                    debugger;
                     console.log('settingsInfo:', settingsInfo);
                 })
             )
             .subscribe((settingsInfo) => {
-                debugger;
                 console.log('settingsInfo:', settingsInfo); // This will log the actual count value
             });
     }
     increment() {
-        debugger;
         this.store.dispatch(updateSettingsInfo({ settingInfo: { count: 1 } }));
         // this.store.dispatch(countUpdateInfo({ count: 10 }));
     }
 
     onSwitch() {
-        debugger;
         console.log(' setting$1 ', this.setting$);
         this.increment();
         console.log(' setting$2 ', this.setting$);
