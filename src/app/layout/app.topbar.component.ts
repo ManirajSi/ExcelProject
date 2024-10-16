@@ -114,7 +114,8 @@ export class AppTopBarComponent {
                     icon: 'pi pi-th-large',
                     command: () => {
                         this.selectedAction = 'Template3';
-                        this.dowloadTemplate('Template3');
+                        this.showToast(2, 'Template under construction');
+                        //this.dowloadTemplate('Template3');
                     },
                 },
                 {
@@ -122,7 +123,7 @@ export class AppTopBarComponent {
                     icon: 'pi pi-th-large',
                     command: () => {
                         this.selectedAction = 'Template2';
-                        this.dowloadTemplate('Template2');
+                        this.showToast(2, 'Template under construction');
                     },
                 },
                 {
@@ -130,7 +131,7 @@ export class AppTopBarComponent {
                     icon: 'pi pi-th-large',
                     command: () => {
                         this.selectedAction = 'Template3';
-                        this.dowloadTemplate('Template3');
+                        this.showToast(2, 'Template under construction');
                     },
                 },
                 {
@@ -138,7 +139,7 @@ export class AppTopBarComponent {
                     icon: 'pi pi-th-large',
                     command: () => {
                         this.selectedAction = 'Template3';
-                        this.dowloadTemplate('Template3');
+                        this.showToast(2, 'Template under construction');
                     },
                 },
                 {
@@ -146,7 +147,7 @@ export class AppTopBarComponent {
                     icon: 'pi pi-th-large',
                     command: () => {
                         this.selectedAction = 'Template3';
-                        this.dowloadTemplate('Template3');
+                        this.showToast(2, 'Template under construction');
                     },
                 },
                 {
@@ -154,7 +155,7 @@ export class AppTopBarComponent {
                     icon: 'pi pi-th-large',
                     command: () => {
                         this.selectedAction = 'Template3';
-                        this.dowloadTemplate('Template3');
+                        this.showToast(2, 'Template under construction');
                     },
                 },
                 {
@@ -162,32 +163,14 @@ export class AppTopBarComponent {
                     icon: 'pi pi-th-large',
                     command: () => {
                         this.selectedAction = 'Template3';
-                        this.dowloadTemplate('Template3');
+                        this.showToast(2, 'Template under construction');
                     },
-                },
-            ],
-        },
-
-        {
-            label: 'Users',
-            icon: 'pi pi-fw pi-user',
-            items: [
-                {
-                    label: 'Login',
-                    icon: 'pi pi-fw pi-user-plus',
-                    command: () => {
-                        this.loginRedirect();
-                    },
-                },
-                {
-                    label: 'Logout',
-                    icon: 'pi pi-fw pi-user-minus',
                 },
             ],
         },
         {
             label: 'RedirectSites',
-            icon: 'pi pi-fw pi-user',
+            icon: 'pi pi-fw pi-directions',
             items: [
                 {
                     label: 'Create Gif',
@@ -211,11 +194,21 @@ export class AppTopBarComponent {
             separator: true,
         },
         {
-            label: 'Quit',
-            icon: 'pi pi-fw pi-power-off',
-            command: () => {
-                this.isLoggedIn = false;
-            },
+            label: 'Users',
+            icon: 'pi pi-fw pi-user',
+            items: [
+                {
+                    label: 'Login',
+                    icon: 'pi pi-fw pi-user-plus',
+                    command: () => {
+                        this.loginRedirect();
+                    },
+                },
+                {
+                    label: 'Logout',
+                    icon: 'pi pi-fw pi-user-minus',
+                },
+            ],
         },
     ];
     loginSubscription: Subscription = new Subscription();

@@ -144,4 +144,24 @@ code {
         text-decoration-color: #ff4757;
         padding: 0.2rem;
     }
+    .p-orderlist .p-orderlist-controls {
+        display: none;
+    }
+    .py-3 {
+        padding-top: 0rem !important;
+        padding-bottom: 0rem !important;
+    }
+    .px-3 {
+        padding-left: 1rem !important;
+        padding-right: 0.2rem !important;
+    }
+    .p-panel.p-panel-toggleable .p-panel-header {
+        padding: 0.3rem 0.8rem;
+    }
+    .p-panel .p-panel-content {
+        padding: 0.2rem;
+    }
+    .p-tabview .p-tabview-nav li .p-tabview-nav-link {
+        padding: 0.5rem;
+    }
 }

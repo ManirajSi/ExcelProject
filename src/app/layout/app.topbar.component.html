@@ -1,6 +1,6 @@
 <p-toast />
 <div class="layout-topbar">
-    <a class="layout-topbar-logo" routerLink="" (click)="gotoHome()">
+    <!-- <a class="layout-topbar-logo" routerLink="" (click)="gotoHome()">
         <img
             src="assets/layout/images/{{
                 layoutService.config().colorScheme === 'light'
@@ -10,8 +10,20 @@
             alt="logo"
         />
         <span class="topbarHeading">{{ webName }}</span>
-    </a>
-
+    </a> -->
+    <p-splitButton
+        label="Upload"
+        (onClick)="recentActionCall()"
+        [model]="nestedActionitems"
+        class="mr-2 custom-splitbutton dropdown-left"
+    />
+    <button
+        #topbarmenubutton
+        class="p-link layout-topbar-menu-button layout-topbar-button"
+        (click)="layoutService.showProfileSidebar()"
+    >
+        <i class="pi pi-ellipsis-v"></i>
+    </button>
     <button
         #menubutton
         *ngIf="sideBarButton.show"
@@ -20,35 +32,12 @@
     >
         <i class="pi pi-bars"></i>
     </button>
-
-    <button
-        #topbarmenubutton
-        class="p-link layout-topbar-menu-button layout-topbar-button"
-        (click)="layoutService.showProfileSidebar()"
-    >
-        <i class="pi pi-ellipsis-v"></i>
-    </button>
-    <p-splitButton
-        label="Upload"
-        (onClick)="recentActionCall()"
-        [model]="nestedActionitems"
-        class="mr-2 custom-splitbutton dropdown-left"
-    />
     <!-- app.component.html -->
     <div class="menu-div">
         <p-menubar *ngIf="menuItems.length > 0" [model]="menuItems" />
     </div>
     <!-- <div><p-speedDial [model]="items" direction="down" /></div> -->
     <div class="p-inputgroup">
-        <!-- <p-autoComplete
-            [(ngModel)]="selectedItem"
-            [suggestions]="filteredItems"
-            (completeMethod)="searchItems($event)"
-            field="name"
-            [forceSelection]="true"
-            placeholder="Search..."
-        >
-        </p-autoComplete> -->
         <p-dropdown
             [options]="autoCompleteitems"
             [(ngModel)]="selectedItem"
@@ -56,15 +45,8 @@
             placeholder="Select a Excel content"
             [editable]="true"
             optionLabel="name"
+            (onChange)="onSearchClick()"
         />
-        <span class="p-inputgroup-addon">
-            <button
-                pButton
-                type="button"
-                icon="pi pi-search"
-                (click)="onSearchClick()"
-            ></button>
-        </span>
     </div>
     <div
         #topbarmenu

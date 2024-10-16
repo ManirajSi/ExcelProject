@@ -320,7 +320,16 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
         const sectionId = `section-${categoryIndex}-${subCategoryIndex}`;
         const section = document.getElementById(sectionId);
         if (section) {
-            section.scrollIntoView({ behavior: 'smooth' });
+            const offset = 70; // Adjust this value to how far down you want the heading to stay.
+            const sectionPosition =
+                section.getBoundingClientRect().top +
+                window.pageYOffset -
+                offset;
+
+            window.scrollTo({
+                top: sectionPosition,
+                behavior: 'smooth',
+            });
         }
     }
     ngOnDestroy(): void {
