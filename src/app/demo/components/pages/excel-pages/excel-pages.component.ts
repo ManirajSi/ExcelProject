@@ -61,6 +61,7 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
     images: any[] | undefined;
     responsiveOptions: any[] | undefined;
     messages: Message[] | undefined;
+    selectedOption: string = '';
     constructor(
         private reactService: ReactService,
         private sanitizer: DomSanitizer,
@@ -148,6 +149,11 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
         this.data.forEach((item) => {
             let category: string = '';
             let subCategory: string = '';
+            let snoSet: string[] = [];
+            let questionSet: string[] = [];
+            let optionSet: string[][] = [];
+            let answerSet: string[] = [];
+
             let textContent: string[] = [];
             let noteContent: string[] = [];
             let codeContent: string[] = [];
@@ -162,6 +168,34 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
                 } else if (keyName.toLowerCase().includes('xlsubcategory')) {
                     subCategory = item[key]; // Assign the value to subCategory if the key contains "col3"
                 } else {
+                    if (keyName.toLowerCase().includes('xlsno')) {
+                        if (item[key]) {
+                            snoSet.push(item[key]);
+                        }
+                    }
+                    if (keyName.toLowerCase().includes('xlquestions')) {
+                        if (item[key]?.trim().toLowerCase() != 'x') {
+                            questionSet.push(
+                                item[key].replace(/\r\n/g, '</br>')
+                            );
+                        }
+                    }
+                    if (keyName.toLowerCase().includes('xloptions')) {
+                        if (item[key]?.trim().toLowerCase() != 'x') {
+                            let strSplt = item[key]
+                                .replace(/\r\n/g, '</br>')
+                                .split(',');
+                            optionSet.push(...strSplt);
+                        }
+                    }
+                    if (keyName.toLowerCase().includes('xlanswers')) {
+                        if (item[key]?.trim().toLowerCase() != 'x') {
+                            answerSet.push(
+                                '<b>Correct Answer:</b>' +
+                                    item[key].replace(/\r\n/g, '</br>')
+                            );
+                        }
+                    }
                     if (keyName.toLowerCase().includes('xlcontent')) {
                         if (item[key]?.trim().toLowerCase() != 'x') {
                             textContent.push(
@@ -247,6 +281,10 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
                 subCategoryMap.set(subCategory, []);
             }
             subCategoryMap.get(subCategory)!.push({
+                snoSet: snoSet,
+                questionSet: questionSet,
+                optionSet: optionSet,
+                answerSet: answerSet,
                 textContent: textContent,
                 codeContent: codeContent,
                 noteContent: noteContent,
@@ -256,7 +294,6 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
                 urlRefContent: urlRefContent,
             });
         });
-        console.log('this.groupedData====>', this.groupedData);
         // Convert Map to Array while preserving order
         this.groupedData = Array.from(categoryMap.entries()).map(
             ([category, subCategoryMap]) => ({

@@ -75,6 +75,69 @@
                                 <div
                                     *ngFor="let content of subCategory.contents"
                                 >
+                                    <div
+                                        *ngIf="content.questionSet?.length > 0"
+                                    >
+                                        <div class="mb-3">
+                                            <span
+                                                [innerHTML]="content.snoSet[0]"
+                                            >
+                                            </span>
+                                            <span
+                                                [innerHTML]="
+                                                    content.questionSet[0]
+                                                "
+                                            >
+                                            </span>
+                                        </div>
+                                        <div
+                                            *ngIf="
+                                                content.optionSet?.length > 0
+                                            "
+                                        >
+                                            <!-- <span [innerHTML]="
+                                                        content.optionSet[i]
+                                                    ">
+                                                </span> -->
+                                            <span
+                                                *ngFor="
+                                                    let option of content.optionSet;
+                                                    let i = index
+                                                "
+                                                class="mr-5"
+                                            >
+                                                <p-radioButton
+                                                    [inputId]="i"
+                                                    name="options"
+                                                    [value]="option"
+                                                    [(ngModel)]="selectedOption"
+                                                />
+                                                <label
+                                                    [for]="option"
+                                                    class="ml-2"
+                                                >
+                                                    {{ option }}
+                                                </label>
+                                            </span>
+                                        </div>
+                                        <div
+                                            *ngIf="
+                                                content.answerSet?.length > 0
+                                            "
+                                        >
+                                            <p-messages severity="info">
+                                                <ng-template pTemplate>
+                                                    <div
+                                                        class="ml-2"
+                                                        [innerHTML]="
+                                                            content.answerSet[0]
+                                                        "
+                                                    ></div>
+                                                </ng-template>
+                                            </p-messages>
+                                        </div>
+                                    </div>
+
                                     <!-- <div style="display: none;">[property]=binding</div> -->
                                     <div *ngIf="content.textContent.length > 0">
                                         <span

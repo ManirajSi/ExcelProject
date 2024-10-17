@@ -13,6 +13,7 @@ import { GalleriaModule } from 'primeng/galleria';
 import { PanelModule } from 'primeng/panel';
 import { ImageModule } from 'primeng/image';
 import { ToggleButtonModule } from 'primeng/togglebutton';
+import { RadioButtonModule } from 'primeng/radiobutton';
 
 @NgModule({
     declarations: [ExcelPagesComponent],
@@ -30,6 +31,7 @@ import { ToggleButtonModule } from 'primeng/togglebutton';
         PanelModule,
         ImageModule,
         ToggleButtonModule,
+        RadioButtonModule,
     ],
 })
 export class ExcelModule {}
