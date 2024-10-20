@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { SignalTransService } from 'src/app/layout/service/signal-trans.service';
-import { MenuItem, Message } from 'primeng/api';
+import { MenuItem, Message, MessageService } from 'primeng/api';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { ReactService } from 'src/app/layout/service/react.service';
@@ -14,6 +14,10 @@ import { Subscription } from 'rxjs';
 import { StorageService } from 'src/app/layout/service/storage.service';
 import { DataService } from 'src/app/demo/service/data.service';
 import { TextToSpeechService } from 'src/app/services/text-to-speech.service';
+import { FormControl, FormGroup } from '@angular/forms';
+import { PdfService } from 'src/app/services/pdf.service';
+import { UtilityService } from 'src/app/services/utility.service';
+import { EmailService } from 'src/app/services/email.service';
 declare var Prism: any;
 interface GroupedData {
     category: string;
@@ -26,6 +30,7 @@ interface GroupedData {
     selector: 'app-excel-pages',
     templateUrl: './excel-pages.component.html',
     styleUrl: './excel-pages.component.scss',
+    providers: [MessageService],
 })
 export class ExcelPagesComponent implements OnInit, OnDestroy {
     fileSubscription: Subscription = new Subscription();
@@ -62,12 +67,37 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
     responsiveOptions: any[] | undefined;
     messages: Message[] | undefined;
     selectedOption: string = '';
+    excelPageForm: any;
+    downloadAnsOptions = [
+        {
+            label: 'Download',
+            icon: 'pi pi-download',
+            items: [
+                {
+                    label: 'Excel',
+                    icon: 'pi pi-file-excel',
+                    command: () => {},
+                },
+                {
+                    label: 'PDF',
+                    icon: 'pi pi-file-pdf',
+                    command: () => {},
+                },
+            ],
+        },
+    ];
+    isFooterFixed: boolean = false;
+    getUserAnswers: any[] = [];
     constructor(
         private reactService: ReactService,
         private sanitizer: DomSanitizer,
         private storageService: StorageService,
         private dataService: DataService,
-        private textToSpeechService: TextToSpeechService
+        private textToSpeechService: TextToSpeechService,
+        private pdfService: PdfService,
+        private utilityService: UtilityService,
+        private emailService: EmailService,
+        private messageService: MessageService
     ) {
         //Subscription call for get file from local and cloud
         this.fileSubscription = this.reactService.file$.subscribe((data) => {
@@ -117,8 +147,20 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
         { label: 'Tamil', value: 'ta-IN' },
         // Add more languages if needed
     ];
+    showAnswers: boolean = false;
     ngOnInit() {
+        this.excelPageForm = new FormGroup({
+            checked: new FormControl(''),
+            optionSelect: new FormControl(null),
+            fixedFooter: new FormControl(''),
+        });
         this.getImages();
+        this.excelPageForm
+            .get('fixedFooter')
+            .valueChanges.subscribe((value) => {
+                this.isFooterFixed = value;
+                this.toggleFooterPosition();
+            });
     }
     ngAfterViewInit() {
         Prism.highlightAll(); // Trigger Prism to highlight the code
@@ -153,6 +195,8 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
             let questionSet: string[] = [];
             let optionSet: string[][] = [];
             let answerSet: string[] = [];
+            let reasonSet: string[] = [];
+            let controlSet: string[] = [];
 
             let textContent: string[] = [];
             let noteContent: string[] = [];
@@ -191,7 +235,23 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
                     if (keyName.toLowerCase().includes('xlanswers')) {
                         if (item[key]?.trim().toLowerCase() != 'x') {
                             answerSet.push(
-                                '<b>Correct Answer:</b>' +
+                                '<b>Correct Answer: </b>' +
+                                    item[key].replace(/\r\n/g, '</br>')
+                            );
+                        }
+                    }
+                    if (keyName.toLowerCase().includes('xlreasons')) {
+                        if (item[key]?.trim().toLowerCase() != 'x') {
+                            reasonSet.push(
+                                '<b>Reason: </b>' +
+                                    item[key].replace(/\r\n/g, '</br>')
+                            );
+                        }
+                    }
+                    if (keyName.toLowerCase().includes('xlcontrols')) {
+                        if (item[key]?.trim().toLowerCase() != 'x') {
+                            controlSet.push(
+                                '<b>Reason:</b>' +
                                     item[key].replace(/\r\n/g, '</br>')
                             );
                         }
@@ -285,6 +345,8 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
                 questionSet: questionSet,
                 optionSet: optionSet,
                 answerSet: answerSet,
+                reasonSet: reasonSet,
+                controlSet: controlSet,
                 textContent: textContent,
                 codeContent: codeContent,
                 noteContent: noteContent,
@@ -416,6 +478,91 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
     removeHtmlTags(stringWithHTML: string) {
         let stringWithoutHTML = stringWithHTML.replace(/<[^>]*>/g, '');
         return stringWithoutHTML;
+    }
+    downloadAnswer() {}
+    toggleFooterPosition() {
+        const footerElement = document.querySelector('.layout-footer');
+        if (this.isFooterFixed) {
+            footerElement.classList.add('fixed-footer');
+            footerElement.classList.remove('scroll-footer');
+        } else {
+            footerElement.classList.remove('fixed-footer');
+            footerElement.classList.add('scroll-footer');
+        }
+    }
+    submitAnswer() {
+        debugger;
+        this.showAnswers = true;
+    }
+    setUserAnswers(sno: any, question: any, selected: any, answer: any) {
+        this.addOrUpdateObject({
+            sno: sno,
+            question: question,
+            selected,
+            answer,
+        });
+    }
+    addOrUpdateObject(newObject: any) {
+        // Check if the object with the same key already exists
+        const index = this.getUserAnswers.findIndex(
+            (obj) => obj['sno'] === newObject['sno']
+        );
+        if (index !== -1) {
+            // If the key exists, override the existing object
+            this.getUserAnswers[index] = newObject;
+        } else {
+            // If the key doesn't exist, add the new object
+            this.getUserAnswers.push(newObject);
+        }
+    }
+    generatePDF() {
+        let pdfFormedData: any[] = this.utilityService.formatDataForPDF(
+            this.getUserAnswers
+        );
+        const title = 'User Information Q&A';
+        this.pdfService.downloadPDF(pdfFormedData, title);
+    }
+
+    sendEmail(event: Event) {
+        debugger;
+        let formattedContent = this.utilityService.formatDataForEmail(
+            this.getUserAnswers
+        );
+        event.preventDefault();
+        const target = event.target as HTMLFormElement;
+        const formData = {
+            user_name: 'Sathish',
+            user_email: 'sathish@gmail.com',
+            message: formattedContent,
+        };
+        this.emailService
+            .sendEmail(formData)
+            .then((response) => {
+                this.showToast(1, 'Email sent successfully!');
+            })
+            .catch((error) => {
+                this.showToast(2, 'Failed to send email!');
+                console.error('Email send error:', error);
+            });
+    }
+    showToast(type: number, message: string) {
+        debugger;
+        switch (type) {
+            case 1:
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Success',
+                    detail: message,
+                });
+                break;
+            case 2:
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: message,
+                });
+                break;
+        }
     }
     ngOnDestroy(): void {
         this.fileSubscription.unsubscribe();

@@ -14,7 +14,12 @@ import { PanelModule } from 'primeng/panel';
 import { ImageModule } from 'primeng/image';
 import { ToggleButtonModule } from 'primeng/togglebutton';
 import { RadioButtonModule } from 'primeng/radiobutton';
-
+import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
+import { SplitButtonModule } from 'primeng/splitbutton';
+import { InputSwitchModule } from 'primeng/inputswitch';
+import { CheckboxModule } from 'primeng/checkbox';
+import { ToastModule } from 'primeng/toast';
 @NgModule({
     declarations: [ExcelPagesComponent],
     imports: [
@@ -32,6 +37,12 @@ import { RadioButtonModule } from 'primeng/radiobutton';
         ImageModule,
         ToggleButtonModule,
         RadioButtonModule,
+        ReactiveFormsModule,
+        FormsModule,
+        SplitButtonModule,
+        InputSwitchModule,
+        CheckboxModule,
+        ToastModule,
     ],
 })
 export class ExcelModule {}

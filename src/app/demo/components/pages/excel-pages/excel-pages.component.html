@@ -1,205 +1,270 @@
-<div class="grid">
-    <div class="col-12">
-        <div class="card px-3 py-3">
-            <!-- <div class="card"> -->
-            <div *ngIf="showAddVideo" class="video-container">
-                <iframe
-                    width="1020"
-                    height="560"
-                    src="https://www.youtube.com/embed/-55qPQH1R-E?si=IUU66OmvVgz-JdIH"
-                    frameborder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowfullscreen
-                >
-                </iframe>
-            </div>
-            <div *ngIf="showExcelsTable">
-                <p-orderList
-                    [value]="products"
-                    [listStyle]="{ height: '25rem' }"
-                    header="List of Products"
-                >
-                    <ng-template let-product pTemplate="item">
-                        <div
-                            class="flex flex-wrap p-2 align-items-center gap-3"
-                            (click)="onExcelListClick(product)"
-                        >
-                            <img
-                                src="assets/demo/images/product/excelImg.jpg"
-                                [alt]="product.name"
-                                class="w-4rem shadow-2 flex-shrink-0 border-round"
-                            />
-                            <div class="flex-1 flex flex-column gap-2">
-                                <span class="font-bold">{{
-                                    product.name
-                                }}</span>
-                                <div class="flex align-items-center gap-2">
-                                    <i class="pi pi-tag text-sm"></i>
-                                    <span>
-                                        {{ product.tags }}
-                                    </span>
+<form [formGroup]="excelPageForm">
+    <p-toast />
+    <div class="grid">
+        <div class="col-12">
+            <div class="card px-3 py-3">
+                <!-- <div class="card"> -->
+                <div *ngIf="showAddVideo" class="video-container">
+                    <iframe
+                        width="1020"
+                        height="560"
+                        src="https://www.youtube.com/embed/-55qPQH1R-E?si=IUU66OmvVgz-JdIH"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen
+                    >
+                    </iframe>
+                </div>
+                <div *ngIf="showExcelsTable">
+                    <p-orderList
+                        [value]="products"
+                        [listStyle]="{ height: '25rem' }"
+                        header="List of Products"
+                    >
+                        <ng-template let-product pTemplate="item">
+                            <div
+                                class="flex flex-wrap p-2 align-items-center gap-3"
+                                (click)="onExcelListClick(product)"
+                            >
+                                <img
+                                    src="assets/demo/images/product/excelImg.jpg"
+                                    [alt]="product.name"
+                                    class="w-4rem shadow-2 flex-shrink-0 border-round"
+                                />
+                                <div class="flex-1 flex flex-column gap-2">
+                                    <span class="font-bold">{{
+                                        product.name
+                                    }}</span>
+                                    <div class="flex align-items-center gap-2">
+                                        <i class="pi pi-tag text-sm"></i>
+                                        <span>
+                                            {{ product.tags }}
+                                        </span>
+                                    </div>
                                 </div>
-                            </div>
-                            <span class="font-bold text-900">
-                                <!-- {{ product.type }} -->
-                                <!-- <p-rating
+                                <span class="font-bold text-900">
+                                    <!-- {{ product.type }} -->
+                                    <!-- <p-rating
                                     [(ngModel)]="value"
                                     [cancel]="false"
                                 /> -->
-                                <p-button
-                                    icon="pi pi-download"
-                                    [loading]="loading"
-                                    (onClick)="downloadFile(product)"
-                                />
-                            </span>
-                        </div>
-                    </ng-template>
-                </p-orderList>
-            </div>
-            <!-- </div> -->
-            <div *ngIf="showExcelContent">
-                <div *ngFor="let category of groupedData; let i = index">
-                    <div>
-                        <h2 class="text-blue-700">{{ category.category }}</h2>
-                        <div
-                            *ngFor="
-                                let subCategory of category.subCategories;
-                                let j = index
-                            "
-                        >
-                            <!-- Assign a unique ID based on indices -->
-                            <div [id]="'section-' + i + '-' + j">
-                                <h4 class="text-blue-700">
-                                    {{ subCategory.subCategory }}
-                                </h4>
-                                <div
-                                    *ngFor="let content of subCategory.contents"
-                                >
+                                    <p-button
+                                        icon="pi pi-download"
+                                        [loading]="loading"
+                                        (onClick)="downloadFile(product)"
+                                    />
+                                </span>
+                            </div>
+                        </ng-template>
+                    </p-orderList>
+                </div>
+                <!-- </div> -->
+                <div *ngIf="showExcelContent">
+                    <div *ngFor="let category of groupedData; let i = index">
+                        <div>
+                            <h2 class="text-blue-700">
+                                {{ category.category }}
+                            </h2>
+                            <div
+                                *ngFor="
+                                    let subCategory of category.subCategories;
+                                    let j = index
+                                "
+                            >
+                                <!-- Assign a unique ID based on indices -->
+                                <div [id]="'section-' + i + '-' + j">
+                                    <h4 class="text-blue-700">
+                                        {{ subCategory.subCategory }}
+                                    </h4>
                                     <div
-                                        *ngIf="content.questionSet?.length > 0"
+                                        *ngFor="
+                                            let content of subCategory.contents
+                                        "
                                     >
-                                        <div class="mb-3">
-                                            <span
-                                                [innerHTML]="content.snoSet[0]"
-                                            >
-                                            </span>
-                                            <span
-                                                [innerHTML]="
-                                                    content.questionSet[0]
-                                                "
-                                            >
-                                            </span>
-                                        </div>
                                         <div
                                             *ngIf="
-                                                content.optionSet?.length > 0
+                                                content.questionSet?.length > 0
                                             "
                                         >
-                                            <!-- <span [innerHTML]="
+                                            <div class="mb-3">
+                                                <span
+                                                    [innerHTML]="
+                                                        content.snoSet[0] + '.'
+                                                    "
+                                                >
+                                                </span>
+                                                <span
+                                                    [innerHTML]="
+                                                        content.questionSet[0]
+                                                    "
+                                                >
+                                                </span>
+                                            </div>
+                                            <div
+                                                class="mb-3"
+                                                *ngIf="
+                                                    content.optionSet?.length >
+                                                    0
+                                                "
+                                            >
+                                                <!-- <span [innerHTML]="
                                                         content.optionSet[i]
                                                     ">
                                                 </span> -->
-                                            <span
-                                                *ngFor="
-                                                    let option of content.optionSet;
-                                                    let i = index
-                                                "
-                                                class="mr-5"
-                                            >
-                                                <p-radioButton
-                                                    [inputId]="i"
-                                                    name="options"
-                                                    [value]="option"
-                                                    [(ngModel)]="selectedOption"
-                                                />
-                                                <label
-                                                    [for]="option"
-                                                    class="ml-2"
+                                                <span
+                                                    *ngFor="
+                                                        let option of content.optionSet;
+                                                        let i = index
+                                                    "
+                                                    class="mr-5"
                                                 >
-                                                    {{ option }}
-                                                </label>
+                                                    <!-- <p-radioButton
+                                                        [inputId]="i"
+                                                        name="optionSelect"
+                                                        [value]="
+                                                            i + '|' + option
+                                                        "
+                                                        formControlName="optionSelect"
+                                                    /> -->
+                                                    <div
+                                                        style="
+                                                            color: cornflowerblue;
+                                                            display: inline;
+                                                        "
+                                                    >
+                                                        <p-checkbox
+                                                            formControlName="optionSelect"
+                                                            [value]="
+                                                                i + '|' + option
+                                                            "
+                                                            [inputId]="i"
+                                                            (onChange)="
+                                                                setUserAnswers(
+                                                                    content
+                                                                        .snoSet[0],
+                                                                    content
+                                                                        .questionSet[0],
+                                                                    i +
+                                                                        1 +
+                                                                        '|' +
+                                                                        option,
+                                                                    content
+                                                                        .answerSet[0]
+                                                                )
+                                                            "
+                                                        />
+
+                                                        <label
+                                                            [for]="option"
+                                                            class="ml-2"
+                                                        >
+                                                            {{ option }}
+                                                        </label>
+                                                    </div>
+                                                </span>
+                                            </div>
+                                            <div
+                                                *ngIf="
+                                                    content.answerSet?.length >
+                                                    0
+                                                "
+                                            >
+                                                <!-- -->
+                                                <div [hidden]="!showAnswers">
+                                                    <p-messages severity="info">
+                                                        <ng-template pTemplate>
+                                                            <div
+                                                                class="ml-2"
+                                                                [innerHTML]="
+                                                                    content
+                                                                        .answerSet[0] +
+                                                                    content
+                                                                        .reasonSet[0]
+                                                                "
+                                                            ></div>
+                                                        </ng-template>
+                                                    </p-messages>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- <div style="display: none;">[property]=binding</div> -->
+                                        <div
+                                            *ngIf="
+                                                content.textContent.length > 0
+                                            "
+                                        >
+                                            <span
+                                                [innerHTML]="
+                                                    content.textContent[0]
+                                                "
+                                            >
                                             </span>
+                                            <span class="ml-2"
+                                                ><p-toggleButton
+                                                    formControlName="checked"
+                                                    offIcon="pi pi-volume-off"
+                                                    onIcon="pi pi-volume-up"
+                                                    (onChange)="
+                                                        onToggle(
+                                                            $event,
+                                                            content
+                                                                .textContent[0]
+                                                        )
+                                                    "
+                                            /></span>
                                         </div>
                                         <div
                                             *ngIf="
-                                                content.answerSet?.length > 0
+                                                content.codeContent.length > 0
                                             "
                                         >
-                                            <p-messages severity="info">
-                                                <ng-template pTemplate>
-                                                    <div
-                                                        class="ml-2"
-                                                        [innerHTML]="
-                                                            content.answerSet[0]
-                                                        "
-                                                    ></div>
-                                                </ng-template>
-                                            </p-messages>
-                                        </div>
-                                    </div>
-
-                                    <!-- <div style="display: none;">[property]=binding</div> -->
-                                    <div *ngIf="content.textContent.length > 0">
-                                        <span
-                                            [innerHTML]="content.textContent[0]"
-                                        >
-                                        </span>
-                                        <span class="ml-2"
-                                            ><p-toggleButton
-                                                formControlName="checked"
-                                                offIcon="pi pi-volume-off"
-                                                onIcon="pi pi-volume-up"
-                                                (onChange)="
-                                                    onToggle(
-                                                        $event,
-                                                        content.textContent[0]
-                                                    )
-                                                "
-                                        /></span>
-                                    </div>
-                                    <div *ngIf="content.codeContent.length > 0">
-                                        <!-- <div class="code-card">
+                                            <!-- <div class="code-card">
                                             <pre><code class="language-html" >{{content.codeContent[0]}}</code></pre>
                                         </div> -->
-                                        <div class="code-card2 shadow-4">
-                                            <span
-                                                [innerHTML]="
-                                                    content.codeContent[0]
-                                                "
-                                            >
-                                            </span>
+                                            <div class="code-card2 shadow-4">
+                                                <span
+                                                    [innerHTML]="
+                                                        content.codeContent[0]
+                                                    "
+                                                >
+                                                </span>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div
-                                        class="mb-2"
-                                        *ngIf="content.noteContent.length > 0"
-                                    >
                                         <div
-                                            *ngFor="
-                                                let category of groupedData;
-                                                let i = index
+                                            class="mb-2"
+                                            *ngIf="
+                                                content.noteContent.length > 0
                                             "
                                         >
                                             <div
                                                 *ngFor="
-                                                    let msg of content.noteContent
+                                                    let category of groupedData;
+                                                    let i = index
                                                 "
                                             >
-                                                <p-messages
-                                                    [severity]="
-                                                        checkString(msg)
+                                                <div
+                                                    *ngFor="
+                                                        let msg of content.noteContent
                                                     "
                                                 >
-                                                    <ng-template pTemplate>
-                                                        <div
-                                                            class="ml-2"
-                                                            [innerHTML]="msg"
-                                                        ></div>
-                                                    </ng-template>
-                                                </p-messages>
-                                            </div>
+                                                    <p-messages
+                                                        [severity]="
+                                                            checkString(msg)
+                                                        "
+                                                    >
+                                                        <ng-template pTemplate>
+                                                            <div
+                                                                class="ml-2"
+                                                                [innerHTML]="
+                                                                    msg
+                                                                "
+                                                            ></div>
+                                                        </ng-template>
+                                                    </p-messages>
+                                                </div>
 
-                                            <!-- <p-card
+                                                <!-- <p-card
                                             [style]="noteStyle"
                                             class="text-blue-400 w-6 shadow-4"
                                         >
@@ -210,85 +275,73 @@
                                                 "
                                             ></p>
                                         </p-card> -->
-                                        </div>
-                                        <p-panel
-                                            header="References"
-                                            [toggleable]="true"
-                                            *ngIf="
-                                                content.imageContent[0] ||
-                                                content.gifContent[0] ||
-                                                content.videoContent[0] ||
-                                                content.urlRefContent[0]
-                                            "
-                                        >
-                                            <p-tabView
+                                            </div>
+                                            <p-panel
+                                                header="References"
+                                                [toggleable]="true"
                                                 *ngIf="
                                                     content.imageContent[0] ||
                                                     content.gifContent[0] ||
                                                     content.videoContent[0] ||
                                                     content.urlRefContent[0]
                                                 "
-                                                styleClass="tabview-custom"
                                             >
-                                                <p-tabPanel
+                                                <p-tabView
                                                     *ngIf="
-                                                        content.imageContent[0]
+                                                        content
+                                                            .imageContent[0] ||
+                                                        content.gifContent[0] ||
+                                                        content
+                                                            .videoContent[0] ||
+                                                        content.urlRefContent[0]
                                                     "
-                                                    header="Images"
+                                                    styleClass="tabview-custom"
                                                 >
-                                                    <ng-template
-                                                        pTemplate="header"
+                                                    <p-tabPanel
+                                                        *ngIf="
+                                                            content
+                                                                .imageContent[0]
+                                                        "
+                                                        header="Images"
                                                     >
-                                                        <div
-                                                            class="flex align-items-center gap-2"
+                                                        <ng-template
+                                                            pTemplate="header"
                                                         >
-                                                            <i
-                                                                class="pi pi-images"
-                                                                style="
-                                                                    color: slateblue;
-                                                                "
-                                                            ></i>
-                                                            <span
-                                                                class="font-bold white-space-nowrap m-0"
+                                                            <div
+                                                                class="flex align-items-center gap-2"
                                                             >
-                                                                Images
-                                                            </span>
-                                                        </div>
-                                                    </ng-template>
-                                                    <div
-                                                        class="flex justify-content-center align-content-center"
-                                                    >
-                                                        <p-galleria
-                                                            [(value)]="
-                                                                content.imageContent
-                                                            "
-                                                            [responsiveOptions]="
-                                                                responsiveOptions
-                                                            "
-                                                            [containerStyle]="{
+                                                                <i
+                                                                    class="pi pi-images"
+                                                                    style="
+                                                                        color: slateblue;
+                                                                    "
+                                                                ></i>
+                                                                <span
+                                                                    class="font-bold white-space-nowrap m-0"
+                                                                >
+                                                                    Images
+                                                                </span>
+                                                            </div>
+                                                        </ng-template>
+                                                        <div
+                                                            class="flex justify-content-center align-content-center"
+                                                        >
+                                                            <p-galleria
+                                                                [(value)]="
+                                                                    content.imageContent
+                                                                "
+                                                                [responsiveOptions]="
+                                                                    responsiveOptions
+                                                                "
+                                                                [containerStyle]="{
                                                     'max-width': '1050px',
 
                                                       }"
-                                                            [numVisible]="5"
-                                                        >
-                                                            <ng-template
-                                                                pTemplate="item"
-                                                                let-item
+                                                                [numVisible]="5"
                                                             >
-                                                                <img
-                                                                    [src]="item"
-                                                                    style="
-                                                                        width: 100%;
-                                                                        height: 450px;
-                                                                    "
-                                                                />
-                                                            </ng-template>
-                                                            <ng-template
-                                                                pTemplate="thumbnail"
-                                                                let-item
-                                                            >
-                                                                <div
-                                                                    class="grid grid-nogutter justify-content-center"
+                                                                <ng-template
+                                                                    pTemplate="item"
+                                                                    let-item
                                                                 >
                                                                     <img
                                                                         [src]="
@@ -296,150 +349,199 @@
                                                                         "
                                                                         style="
                                                                             width: 100%;
-                                                                            height: 50px;
+                                                                            height: 450px;
                                                                         "
                                                                     />
-                                                                </div>
-                                                            </ng-template>
-                                                        </p-galleria>
-                                                    </div>
-                                                </p-tabPanel>
-                                                <p-tabPanel
-                                                    *ngIf="
-                                                        content.gifContent[0]
-                                                    "
-                                                    header="Gifs"
-                                                >
-                                                    <ng-template
-                                                        pTemplate="header"
-                                                    >
-                                                        <div
-                                                            class="flex align-items-center gap-2"
-                                                        >
-                                                            <i
-                                                                class="pi pi-sparkles"
-                                                                style="
-                                                                    color: slateblue;
-                                                                "
-                                                            ></i>
-                                                            <span
-                                                                class="font-bold white-space-nowrap m-0"
-                                                            >
-                                                                Gifs
-                                                            </span>
+                                                                </ng-template>
+                                                                <ng-template
+                                                                    pTemplate="thumbnail"
+                                                                    let-item
+                                                                >
+                                                                    <div
+                                                                        class="grid grid-nogutter justify-content-center"
+                                                                    >
+                                                                        <img
+                                                                            [src]="
+                                                                                item
+                                                                            "
+                                                                            style="
+                                                                                width: 100%;
+                                                                                height: 50px;
+                                                                            "
+                                                                        />
+                                                                    </div>
+                                                                </ng-template>
+                                                            </p-galleria>
                                                         </div>
-                                                    </ng-template>
-                                                    <div
-                                                        class="flex justify-content-center align-content-center"
+                                                    </p-tabPanel>
+                                                    <p-tabPanel
+                                                        *ngIf="
+                                                            content
+                                                                .gifContent[0]
+                                                        "
+                                                        header="Gifs"
                                                     >
-                                                        <img
-                                                            [src]="
-                                                                content
-                                                                    .gifContent[0]
-                                                            "
-                                                            style="
-                                                                width: 90%;
-                                                                height: 500px;
-                                                            "
-                                                            alt="GIF Image"
-                                                        />
-                                                    </div>
-                                                </p-tabPanel>
-                                                <p-tabPanel
-                                                    *ngIf="
-                                                        content.videoContent[0]
-                                                    "
-                                                    header="Videos"
-                                                >
-                                                    <ng-template
-                                                        pTemplate="header"
-                                                    >
-                                                        <div
-                                                            class="flex align-items-center gap-2"
+                                                        <ng-template
+                                                            pTemplate="header"
                                                         >
-                                                            <i
-                                                                class="pi pi-play-circle"
-                                                                style="
-                                                                    color: slateblue;
-                                                                "
-                                                            ></i>
-                                                            <span
-                                                                class="font-bold white-space-nowrap m-0"
+                                                            <div
+                                                                class="flex align-items-center gap-2"
                                                             >
-                                                                Videos
-                                                            </span>
-                                                        </div>
-                                                    </ng-template>
-                                                    <div
-                                                        class="flex justify-content-center align-content-center"
-                                                    >
-                                                        <iframe
-                                                            width="1020"
-                                                            height="460"
-                                                            [src]="
-                                                                content
-                                                                    .videoContent[0]
-                                                            "
-                                                            frameborder="0"
-                                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                                            allowfullscreen
-                                                        >
-                                                        </iframe>
-                                                    </div>
-                                                </p-tabPanel>
-                                                <p-tabPanel
-                                                    *ngIf="
-                                                        content.urlRefContent[0]
-                                                    "
-                                                    header="URLs"
-                                                >
-                                                    <ng-template
-                                                        pTemplate="header"
-                                                    >
+                                                                <i
+                                                                    class="pi pi-sparkles"
+                                                                    style="
+                                                                        color: slateblue;
+                                                                    "
+                                                                ></i>
+                                                                <span
+                                                                    class="font-bold white-space-nowrap m-0"
+                                                                >
+                                                                    Gifs
+                                                                </span>
+                                                            </div>
+                                                        </ng-template>
                                                         <div
-                                                            class="flex align-items-center gap-2"
+                                                            class="flex justify-content-center align-content-center"
                                                         >
-                                                            <i
-                                                                class="pi pi-link"
-                                                                style="
-                                                                    color: slateblue;
+                                                            <img
+                                                                [src]="
+                                                                    content
+                                                                        .gifContent[0]
                                                                 "
-                                                            ></i>
-                                                            <span
-                                                                class="font-bold white-space-nowrap m-0"
-                                                            >
-                                                                Frames
-                                                            </span>
-                                                            <p-badge
-                                                                value="2"
+                                                                style="
+                                                                    width: 90%;
+                                                                    height: 500px;
+                                                                "
+                                                                alt="GIF Image"
                                                             />
                                                         </div>
-                                                    </ng-template>
-                                                    <div
-                                                        class="flex justify-content-center align-content-center"
+                                                    </p-tabPanel>
+                                                    <p-tabPanel
+                                                        *ngIf="
+                                                            content
+                                                                .videoContent[0]
+                                                        "
+                                                        header="Videos"
                                                     >
-                                                        <iframe
-                                                            [src]="
-                                                                content
-                                                                    .urlRefContent[0]
-                                                            "
-                                                            width="100%"
-                                                            height="400px"
-                                                            frameborder="0"
-                                                            allowfullscreen
+                                                        <ng-template
+                                                            pTemplate="header"
                                                         >
-                                                        </iframe>
-                                                    </div>
-                                                </p-tabPanel>
-                                            </p-tabView>
-                                        </p-panel>
+                                                            <div
+                                                                class="flex align-items-center gap-2"
+                                                            >
+                                                                <i
+                                                                    class="pi pi-play-circle"
+                                                                    style="
+                                                                        color: slateblue;
+                                                                    "
+                                                                ></i>
+                                                                <span
+                                                                    class="font-bold white-space-nowrap m-0"
+                                                                >
+                                                                    Videos
+                                                                </span>
+                                                            </div>
+                                                        </ng-template>
+                                                        <div
+                                                            class="flex justify-content-center align-content-center"
+                                                        >
+                                                            <iframe
+                                                                width="1020"
+                                                                height="460"
+                                                                [src]="
+                                                                    content
+                                                                        .videoContent[0]
+                                                                "
+                                                                frameborder="0"
+                                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                                allowfullscreen
+                                                            >
+                                                            </iframe>
+                                                        </div>
+                                                    </p-tabPanel>
+                                                    <p-tabPanel
+                                                        *ngIf="
+                                                            content
+                                                                .urlRefContent[0]
+                                                        "
+                                                        header="URLs"
+                                                    >
+                                                        <ng-template
+                                                            pTemplate="header"
+                                                        >
+                                                            <div
+                                                                class="flex align-items-center gap-2"
+                                                            >
+                                                                <i
+                                                                    class="pi pi-link"
+                                                                    style="
+                                                                        color: slateblue;
+                                                                    "
+                                                                ></i>
+                                                                <span
+                                                                    class="font-bold white-space-nowrap m-0"
+                                                                >
+                                                                    Frames
+                                                                </span>
+                                                                <p-badge
+                                                                    value="2"
+                                                                />
+                                                            </div>
+                                                        </ng-template>
+                                                        <div
+                                                            class="flex justify-content-center align-content-center"
+                                                        >
+                                                            <iframe
+                                                                [src]="
+                                                                    content
+                                                                        .urlRefContent[0]
+                                                                "
+                                                                width="100%"
+                                                                height="400px"
+                                                                frameborder="0"
+                                                                allowfullscreen
+                                                            >
+                                                            </iframe>
+                                                        </div>
+                                                    </p-tabPanel>
+                                                </p-tabView>
+                                            </p-panel>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <div
+                        class="flex justify-content-center align-content-center flex-wrap mb-1"
+                    >
+                        <p-splitButton
+                            label="Download"
+                            (onClick)="generatePDF()"
+                            [model]="downloadAnsOptions"
+                            class="mr-2 custom-splitbutton dropdown-left"
+                        />
+                        <p-button
+                            icon="pi pi-check"
+                            [loading]="loading"
+                            label="Submit"
+                            (onClick)="submitAnswer()"
+                            class="mr-2"
+                        />
+                        <p-button
+                            icon="pi pi-envelope"
+                            [loading]="loading"
+                            label="SendMail"
+                            (onClick)="sendEmail($event)"
+                            class="mr-2"
+                        />
+                        <p-inputSwitch
+                            formControlName="fixedFooter"
+                            class="mt-1"
+                        ></p-inputSwitch>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</form>
