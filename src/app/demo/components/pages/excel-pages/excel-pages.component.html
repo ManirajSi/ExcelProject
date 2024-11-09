@@ -59,7 +59,7 @@
                     </p-orderList>
                 </div>
                 <!-- </div> -->
-                <div *ngIf="showExcelContent">
+                <div *ngIf="showExcelContent && !showTaskView">
                     <div *ngFor="let category of groupedData; let i = index">
                         <div>
                             <h2 class="text-blue-700">
@@ -283,7 +283,8 @@
                                                     content.imageContent[0] ||
                                                     content.gifContent[0] ||
                                                     content.videoContent[0] ||
-                                                    content.urlRefContent[0]
+                                                    content.urlRefContent[0] ||
+                                                    content.pdfsContent[0]
                                                 "
                                             >
                                                 <p-tabView
@@ -293,11 +294,14 @@
                                                         content.gifContent[0] ||
                                                         content
                                                             .videoContent[0] ||
-                                                        content.urlRefContent[0]
+                                                        content
+                                                            .urlRefContent[0] ||
+                                                        content.pdfsContent[0]
                                                     "
                                                     styleClass="tabview-custom"
                                                 >
                                                     <p-tabPanel
+                                                        class="p-0"
                                                         *ngIf="
                                                             content
                                                                 .imageContent[0]
@@ -334,7 +338,7 @@
                                                                     responsiveOptions
                                                                 "
                                                                 [containerStyle]="{
-                                                    'max-width': '1050px',
+                                                                     'max-width': '1050px',
 
                                                       }"
                                                                 [numVisible]="5"
@@ -349,7 +353,7 @@
                                                                         "
                                                                         style="
                                                                             width: 100%;
-                                                                            height: 450px;
+                                                                            height: 620px;
                                                                         "
                                                                     />
                                                                 </ng-template>
@@ -410,7 +414,7 @@
                                                                 "
                                                                 style="
                                                                     width: 90%;
-                                                                    height: 500px;
+                                                                    height: 620px;
                                                                 "
                                                                 alt="GIF Image"
                                                             />
@@ -447,7 +451,7 @@
                                                         >
                                                             <iframe
                                                                 width="1020"
-                                                                height="460"
+                                                                height="620"
                                                                 [src]="
                                                                     content
                                                                         .videoContent[0]
@@ -481,7 +485,7 @@
                                                                 <span
                                                                     class="font-bold white-space-nowrap m-0"
                                                                 >
-                                                                    Frames
+                                                                    Website
                                                                 </span>
                                                                 <p-badge
                                                                     value="2"
@@ -497,7 +501,52 @@
                                                                         .urlRefContent[0]
                                                                 "
                                                                 width="100%"
-                                                                height="400px"
+                                                                height="650px"
+                                                                frameborder="0"
+                                                                allowfullscreen
+                                                            >
+                                                            </iframe>
+                                                        </div>
+                                                    </p-tabPanel>
+                                                    <p-tabPanel
+                                                        *ngIf="
+                                                            content
+                                                                .pdfContent[0]
+                                                        "
+                                                        header="URLs"
+                                                    >
+                                                        <ng-template
+                                                            pTemplate="header"
+                                                        >
+                                                            <div
+                                                                class="flex align-items-center gap-2"
+                                                            >
+                                                                <i
+                                                                    class="pi pi-link"
+                                                                    style="
+                                                                        color: slateblue;
+                                                                    "
+                                                                ></i>
+                                                                <span
+                                                                    class="font-bold white-space-nowrap m-0"
+                                                                >
+                                                                    Document
+                                                                </span>
+                                                                <p-badge
+                                                                    value="2"
+                                                                />
+                                                            </div>
+                                                        </ng-template>
+                                                        <div
+                                                            class="flex justify-content-center align-content-center"
+                                                        >
+                                                            <iframe
+                                                                [src]="
+                                                                    content
+                                                                        .pdfContent[0]
+                                                                "
+                                                                width="100%"
+                                                                height="650px"
                                                                 frameborder="0"
                                                                 allowfullscreen
                                                             >
@@ -513,6 +562,7 @@
                         </div>
                     </div>
                     <div
+                        *ngIf="showQAView"
                         class="flex justify-content-center align-content-center flex-wrap mb-1"
                     >
                         <p-splitButton
@@ -535,11 +585,64 @@
                             (onClick)="sendEmail($event)"
                             class="mr-2"
                         />
-                        <p-inputSwitch
+                        <!-- <p-inputSwitch
                             formControlName="fixedFooter"
                             class="mt-1"
-                        ></p-inputSwitch>
+                        ></p-inputSwitch> -->
                     </div>
+                </div>
+
+                <div *ngIf="showExcelContent && showTaskView">
+                    <span *ngFor="let category of groupedData; let i = index">
+                        <span>
+                            <h2 class="text-blue-700">
+                                {{ category.category }}
+                            </h2>
+                            <span
+                                *ngFor="
+                                    let subCategory of category.subCategories;
+                                    let j = index
+                                "
+                            >
+                                <!-- Assign a unique ID based on indices -->
+                                <span [id]="'section-' + i + '-' + j">
+                                    <h4 class="text-blue-700">
+                                        {{ subCategory.subCategory }}
+                                    </h4>
+                                    <span
+                                        *ngFor="
+                                            let content of subCategory.contents
+                                        "
+                                    >
+                                        <span
+                                            *ngIf="content.taskSet?.length > 0"
+                                        >
+                                            <div
+                                                class="p-field-checkbox"
+                                                *ngFor="
+                                                    let task of content.taskSet;
+                                                    let i = index
+                                                "
+                                            >
+                                                <p-checkbox
+                                                    name="taskControl"
+                                                    value="{{ task }}"
+                                                    formControlName="taskControl"
+                                                    inputId="{{ i }}"
+                                                    class="mt-2"
+                                                ></p-checkbox>
+                                                <label
+                                                    for="{{ task }}"
+                                                    class="ml-2"
+                                                    >{{ task }}</label
+                                                >
+                                            </div>
+                                        </span>
+                                    </span>
+                                </span>
+                            </span>
+                        </span>
+                    </span>
                 </div>
             </div>
         </div>
