@@ -88,6 +88,17 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
     ];
     isFooterFixed: boolean = false;
     getUserAnswers: any[] = [];
+    checklist: any[] = [
+        { label: 'Item 1', value: 'Item 1' },
+        { label: 'Item 2', value: 'Item 2' },
+        { label: 'Item 3', value: 'Item 3' },
+    ];
+
+    selectedItems: string[] = [];
+    showTaskView: boolean = false;
+    showQAView: boolean = false;
+    contentIndexValue: number = 0;
+    selectedTabIndex: number = 0;
     constructor(
         private reactService: ReactService,
         private sanitizer: DomSanitizer,
@@ -153,6 +164,7 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
             checked: new FormControl(''),
             optionSelect: new FormControl(null),
             fixedFooter: new FormControl(''),
+            taskControl: new FormControl(null),
         });
         this.getImages();
         this.excelPageForm
@@ -183,7 +195,6 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
         ];
     }
     groupData() {
-        console.log('this.data 2===>', this.data);
         const categoryMap = new Map<
             string,
             Map<string, (SafeHtml | string[])[]>
@@ -192,6 +203,7 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
             let category: string = '';
             let subCategory: string = '';
             let snoSet: string[] = [];
+            let taskSet: string[] = [];
             let questionSet: string[] = [];
             let optionSet: string[][] = [];
             let answerSet: string[] = [];
@@ -201,12 +213,14 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
             let textContent: string[] = [];
             let noteContent: string[] = [];
             let codeContent: string[] = [];
-            let imageContent: string[] = [];
+            let imageContent: SafeResourceUrl[] = [];
             let videoContent: SafeResourceUrl[] = [];
-            let gifContent: string[] = [];
+            let gifContent: SafeResourceUrl[] = [];
             let urlRefContent: SafeResourceUrl[] = [];
+            let pdfContent: SafeResourceUrl[] = [];
             Object.keys(item).forEach((key) => {
                 let keyName = key.toLowerCase().trim();
+                // console.log('keyName====>', keyName);
                 if (keyName.toLowerCase().includes('xlcategory')) {
                     category = item[key]; // Assign the value to category if the key contains "col1"
                 } else if (keyName.toLowerCase().includes('xlsubcategory')) {
@@ -217,6 +231,25 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
                             snoSet.push(item[key]);
                         }
                     }
+                    if (keyName.toLowerCase().includes('xltask')) {
+                        if (item[key]?.trim().toLowerCase() != 'x') {
+                            taskSet.push(item[key].replace(/\r\n/g, '</br>'));
+                        }
+                    }
+                    // if (keyName.toLowerCase().includes('xlquestions')) {
+                    //     if (item[key]?.trim().toLowerCase() != 'x') {
+                    //         questionSet.push(
+                    //             item[key].replace(/\r\n/g, '</br>')
+                    //         );
+                    //     }
+                    // }
+                    // if (keyName.toLowerCase().includes('xlquestions')) {
+                    //     if (item[key]?.trim().toLowerCase() != 'x') {
+                    //         questionSet.push(
+                    //             item[key].replace(/\r\n/g, '</br>')
+                    //         );
+                    //     }
+                    // }
                     if (keyName.toLowerCase().includes('xlquestions')) {
                         if (item[key]?.trim().toLowerCase() != 'x') {
                             questionSet.push(
@@ -283,7 +316,15 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
                             let imgArr: string[] = item[key]
                                 .replace(/\r\n/g, '')
                                 .split(',');
-                            imageContent.push(...imgArr); // Assign the value to content if the key contains "col5"
+                            imgArr.forEach((img: any) => {
+                                let safeurl: SafeResourceUrl =
+                                    this.sanitizer.bypassSecurityTrustResourceUrl(
+                                        img
+                                    );
+                                imageContent.push(safeurl);
+                            });
+
+                            // Assign the value to content if the key contains "col5"
                         }
                     }
                     if (keyName.toLowerCase().includes('xlgif')) {
@@ -291,7 +332,14 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
                             let gifArr: string[] = item[key]
                                 .replace(/\r\n/g, '')
                                 .split(',');
-                            gifContent.push(...gifArr); // Assign the value to content if the key contains "col5"
+                            gifArr.forEach((gifimg: any) => {
+                                let safeurl: SafeResourceUrl =
+                                    this.sanitizer.bypassSecurityTrustResourceUrl(
+                                        gifimg
+                                    );
+                                gifContent.push(safeurl);
+                            });
+                            // Assign the value to content if the key contains "col5"
                         }
                     }
                     if (keyName.toLowerCase().includes('xlvideo')) {
@@ -324,6 +372,21 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
                             // Assign the value to content if the key contains "col5"
                         }
                     }
+                    if (keyName.toLowerCase().includes('xlpdf')) {
+                        if (item[key]?.trim().toLowerCase() != 'x') {
+                            let pdfArr: string[] = item[key]
+                                .replace(/\r\n/g, '')
+                                .split(',');
+                            pdfArr.forEach((pdfdata) => {
+                                let safeurl: SafeResourceUrl =
+                                    this.sanitizer.bypassSecurityTrustResourceUrl(
+                                        pdfdata
+                                    );
+                                pdfContent.push(safeurl);
+                            });
+                            // Assign the value to content if the key contains "col5"
+                        }
+                    }
                 }
             });
             //const content = item.column3 + (item.column4 ? '\n' + item.column5 : '');
@@ -342,6 +405,7 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
             }
             subCategoryMap.get(subCategory)!.push({
                 snoSet: snoSet,
+                taskSet: taskSet,
                 questionSet: questionSet,
                 optionSet: optionSet,
                 answerSet: answerSet,
@@ -354,6 +418,7 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
                 videoContent: videoContent,
                 gifContent: gifContent,
                 urlRefContent: urlRefContent,
+                pdfContent: pdfContent,
             });
         });
         // Convert Map to Array while preserving order
@@ -491,7 +556,6 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
         }
     }
     submitAnswer() {
-        debugger;
         this.showAnswers = true;
     }
     setUserAnswers(sno: any, question: any, selected: any, answer: any) {
@@ -524,7 +588,6 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
     }
 
     sendEmail(event: Event) {
-        debugger;
         let formattedContent = this.utilityService.formatDataForEmail(
             this.getUserAnswers
         );
@@ -546,7 +609,6 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
             });
     }
     showToast(type: number, message: string) {
-        debugger;
         switch (type) {
             case 1:
                 this.messageService.add({
@@ -563,6 +625,29 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
                 });
                 break;
         }
+    }
+    onContentChange(event: any) {
+        console.log('event===>', event);
+        this.contentIndexValue = event.page;
+    }
+    checkIframe(iframeName: string) {
+        const iframe = document.getElementById(iframeName) as HTMLIFrameElement;
+        setTimeout(() => {
+            try {
+                const iframeDoc =
+                    iframe.contentDocument || iframe.contentWindow?.document;
+                if (iframeDoc?.location.href === 'about:blank') {
+                    return true;
+                } else {
+                    return true;
+                }
+            } catch (e) {
+                return true;
+            }
+        }, 1000);
+    }
+    onTabChange(event: any) {
+        this.selectedTabIndex = event.index;
     }
     ngOnDestroy(): void {
         this.fileSubscription.unsubscribe();

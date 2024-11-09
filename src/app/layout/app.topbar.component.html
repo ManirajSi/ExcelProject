@@ -11,25 +11,14 @@
         />
         <span class="topbarHeading">{{ webName }}</span>
     </a> -->
-    <p-splitButton
-        label="Upload"
-        (onClick)="recentActionCall()"
-        [model]="nestedActionitems"
-        class="mr-2 custom-splitbutton dropdown-left"
-    />
-    <button
-        #topbarmenubutton
-        class="p-link layout-topbar-menu-button layout-topbar-button"
-        (click)="layoutService.showProfileSidebar()"
-    >
+    <p-splitButton label="Upload" (onClick)="recentActionCall()" [model]="nestedActionitems"
+        class="mr-2 custom-splitbutton dropdown-left" [appendTo]="'body'" />
+    <button #topbarmenubutton class="p-link layout-topbar-menu-button layout-topbar-button"
+        (click)="layoutService.showProfileSidebar()">
         <i class="pi pi-ellipsis-v"></i>
     </button>
-    <button
-        #menubutton
-        *ngIf="sideBarButton.show"
-        class="p-link layout-menu-button layout-topbar-button mr-2"
-        (click)="layoutService.onMenuToggle()"
-    >
+    <button #menubutton *ngIf="sideBarButton.show" class="p-link layout-menu-button layout-topbar-button mr-2"
+        (click)="layoutService.onMenuToggle()">
         <i class="pi pi-bars"></i>
     </button>
     <!-- app.component.html -->
@@ -38,35 +27,17 @@
     </div>
     <!-- <div><p-speedDial [model]="items" direction="down" /></div> -->
     <div class="p-inputgroup">
-        <p-dropdown
-            [options]="autoCompleteitems"
-            [(ngModel)]="selectedItem"
-            [showClear]="true"
-            placeholder="Select a Excel content"
-            [editable]="true"
-            optionLabel="name"
-            (onChange)="onSearchClick()"
-        />
+        <p-dropdown [options]="autoCompleteitems" [(ngModel)]="selectedItem" [showClear]="true"
+            placeholder="Select a Excel content" [editable]="true" optionLabel="name" (onChange)="onSearchClick()" />
     </div>
-    <div
-        #topbarmenu
-        class="layout-topbar-menu"
-        [ngClass]="{
+    <div #topbarmenu class="layout-topbar-menu" [ngClass]="{
             'layout-topbar-menu-mobile-active':
                 layoutService.state.profileSidebarVisible
-        }"
-    >
-        <p-fileUpload
-            [hidden]="true"
-            #fileUpload
-            [pTooltip]="'upload your excel to Preview'"
-            name="myfile[]"
-            mode="basic"
-            [auto]="true"
-            styleClass="d-none"
+        }">
+        <p-fileUpload [hidden]="true" #fileUpload [pTooltip]="'upload your excel to Preview'" name="myfile[]"
+            mode="basic" [auto]="true" styleClass="d-none"
             accept=".xlsx, .xls, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-            (onSelect)="fileSelectAndPreview(fileUpload, $event)"
-        ></p-fileUpload>
+            (onSelect)="fileSelectAndPreview(fileUpload, $event)"></p-fileUpload>
         <!-- <button class="p-link layout-topbar-button" (click)="loginRedirect()">
             <img
                 *ngIf="isLoggedIn"
@@ -87,15 +58,10 @@
     </div>
 </div>
 <!-- Dialog box -->
-<p-dialog
-    header="Edit Profile"
-    [modal]="true"
-    [(visible)]="visible"
-    [style]="{ width: '25rem' }"
->
+<p-dialog header="Edit Profile" [modal]="true" [(visible)]="visible" [style]="{ width: '25rem' }">
     <span class="p-text-secondary block mb-5">{{
         this.dialogboxContent[0]
-    }}</span>
+        }}</span>
     <!-- <div class="flex align-items-center gap-3 mb-3">
         <label for="username" class="font-semibold w-6rem">Username</label>
         <input pInputText id="username" class="flex-auto" autocomplete="off" />
@@ -105,11 +71,7 @@
         <input pInputText id="email" class="flex-auto" autocomplete="off" />
     </div> -->
     <div class="flex justify-content-end gap-2">
-        <p-button
-            label="Cancel"
-            severity="secondary"
-            (onClick)="visible = false"
-        />
+        <p-button label="Cancel" severity="secondary" (onClick)="visible = false" />
         <p-button label="Confirm" (onClick)="dialogConfirm()" />
     </div>
 </p-dialog>

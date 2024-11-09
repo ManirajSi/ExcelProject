@@ -168,6 +168,25 @@ code {
     .p-tabview .p-tabview-nav li .p-tabview-nav-link {
         padding: 0.5rem;
     }
+    .p-paginator {
+        padding: 0rem;
+    }
+    .p-tabview .p-tabview-panels {
+        padding: 0.25rem;
+    }
+    .p-paginator .p-paginator-first,
+    .p-paginator .p-paginator-prev,
+    .p-paginator .p-paginator-next,
+    .p-paginator .p-paginator-last {
+        min-width: 1rem;
+        height: 1rem;
+        margin: 0.1rem;
+    }
+    .p-paginator .p-paginator-pages .p-paginator-page {
+        min-width: 1rem;
+        height: 1rem;
+        margin: 0.1rem;
+    }
 }
 
 .layout-footer-style {

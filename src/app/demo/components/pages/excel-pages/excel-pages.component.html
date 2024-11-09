@@ -145,18 +145,19 @@
                                         <div *ngIf="
                                                 content.textContent.length > 0
                                             ">
+                                            <span class="mr-2"><p-toggleButton formControlName="checked"
+                                                    offIcon="pi pi-volume-off" onIcon="pi pi-volume-up" (onChange)="
+                                                    onToggle(
+                                                        $event,
+                                                        content
+                                                            .textContent[0]
+                                                    )
+                                                " /></span>
                                             <span [innerHTML]="
                                                     content.textContent[0]
                                                 ">
                                             </span>
-                                            <span class="ml-2"><p-toggleButton formControlName="checked"
-                                                    offIcon="pi pi-volume-off" onIcon="pi pi-volume-up" (onChange)="
-                                                        onToggle(
-                                                            $event,
-                                                            content
-                                                                .textContent[0]
-                                                        )
-                                                    " /></span>
+
                                         </div>
                                         <div *ngIf="
                                                 content.codeContent.length > 0
@@ -173,7 +174,7 @@
                                         </div>
                                         <div class="mb-2" *ngIf="
                                                 content.noteContent.length > 0
-                                            ">
+                                             ">
                                             <div *ngFor="
                                                     let category of groupedData;
                                                     let i = index
@@ -193,24 +194,36 @@
                                                 </div>
 
                                                 <!-- <p-card
-                                            [style]="noteStyle"
-                                            class="text-blue-400 w-6 shadow-4"
-                                        >
-                                            <p
+                                                [style]="noteStyle"
+                                                 class="text-blue-400 w-6 shadow-4"
+                                                 >
+                                                <p
                                                 class="text-blue-400 ml-2"
                                                 [innerHTML]="
                                                     content.noteContent[0]
                                                 "
-                                            ></p>
-                                        </p-card> -->
+                                                ></p>
+                                                </p-card> -->
                                             </div>
-                                            <p-panel header="References" [toggleable]="true" *ngIf="
+                                            <p-panel [toggleable]="true" *ngIf="
                                                     content.imageContent[0] ||
                                                     content.gifContent[0] ||
                                                     content.videoContent[0] ||
                                                     content.urlRefContent[0] ||
                                                     content.pdfsContent[0]
                                                 ">
+                                                <ng-template pTemplate="header">
+                                                    <div class="flex align-items-center gap-2">
+                                                        <span class="font-bold">
+                                                            References
+                                                        </span>
+                                                        <span class="ml-2">
+                                                            <p-paginator (onPageChange)="onContentChange($event)"
+                                                                [first]="0" [rows]="5" [totalRecords]="20" />
+                                                        </span>
+
+                                                    </div>
+                                                </ng-template>
                                                 <p-tabView *ngIf="
                                                         content
                                                             .imageContent[0] ||
@@ -220,7 +233,7 @@
                                                         content
                                                             .urlRefContent[0] ||
                                                         content.pdfsContent[0]
-                                                    " styleClass="tabview-custom">
+                                                    " styleClass="tabview-custom" (onChange)="onTabChange($event)">
                                                     <p-tabPanel class="p-0" *ngIf="
                                                             content
                                                                 .imageContent[0]
@@ -235,35 +248,13 @@
                                                                 </span>
                                                             </div>
                                                         </ng-template>
-                                                        <div class="flex justify-content-center align-content-center">
-                                                            <p-galleria [(value)]="
-                                                                    content.imageContent
-                                                                " [responsiveOptions]="
-                                                                    responsiveOptions
-                                                                " [containerStyle]="{
-                                                                     'max-width': '1050px',
+                                                        <div *ngIf="content
+                                                                .imageContent[contentIndexValue]"
+                                                            class="flex justify-content-center align-content-center">
 
-                                                      }" [numVisible]="5">
-                                                                <ng-template pTemplate="item" let-item>
-                                                                    <img [src]="
-                                                                            item
-                                                                        " style="
-                                                                            width: 100%;
-                                                                            height: 620px;
-                                                                        " />
-                                                                </ng-template>
-                                                                <ng-template pTemplate="thumbnail" let-item>
-                                                                    <div
-                                                                        class="grid grid-nogutter justify-content-center">
-                                                                        <img [src]="
-                                                                                item
-                                                                            " style="
-                                                                                width: 100%;
-                                                                                height: 50px;
-                                                                            " />
-                                                                    </div>
-                                                                </ng-template>
-                                                            </p-galleria>
+                                                            <iframe [src]=" content
+                                                                .imageContent[contentIndexValue]" width="100%"
+                                                                height="650px" frameborder="0" allowfullscreen></iframe>
                                                         </div>
                                                     </p-tabPanel>
                                                     <p-tabPanel *ngIf="
@@ -280,14 +271,15 @@
                                                                 </span>
                                                             </div>
                                                         </ng-template>
-                                                        <div class="flex justify-content-center align-content-center">
-                                                            <img [src]="
-                                                                    content
-                                                                        .gifContent[0]
-                                                                " style="
-                                                                    width: 90%;
-                                                                    height: 620px;
-                                                                " alt="GIF Image" />
+                                                        <div *ngIf="content
+                                                                .gifContent[contentIndexValue]"
+                                                            class="flex justify-content-center align-content-center">
+                                                            <iframe [src]="
+                                                            content
+                                                                .gifContent[contentIndexValue]" width="640"
+                                                                height="480" width="100%" height="650px" frameborder="0"
+                                                                allowfullscreen></iframe>
+
                                                         </div>
                                                     </p-tabPanel>
                                                     <p-tabPanel *ngIf="
@@ -304,10 +296,12 @@
                                                                 </span>
                                                             </div>
                                                         </ng-template>
-                                                        <div class="flex justify-content-center align-content-center">
+                                                        <div *ngIf="content
+                                                                .videoContent[contentIndexValue]"
+                                                            class="flex justify-content-center align-content-center">
                                                             <iframe width="1020" height="620" [src]="
                                                                     content
-                                                                        .videoContent[0]
+                                                                        .videoContent[contentIndexValue]
                                                                 " frameborder="0"
                                                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                                                 allowfullscreen>
@@ -329,13 +323,28 @@
                                                                 <p-badge value="2" />
                                                             </div>
                                                         </ng-template>
-                                                        <div class="flex justify-content-center align-content-center">
-                                                            <iframe [src]="
-                                                                    content
-                                                                        .urlRefContent[0]
-                                                                " width="100%" height="650px" frameborder="0"
+                                                        <div *ngIf="content
+                                                                .urlRefContent[contentIndexValue]"
+                                                            class="flex justify-content-center align-content-center">
+                                                            <!-- <div
+                                                                *ngIf="checkIframe('iframe-'+i+'-'+contentIndexValue); else fallbackContent"> -->
+                                                            <iframe [id]="'iframe'+contentIndexValue" [src]="
+                                                                content
+                                                                    .urlRefContent[contentIndexValue]
+                                                            " width="100%" height="650px" frameborder="0"
                                                                 allowfullscreen>
                                                             </iframe>
+                                                            <!-- </div> -->
+                                                            <ng-template #fallbackContent>
+                                                                <div id="fallback" style="margin-top: 20px;">
+                                                                    <p>The website cannot be displayed in an iframe.
+                                                                        Click <a [href]="content
+                                                                .urlRefContent[contentIndexValue]"
+                                                                            target="_blank">here</a>
+                                                                        to visit the site directly.</p>
+                                                                </div>
+                                                            </ng-template>
+
                                                         </div>
                                                     </p-tabPanel>
                                                     <p-tabPanel *ngIf="
@@ -353,10 +362,12 @@
                                                                 <p-badge value="2" />
                                                             </div>
                                                         </ng-template>
-                                                        <div class="flex justify-content-center align-content-center">
+                                                        <div *ngIf="content
+                                                                .pdfContent[contentIndexValue]"
+                                                            class="flex justify-content-center align-content-center">
                                                             <iframe [src]="
                                                                     content
-                                                                        .pdfContent[0]
+                                                                        .pdfContent[contentIndexValue]
                                                                 " width="100%" height="650px" frameborder="0"
                                                                 allowfullscreen>
                                                             </iframe>

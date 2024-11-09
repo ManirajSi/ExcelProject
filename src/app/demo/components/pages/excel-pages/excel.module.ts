@@ -20,6 +20,7 @@ import { SplitButtonModule } from 'primeng/splitbutton';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ToastModule } from 'primeng/toast';
+import { PaginatorModule } from 'primeng/paginator';
 @NgModule({
     declarations: [ExcelPagesComponent],
     imports: [
@@ -43,6 +44,7 @@ import { ToastModule } from 'primeng/toast';
         InputSwitchModule,
         CheckboxModule,
         ToastModule,
+        PaginatorModule,
     ],
 })
 export class ExcelModule {}

@@ -65,6 +65,9 @@ export class AppTopBarComponent {
         {
             label: 'Upload',
             icon: 'pi pi-upload',
+            command: () => {
+                this.browseSelectFile();
+            },
             items: [
                 {
                     label: 'Preview',
@@ -275,24 +278,25 @@ export class AppTopBarComponent {
         this.router.navigate(['']);
     }
     recentActionCall() {
-        switch (this.recetAction) {
-            case 'Preview':
-                this.browseSelectFile();
-                break;
-            case 'Save':
-                if (this.isLoggedIn) {
-                    this.saveConfimration();
-                }
-                break;
-            case 'Download':
-                this.downloadFile(this.selectedItem.name);
-                break;
-            case 'Search':
-                this.onSearchClick();
-                break;
-            default:
-                break;
-        }
+        this.browseSelectFile();
+        // switch (this.recetAction) {
+        //     case 'Preview':
+        //         this.browseSelectFile();
+        //         break;
+        //     case 'Save':
+        //         if (this.isLoggedIn) {
+        //             this.saveConfimration();
+        //         }
+        //         break;
+        //     case 'Download':
+        //         this.downloadFile(this.selectedItem.name);
+        //         break;
+        //     case 'Search':
+        //         this.onSearchClick();
+        //         break;
+        //     default:
+        //         break;
+        // }
     }
     browseSelectFile() {
         this.fileUpload.basicFileInput.nativeElement.click();
