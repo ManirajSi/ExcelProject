@@ -29,6 +29,7 @@ import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
 import { PaginatorModule } from 'primeng/paginator';
 import { ReactiveFormsModule } from '@angular/forms';
+import { ListboxModule } from 'primeng/listbox';
 @NgModule({
     declarations: [
         AppMenuitemComponent,
@@ -63,6 +64,7 @@ import { ReactiveFormsModule } from '@angular/forms';
         DropdownModule,
         PaginatorModule,
         ReactiveFormsModule,
+        ListboxModule,
     ],
     exports: [AppLayoutComponent],
 })

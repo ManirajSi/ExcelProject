@@ -14,7 +14,8 @@ export class AppMenuComponent implements OnInit {
     first = 0;
     rows = 5;
     @Input() model: any[] = [];
-
+    tutorialLink: any[] = [];
+    showTutorialLink: boolean = true;
     constructor(
         public layoutService: LayoutService,
         private reactService: ReactService
@@ -34,7 +35,18 @@ export class AppMenuComponent implements OnInit {
         });
     }
 
-    ngOnInit() {}
+    ngOnInit() {
+        this.tutorialLink = [
+            {
+                label: 'Advertise',
+                link: 'https://www.youtube.com/embed/ritCbHUx18I?si=HIeJYR5eaDpDAwhY',
+            },
+            {
+                label: 'Demo',
+                link: 'https://www.youtube.com/embed/-55qPQH1R-E?si=CW2Fkb-X_PXoaPze',
+            },
+        ];
+    }
 
     initializeSideNav() {
         this.model = [];
@@ -53,8 +65,8 @@ export class AppMenuComponent implements OnInit {
             };
             this.model.push(categoryItem);
         });
+        this.showTutorialLink = false;
     }
-    onPageChange(event: any) {
-        console.log(event);
-    }
+    onPageChange(event: any) {}
+    onChangeListbox(event: any) {}
 }

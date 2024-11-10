@@ -1,32 +1,12 @@
 <form [formGroup]="footerForm">
     <div class="layout-footer layout-footer-style">
         <div class="flex justify-content-evenly align-content-center flex-wrap">
-            <img
-                src="assets/layout/images/{{
-                    layoutService.config().colorScheme === 'light'
-                        ? 'logo-dark'
-                        : 'logo-white'
-                }}.svg"
-                alt="Logo"
-                height="20"
-                class="mr-2 mt-4"
-            />
-            <p-paginator
-                (onPageChange)="onPageChange($event)"
-                [first]="first"
-                [rows]="rows"
-                [totalRecords]="120"
-                [rowsPerPageOptions]="[10, 20, 30]"
-                [showCurrentPageReport]="false"
-                [showPageLinks]="true"
-                [pageLinkSize]="3"
-                [showJumpToPageDropdown]="true"
-            ></p-paginator>
+            <p-paginator (onPageChange)="onPageChange($event)" [first]="first" [rows]="rows" [totalRecords]="120"
+                [rowsPerPageOptions]="[10, 20, 30]" [showCurrentPageReport]="false" [showPageLinks]="true"
+                [pageLinkSize]="3"></p-paginator>
+            <!-- [showJumpToPageDropdown]="true" -->
             <span class="font-medium ml-2 mt-4 mr-4">Fixed</span>
-            <p-inputSwitch
-                formControlName="fixedFooter"
-                class="mt-4"
-            ></p-inputSwitch>
+            <p-inputSwitch formControlName="fixedFooter" class="mt-4"></p-inputSwitch>
         </div>
     </div>
 </form>

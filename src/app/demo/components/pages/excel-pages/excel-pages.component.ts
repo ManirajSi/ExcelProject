@@ -1,8 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { SignalTransService } from 'src/app/layout/service/signal-trans.service';
-import { MenuItem, Message, MessageService } from 'primeng/api';
-import * as XLSX from 'xlsx';
-import { saveAs } from 'file-saver';
+import { Message, MessageService } from 'primeng/api';
 import { ReactService } from 'src/app/layout/service/react.service';
 import {
     DomSanitizer,
@@ -49,11 +46,6 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
         autoplay: true,
         autoplaySpeed: 3000,
     };
-    // images: string[] = [
-    //     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmEDjAExxzBNFclSu2rLISZKw-0NCzroHepQ&s',
-    //     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTI8cXM0JZINDcpwaVv91pdLEp7zHw8ObnFpQ&s',
-    //     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTet87JrUNU4rB0LaPdsCUzByjZjLIXHhidjA&s',
-    // ];
     currentIndex: number = 0;
     imageUrls: any[] = [];
     products: any[] = [
@@ -93,12 +85,10 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
         { label: 'Item 2', value: 'Item 2' },
         { label: 'Item 3', value: 'Item 3' },
     ];
-
     selectedItems: string[] = [];
-    showTaskView: boolean = false;
-    showQAView: boolean = false;
     contentIndexValue: number = 0;
     selectedTabIndex: number = 0;
+    templateName: string = 'contentview';
     constructor(
         private reactService: ReactService,
         private sanitizer: DomSanitizer,
@@ -115,9 +105,9 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
             if (data) {
                 this.showAddVideo = false;
                 this.showExcelContent = true;
+                this.templateName = 'contentview';
                 this.showExcelsTable = false;
                 this.data = data.excelContents;
-                console.log('this.data===>', this.data);
                 this.groupData();
             }
         });
@@ -200,8 +190,10 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
             Map<string, (SafeHtml | string[])[]>
         >();
         this.data.forEach((item) => {
+            // Common Variables
             let category: string = '';
             let subCategory: string = '';
+            // Q&A View Variables
             let snoSet: string[] = [];
             let taskSet: string[] = [];
             let questionSet: string[] = [];
@@ -209,7 +201,7 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
             let answerSet: string[] = [];
             let reasonSet: string[] = [];
             let controlSet: string[] = [];
-
+            // Content View Variables
             let textContent: string[] = [];
             let noteContent: string[] = [];
             let codeContent: string[] = [];
@@ -220,36 +212,115 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
             let pdfContent: SafeResourceUrl[] = [];
             Object.keys(item).forEach((key) => {
                 let keyName = key.toLowerCase().trim();
-                // console.log('keyName====>', keyName);
                 if (keyName.toLowerCase().includes('xlcategory')) {
-                    category = item[key]; // Assign the value to category if the key contains "col1"
+                    category = item[key];
                 } else if (keyName.toLowerCase().includes('xlsubcategory')) {
-                    subCategory = item[key]; // Assign the value to subCategory if the key contains "col3"
+                    subCategory = item[key];
                 } else {
                     if (keyName.toLowerCase().includes('xlsno')) {
                         if (item[key]) {
                             snoSet.push(item[key]);
                         }
                     }
-                    if (keyName.toLowerCase().includes('xltask')) {
+                    // Content View Data Assign
+                    if (keyName.toLowerCase().includes('xlcontent')) {
                         if (item[key]?.trim().toLowerCase() != 'x') {
-                            taskSet.push(item[key].replace(/\r\n/g, '</br>'));
+                            textContent.push(
+                                item[key].replace(/\r\n/g, '</br>')
+                            );
                         }
                     }
-                    // if (keyName.toLowerCase().includes('xlquestions')) {
-                    //     if (item[key]?.trim().toLowerCase() != 'x') {
-                    //         questionSet.push(
-                    //             item[key].replace(/\r\n/g, '</br>')
-                    //         );
-                    //     }
-                    // }
-                    // if (keyName.toLowerCase().includes('xlquestions')) {
-                    //     if (item[key]?.trim().toLowerCase() != 'x') {
-                    //         questionSet.push(
-                    //             item[key].replace(/\r\n/g, '</br>')
-                    //         );
-                    //     }
-                    // }
+                    if (keyName.toLowerCase().includes('xlcode')) {
+                        if (item[key]?.trim().toLowerCase() != 'x') {
+                            let codeArr: string[] = item[key]
+                                .replace(/\r\n/g, '</br>')
+                                .split('!!!');
+                            codeArr.forEach((code: any) => {
+                                codeContent.push(code);
+                            });
+                        }
+                    }
+                    if (keyName.toLowerCase().includes('xlnote')) {
+                        if (item[key]?.trim().toLowerCase() != 'x') {
+                            let noteArr: string[] = item[key]
+                                .replace(/\r\n/g, '</br>')
+                                .split('!!!');
+                            noteArr.forEach((note: any) => {
+                                noteContent.push(note);
+                            });
+                        }
+                    }
+                    if (keyName.toLowerCase().includes('xlimage')) {
+                        if (item[key]?.trim().toLowerCase() != 'x') {
+                            let imgArr: string[] = item[key]
+                                .replace(/\r\n/g, '')
+                                .split(',');
+                            imgArr.forEach((img: any) => {
+                                let safeurl: SafeResourceUrl =
+                                    this.sanitizer.bypassSecurityTrustResourceUrl(
+                                        img
+                                    );
+                                imageContent.push(safeurl);
+                            });
+                        }
+                    }
+                    if (keyName.toLowerCase().includes('xlgif')) {
+                        if (item[key]?.trim().toLowerCase() != 'x') {
+                            let gifArr: string[] = item[key]
+                                .replace(/\r\n/g, '')
+                                .split(',');
+                            gifArr.forEach((gifimg: any) => {
+                                let safeurl: SafeResourceUrl =
+                                    this.sanitizer.bypassSecurityTrustResourceUrl(
+                                        gifimg
+                                    );
+                                gifContent.push(safeurl);
+                            });
+                        }
+                    }
+                    if (keyName.toLowerCase().includes('xlvideo')) {
+                        if (item[key]?.trim().toLowerCase() != 'x') {
+                            let videoArr: string[] = item[key]
+                                .replace(/\r\n/g, '')
+                                .split(',');
+                            videoArr.forEach((videodata) => {
+                                let safeurl: SafeResourceUrl =
+                                    this.sanitizer.bypassSecurityTrustResourceUrl(
+                                        videodata
+                                    );
+                                videoContent.push(safeurl);
+                            });
+                        }
+                    }
+                    if (keyName.toLowerCase().includes('xlframe')) {
+                        if (item[key]?.trim().toLowerCase() != 'x') {
+                            let urlArr: string[] = item[key]
+                                .replace(/\r\n/g, '')
+                                .split(',');
+                            urlArr.forEach((urldata) => {
+                                let safeurl: SafeResourceUrl =
+                                    this.sanitizer.bypassSecurityTrustResourceUrl(
+                                        urldata
+                                    );
+                                urlRefContent.push(safeurl);
+                            });
+                        }
+                    }
+                    if (keyName.toLowerCase().includes('xlpdf')) {
+                        if (item[key]?.trim().toLowerCase() != 'x') {
+                            let pdfArr: string[] = item[key]
+                                .replace(/\r\n/g, '')
+                                .split(',');
+                            pdfArr.forEach((pdfdata) => {
+                                let safeurl: SafeResourceUrl =
+                                    this.sanitizer.bypassSecurityTrustResourceUrl(
+                                        pdfdata
+                                    );
+                                pdfContent.push(safeurl);
+                            });
+                        }
+                    }
+                    // Q&A View Data Assign
                     if (keyName.toLowerCase().includes('xlquestions')) {
                         if (item[key]?.trim().toLowerCase() != 'x') {
                             questionSet.push(
@@ -289,102 +360,10 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
                             );
                         }
                     }
-                    if (keyName.toLowerCase().includes('xlcontent')) {
+                    // Task View Data Assign
+                    if (keyName.toLowerCase().includes('xltask')) {
                         if (item[key]?.trim().toLowerCase() != 'x') {
-                            textContent.push(
-                                item[key].replace(/\r\n/g, '</br>')
-                            ); // Assign the value to content if the key contains "col5"
-                        }
-                    }
-                    if (keyName.toLowerCase().includes('xlcode')) {
-                        if (item[key]?.trim().toLowerCase() != 'x') {
-                            let codetext: string = item[key].replace(
-                                /\r\n/g,
-                                '</br>'
-                            );
-                            codeContent.push(codetext);
-                        }
-                        // codeContent.push(item[key]); // Assign the value to content if the key contains "col5"
-                    }
-                    if (keyName.toLowerCase().includes('xlnote')) {
-                        if (item[key]?.trim().toLowerCase() != 'x') {
-                            noteContent.push(item[key]);
-                        }
-                    }
-                    if (keyName.toLowerCase().includes('xlimage')) {
-                        if (item[key]?.trim().toLowerCase() != 'x') {
-                            let imgArr: string[] = item[key]
-                                .replace(/\r\n/g, '')
-                                .split(',');
-                            imgArr.forEach((img: any) => {
-                                let safeurl: SafeResourceUrl =
-                                    this.sanitizer.bypassSecurityTrustResourceUrl(
-                                        img
-                                    );
-                                imageContent.push(safeurl);
-                            });
-
-                            // Assign the value to content if the key contains "col5"
-                        }
-                    }
-                    if (keyName.toLowerCase().includes('xlgif')) {
-                        if (item[key]?.trim().toLowerCase() != 'x') {
-                            let gifArr: string[] = item[key]
-                                .replace(/\r\n/g, '')
-                                .split(',');
-                            gifArr.forEach((gifimg: any) => {
-                                let safeurl: SafeResourceUrl =
-                                    this.sanitizer.bypassSecurityTrustResourceUrl(
-                                        gifimg
-                                    );
-                                gifContent.push(safeurl);
-                            });
-                            // Assign the value to content if the key contains "col5"
-                        }
-                    }
-                    if (keyName.toLowerCase().includes('xlvideo')) {
-                        if (item[key]?.trim().toLowerCase() != 'x') {
-                            let videoArr: string[] = item[key]
-                                .replace(/\r\n/g, '')
-                                .split(',');
-                            videoArr.forEach((videodata) => {
-                                let safeurl: SafeResourceUrl =
-                                    this.sanitizer.bypassSecurityTrustResourceUrl(
-                                        videodata
-                                    );
-                                videoContent.push(safeurl);
-                            });
-                            // Assign the value to content if the key contains "col5"
-                        }
-                    }
-                    if (keyName.toLowerCase().includes('xlframe')) {
-                        if (item[key]?.trim().toLowerCase() != 'x') {
-                            let urlArr: string[] = item[key]
-                                .replace(/\r\n/g, '')
-                                .split(',');
-                            urlArr.forEach((videodata) => {
-                                let safeurl: SafeResourceUrl =
-                                    this.sanitizer.bypassSecurityTrustResourceUrl(
-                                        videodata
-                                    );
-                                urlRefContent.push(safeurl);
-                            });
-                            // Assign the value to content if the key contains "col5"
-                        }
-                    }
-                    if (keyName.toLowerCase().includes('xlpdf')) {
-                        if (item[key]?.trim().toLowerCase() != 'x') {
-                            let pdfArr: string[] = item[key]
-                                .replace(/\r\n/g, '')
-                                .split(',');
-                            pdfArr.forEach((pdfdata) => {
-                                let safeurl: SafeResourceUrl =
-                                    this.sanitizer.bypassSecurityTrustResourceUrl(
-                                        pdfdata
-                                    );
-                                pdfContent.push(safeurl);
-                            });
-                            // Assign the value to content if the key contains "col5"
+                            taskSet.push(item[key].replace(/\r\n/g, '</br>'));
                         }
                     }
                 }
@@ -627,7 +606,6 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
         }
     }
     onContentChange(event: any) {
-        console.log('event===>', event);
         this.contentIndexValue = event.page;
     }
     checkIframe(iframeName: string) {

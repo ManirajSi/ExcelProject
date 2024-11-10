@@ -1,30 +1,14 @@
 <ul class="layout-menu">
+    <div *ngIf="showTutorialLink">
+        <p-listbox [options]="tutorialLink" optionLabel="label" [style]="{'width':'15rem'}"
+            [listStyle]="{'max-height': '220px'}" (onChange)="onChangeListbox($event)" />
+    </div>
     <ng-container *ngFor="let item of model; let i = index">
         <li app-menuitem *ngIf="!item.separator" [item]="item" [index]="i" [root]="true" [ngClass]="item.styleClass"
-            [ngStyle]="item.style"></li>
+            [ngStyle]="item.style">
+        </li>
         <li *ngIf="item.separator" class="menu-separator"></li>
     </ng-container>
     <li>
-        <!-- <a href="https://www.primefaces.org/primeblocks-ng/#/">
-            <img
-                src="assets/layout/images/{{
-                    layoutService.config().colorScheme === 'light'
-                        ? 'banner-primeblocks'
-                        : 'banner-primeblocks-dark'
-                }}.png"
-                alt="Prime Blocks"
-                class="w-full mt-3"
-            />
-        </a> -->
-        <!-- <p-paginator
-            (onPageChange)="onPageChange($event)"
-            [first]="first"
-            [rows]="rows"
-            [totalRecords]="120"
-            [showCurrentPageReport]="false"
-            [showPageLinks]="false"
-            [showJumpToPageDropdown]="false"
-        /> -->
     </li>
-    <!-- currentPageReportTemplate="Showing {first} to {last} of {totalRecords}" -->
 </ul>

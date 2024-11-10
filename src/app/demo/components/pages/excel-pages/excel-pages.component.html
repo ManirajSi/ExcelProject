@@ -3,14 +3,15 @@
     <div class="grid">
         <div class="col-12">
             <div class="card px-3 py-3">
-                <!-- <div class="card"> -->
-                <div *ngIf="showAddVideo" class="video-container">
-                    <iframe width="1020" height="560"
-                        src="https://www.youtube.com/embed/-55qPQH1R-E?si=IUU66OmvVgz-JdIH" frameborder="0"
+                <!-- Advertisement Home Screen -->
+                <div *ngIf="showAddVideo && !showExcelContent" class="video-container mt-3">
+                    <iframe width="1010" height="560"
+                        src="https://www.youtube.com/embed/IC6rjfBIElM?si=QbM_EY7DIWHTranw" frameborder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowfullscreen>
                     </iframe>
                 </div>
+                <!-- Show Excel sheet to select -->
                 <div *ngIf="showExcelsTable">
                     <p-orderList [value]="products" [listStyle]="{ height: '25rem' }" header="List of Products">
                         <ng-template let-product pTemplate="item">
@@ -30,11 +31,6 @@
                                     </div>
                                 </div>
                                 <span class="font-bold text-900">
-                                    <!-- {{ product.type }} -->
-                                    <!-- <p-rating
-                                    [(ngModel)]="value"
-                                    [cancel]="false"
-                                /> -->
                                     <p-button icon="pi pi-download" [loading]="loading"
                                         (onClick)="downloadFile(product)" />
                                 </span>
@@ -42,8 +38,255 @@
                         </ng-template>
                     </p-orderList>
                 </div>
-                <!-- </div> -->
-                <div *ngIf="showExcelContent && !showTaskView">
+                <!-- Main excel web page content -->
+                <!-- Content View -->
+                <div *ngIf="templateName=='contentview' && showExcelContent">
+                    <!-- Category For loop -->
+                    <div *ngFor="let category of groupedData; let i = index">
+                        <div>
+                            <h2 class="text-blue-700">
+                                {{ category.category }}
+                            </h2>
+                            <!-- SubCategory For loop -->
+                            <div *ngFor="
+                                    let subCategory of category.subCategories;
+                                    let j = index
+                                ">
+                                <div [id]="'section-' + i + '-' + j">
+                                    <h4 class="text-blue-700">
+                                        {{ subCategory.subCategory }}
+                                    </h4>
+                                    <!--Main Content  -->
+                                    <div *ngFor="
+                                            let content of subCategory.contents
+                                        ">
+                                        <!-- Main XLContent -->
+                                        <div *ngIf="
+                                                content.textContent.length > 0
+                                            ">
+                                            <!-- Speak Button -->
+                                            <span class="mr-2"><p-toggleButton formControlName="checked"
+                                                    offIcon="pi pi-volume-off" onIcon="pi pi-volume-up" (onChange)="
+                                                    onToggle(
+                                                        $event,
+                                                        content
+                                                            .textContent[0]
+                                                    )
+                                                " /></span>
+                                            <!-- Main XLContent Data -->
+                                            <span [innerHTML]="
+                                                    content.textContent[0]
+                                                ">
+                                            </span>
+
+                                        </div>
+                                        <!-- XLCodeContent -->
+                                        <div *ngIf="
+                                                content.codeContent.length > 0
+                                            ">
+                                            <div *ngFor="
+                                             let code of content.codeContent
+                                            ">
+                                                <div class="code-card2 shadow-4">
+                                                    <span [innerHTML]="
+                                                        code
+                                                    ">
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-2" *ngIf="
+                                                content.noteContent.length > 0
+                                             ">
+                                            <div *ngFor="
+                                              let msg of content.noteContent
+                                             ">
+                                                <p-messages [severity]="
+                                                  checkString(msg)
+                                              ">
+                                                    <ng-template pTemplate>
+                                                        <div class="ml-2" [innerHTML]="
+                                                          msg
+                                                      "></div>
+                                                    </ng-template>
+                                                </p-messages>
+                                            </div>
+                                        </div>
+                                        <p-panel [toggleable]="true" *ngIf="
+                                                    content?.imageContent?.length>0 ||
+                                                    content?.gifContent?.length>0 ||
+                                                    content?.videoContent?.length>0 ||
+                                                    content?.urlRefContent?.length>0 ||
+                                                    content?.pdfsContent?.length>0
+                                                ">
+                                            <ng-template pTemplate="header">
+                                                <div class="flex align-items-center gap-2">
+                                                    <span class="font-bold">
+                                                        References
+                                                    </span>
+                                                    <span class="ml-2">
+                                                        <p-paginator (onPageChange)="onContentChange($event)"
+                                                            [first]="0" [rows]="5" [totalRecords]="20" />
+                                                    </span>
+
+                                                </div>
+                                            </ng-template>
+                                            <p-tabView *ngIf="
+                                                        content?.imageContent?.length>0 ||
+                                                    content?.gifContent?.length>0 ||
+                                                    content?.videoContent?.length>0 ||
+                                                    content?.urlRefContent?.length>0 ||
+                                                    content?.pdfsContent?.length>0
+                                                    " styleClass="tabview-custom" (onChange)="onTabChange($event)">
+                                                <p-tabPanel class="p-0" *ngIf="
+                                                            content
+                                                                .imageContent.length>0
+                                                        " header="Images">
+                                                    <ng-template pTemplate="header">
+                                                        <div class="flex align-items-center gap-2">
+                                                            <i class="pi pi-images" style="
+                                                                        color: slateblue;
+                                                                    "></i>
+                                                            <span class="font-bold white-space-nowrap m-0">
+                                                                Images
+                                                            </span>
+                                                        </div>
+                                                    </ng-template>
+                                                    <div *ngIf="content
+                                                                .imageContent[contentIndexValue]"
+                                                        class="flex justify-content-center align-content-center">
+
+                                                        <iframe [src]=" content
+                                                                .imageContent[contentIndexValue]" width="100%"
+                                                            height="650px" frameborder="0" allowfullscreen></iframe>
+                                                    </div>
+                                                </p-tabPanel>
+                                                <p-tabPanel *ngIf="
+                                                            content
+                                                                .gifContent.length>0
+                                                        " header="Gifs">
+                                                    <ng-template pTemplate="header">
+                                                        <div class="flex align-items-center gap-2">
+                                                            <i class="pi pi-sparkles" style="
+                                                                        color: slateblue;
+                                                                    "></i>
+                                                            <span class="font-bold white-space-nowrap m-0">
+                                                                Gifs
+                                                            </span>
+                                                        </div>
+                                                    </ng-template>
+                                                    <div *ngIf="content
+                                                                .gifContent[contentIndexValue]"
+                                                        class="flex justify-content-center align-content-center">
+                                                        <iframe [src]="
+                                                            content
+                                                                .gifContent[contentIndexValue]" width="640"
+                                                            height="480" width="100%" height="650px" frameborder="0"
+                                                            allowfullscreen></iframe>
+
+                                                    </div>
+                                                </p-tabPanel>
+                                                <p-tabPanel *ngIf="
+                                                            content
+                                                                .videoContent.length>0
+                                                        " header="Videos">
+                                                    <ng-template pTemplate="header">
+                                                        <div class="flex align-items-center gap-2">
+                                                            <i class="pi pi-play-circle" style="
+                                                                        color: slateblue;
+                                                                    "></i>
+                                                            <span class="font-bold white-space-nowrap m-0">
+                                                                Videos
+                                                            </span>
+                                                        </div>
+                                                    </ng-template>
+                                                    <div *ngIf="content
+                                                                .videoContent[contentIndexValue]"
+                                                        class="flex justify-content-center align-content-center">
+                                                        <iframe width="1020" height="620" [src]="
+                                                                    content
+                                                                        .videoContent[contentIndexValue]
+                                                                " frameborder="0"
+                                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                            allowfullscreen>
+                                                        </iframe>
+                                                    </div>
+                                                </p-tabPanel>
+                                                <p-tabPanel *ngIf="
+                                                            content
+                                                                .urlRefContent.length>0
+                                                        " header="URLs">
+                                                    <ng-template pTemplate="header">
+                                                        <div class="flex align-items-center gap-2">
+                                                            <i class="pi pi-link" style="
+                                                                        color: slateblue;
+                                                                    "></i>
+                                                            <span class="font-bold white-space-nowrap m-0">
+                                                                Website
+                                                            </span>
+                                                            <p-badge value="2" />
+                                                        </div>
+                                                    </ng-template>
+                                                    <div *ngIf="content
+                                                                .urlRefContent[contentIndexValue]"
+                                                        class="flex justify-content-center align-content-center">
+                                                        <!-- <div
+                                                                *ngIf="checkIframe('iframe-'+i+'-'+contentIndexValue); else fallbackContent"> -->
+                                                        <iframe [src]="
+                                                                content
+                                                                    .urlRefContent[contentIndexValue]
+                                                            " width="100%" height="650px" frameborder="0"
+                                                            allowfullscreen>
+                                                        </iframe>
+                                                        <!-- </div> -->
+                                                        <!-- <ng-template #fallbackContent>
+                                                            <div id="fallback" style="margin-top: 20px;">
+                                                                <p>The website cannot be displayed in an iframe.
+                                                                    Click <a [href]="content
+                                                                .urlRefContent[contentIndexValue]"
+                                                                        target="_blank">here</a>
+                                                                    to visit the site directly.</p>
+                                                            </div>
+                                                        </ng-template> -->
+
+                                                    </div>
+                                                </p-tabPanel>
+                                                <p-tabPanel *ngIf="
+                                                            content
+                                                                .pdfContent.length>0
+                                                        " header="URLs">
+                                                    <ng-template pTemplate="header">
+                                                        <div class="flex align-items-center gap-2">
+                                                            <i class="pi pi-link" style="
+                                                                        color: slateblue;
+                                                                    "></i>
+                                                            <span class="font-bold white-space-nowrap m-0">
+                                                                Document
+                                                            </span>
+                                                            <p-badge value="2" />
+                                                        </div>
+                                                    </ng-template>
+                                                    <div *ngIf="content
+                                                                .pdfContent[contentIndexValue]"
+                                                        class="flex justify-content-center align-content-center">
+                                                        <iframe [src]="
+                                                                    content
+                                                                        .pdfContent[contentIndexValue]
+                                                                " width="100%" height="650px" frameborder="0"
+                                                            allowfullscreen>
+                                                        </iframe>
+                                                    </div>
+                                                </p-tabPanel>
+                                            </p-tabView>
+                                        </p-panel>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Q&A View -->
+                <div *ngIf="templateName=='q&aview' && showExcelContent">
                     <div *ngFor="let category of groupedData; let i = index">
                         <div>
                             <h2 class="text-blue-700">
@@ -53,7 +296,6 @@
                                     let subCategory of category.subCategories;
                                     let j = index
                                 ">
-                                <!-- Assign a unique ID based on indices -->
                                 <div [id]="'section-' + i + '-' + j">
                                     <h4 class="text-blue-700">
                                         {{ subCategory.subCategory }}
@@ -78,22 +320,10 @@
                                                     content.optionSet?.length >
                                                     0
                                                 ">
-                                                <!-- <span [innerHTML]="
-                                                        content.optionSet[i]
-                                                    ">
-                                                </span> -->
                                                 <span *ngFor="
                                                         let option of content.optionSet;
                                                         let i = index
                                                     " class="mr-5">
-                                                    <!-- <p-radioButton
-                                                        [inputId]="i"
-                                                        name="optionSelect"
-                                                        [value]="
-                                                            i + '|' + option
-                                                        "
-                                                        formControlName="optionSelect"
-                                                    /> -->
                                                     <div style="
                                                             color: cornflowerblue;
                                                             display: inline;
@@ -125,7 +355,6 @@
                                                     content.answerSet?.length >
                                                     0
                                                 ">
-                                                <!-- -->
                                                 <div [hidden]="!showAnswers">
                                                     <p-messages severity="info">
                                                         <ng-template pTemplate>
@@ -140,248 +369,12 @@
                                                 </div>
                                             </div>
                                         </div>
-
-                                        <!-- <div style="display: none;">[property]=binding</div> -->
-                                        <div *ngIf="
-                                                content.textContent.length > 0
-                                            ">
-                                            <span class="mr-2"><p-toggleButton formControlName="checked"
-                                                    offIcon="pi pi-volume-off" onIcon="pi pi-volume-up" (onChange)="
-                                                    onToggle(
-                                                        $event,
-                                                        content
-                                                            .textContent[0]
-                                                    )
-                                                " /></span>
-                                            <span [innerHTML]="
-                                                    content.textContent[0]
-                                                ">
-                                            </span>
-
-                                        </div>
-                                        <div *ngIf="
-                                                content.codeContent.length > 0
-                                            ">
-                                            <!-- <div class="code-card">
-                                            <pre><code class="language-html" >{{content.codeContent[0]}}</code></pre>
-                                        </div> -->
-                                            <div class="code-card2 shadow-4">
-                                                <span [innerHTML]="
-                                                        content.codeContent[0]
-                                                    ">
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div class="mb-2" *ngIf="
-                                                content.noteContent.length > 0
-                                             ">
-                                            <div *ngFor="
-                                                    let category of groupedData;
-                                                    let i = index
-                                                ">
-                                                <div *ngFor="
-                                                        let msg of content.noteContent
-                                                    ">
-                                                    <p-messages [severity]="
-                                                            checkString(msg)
-                                                        ">
-                                                        <ng-template pTemplate>
-                                                            <div class="ml-2" [innerHTML]="
-                                                                    msg
-                                                                "></div>
-                                                        </ng-template>
-                                                    </p-messages>
-                                                </div>
-
-                                                <!-- <p-card
-                                                [style]="noteStyle"
-                                                 class="text-blue-400 w-6 shadow-4"
-                                                 >
-                                                <p
-                                                class="text-blue-400 ml-2"
-                                                [innerHTML]="
-                                                    content.noteContent[0]
-                                                "
-                                                ></p>
-                                                </p-card> -->
-                                            </div>
-                                            <p-panel [toggleable]="true" *ngIf="
-                                                    content.imageContent[0] ||
-                                                    content.gifContent[0] ||
-                                                    content.videoContent[0] ||
-                                                    content.urlRefContent[0] ||
-                                                    content.pdfsContent[0]
-                                                ">
-                                                <ng-template pTemplate="header">
-                                                    <div class="flex align-items-center gap-2">
-                                                        <span class="font-bold">
-                                                            References
-                                                        </span>
-                                                        <span class="ml-2">
-                                                            <p-paginator (onPageChange)="onContentChange($event)"
-                                                                [first]="0" [rows]="5" [totalRecords]="20" />
-                                                        </span>
-
-                                                    </div>
-                                                </ng-template>
-                                                <p-tabView *ngIf="
-                                                        content
-                                                            .imageContent[0] ||
-                                                        content.gifContent[0] ||
-                                                        content
-                                                            .videoContent[0] ||
-                                                        content
-                                                            .urlRefContent[0] ||
-                                                        content.pdfsContent[0]
-                                                    " styleClass="tabview-custom" (onChange)="onTabChange($event)">
-                                                    <p-tabPanel class="p-0" *ngIf="
-                                                            content
-                                                                .imageContent[0]
-                                                        " header="Images">
-                                                        <ng-template pTemplate="header">
-                                                            <div class="flex align-items-center gap-2">
-                                                                <i class="pi pi-images" style="
-                                                                        color: slateblue;
-                                                                    "></i>
-                                                                <span class="font-bold white-space-nowrap m-0">
-                                                                    Images
-                                                                </span>
-                                                            </div>
-                                                        </ng-template>
-                                                        <div *ngIf="content
-                                                                .imageContent[contentIndexValue]"
-                                                            class="flex justify-content-center align-content-center">
-
-                                                            <iframe [src]=" content
-                                                                .imageContent[contentIndexValue]" width="100%"
-                                                                height="650px" frameborder="0" allowfullscreen></iframe>
-                                                        </div>
-                                                    </p-tabPanel>
-                                                    <p-tabPanel *ngIf="
-                                                            content
-                                                                .gifContent[0]
-                                                        " header="Gifs">
-                                                        <ng-template pTemplate="header">
-                                                            <div class="flex align-items-center gap-2">
-                                                                <i class="pi pi-sparkles" style="
-                                                                        color: slateblue;
-                                                                    "></i>
-                                                                <span class="font-bold white-space-nowrap m-0">
-                                                                    Gifs
-                                                                </span>
-                                                            </div>
-                                                        </ng-template>
-                                                        <div *ngIf="content
-                                                                .gifContent[contentIndexValue]"
-                                                            class="flex justify-content-center align-content-center">
-                                                            <iframe [src]="
-                                                            content
-                                                                .gifContent[contentIndexValue]" width="640"
-                                                                height="480" width="100%" height="650px" frameborder="0"
-                                                                allowfullscreen></iframe>
-
-                                                        </div>
-                                                    </p-tabPanel>
-                                                    <p-tabPanel *ngIf="
-                                                            content
-                                                                .videoContent[0]
-                                                        " header="Videos">
-                                                        <ng-template pTemplate="header">
-                                                            <div class="flex align-items-center gap-2">
-                                                                <i class="pi pi-play-circle" style="
-                                                                        color: slateblue;
-                                                                    "></i>
-                                                                <span class="font-bold white-space-nowrap m-0">
-                                                                    Videos
-                                                                </span>
-                                                            </div>
-                                                        </ng-template>
-                                                        <div *ngIf="content
-                                                                .videoContent[contentIndexValue]"
-                                                            class="flex justify-content-center align-content-center">
-                                                            <iframe width="1020" height="620" [src]="
-                                                                    content
-                                                                        .videoContent[contentIndexValue]
-                                                                " frameborder="0"
-                                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                                                allowfullscreen>
-                                                            </iframe>
-                                                        </div>
-                                                    </p-tabPanel>
-                                                    <p-tabPanel *ngIf="
-                                                            content
-                                                                .urlRefContent[0]
-                                                        " header="URLs">
-                                                        <ng-template pTemplate="header">
-                                                            <div class="flex align-items-center gap-2">
-                                                                <i class="pi pi-link" style="
-                                                                        color: slateblue;
-                                                                    "></i>
-                                                                <span class="font-bold white-space-nowrap m-0">
-                                                                    Website
-                                                                </span>
-                                                                <p-badge value="2" />
-                                                            </div>
-                                                        </ng-template>
-                                                        <div *ngIf="content
-                                                                .urlRefContent[contentIndexValue]"
-                                                            class="flex justify-content-center align-content-center">
-                                                            <!-- <div
-                                                                *ngIf="checkIframe('iframe-'+i+'-'+contentIndexValue); else fallbackContent"> -->
-                                                            <iframe [id]="'iframe'+contentIndexValue" [src]="
-                                                                content
-                                                                    .urlRefContent[contentIndexValue]
-                                                            " width="100%" height="650px" frameborder="0"
-                                                                allowfullscreen>
-                                                            </iframe>
-                                                            <!-- </div> -->
-                                                            <ng-template #fallbackContent>
-                                                                <div id="fallback" style="margin-top: 20px;">
-                                                                    <p>The website cannot be displayed in an iframe.
-                                                                        Click <a [href]="content
-                                                                .urlRefContent[contentIndexValue]"
-                                                                            target="_blank">here</a>
-                                                                        to visit the site directly.</p>
-                                                                </div>
-                                                            </ng-template>
-
-                                                        </div>
-                                                    </p-tabPanel>
-                                                    <p-tabPanel *ngIf="
-                                                            content
-                                                                .pdfContent[0]
-                                                        " header="URLs">
-                                                        <ng-template pTemplate="header">
-                                                            <div class="flex align-items-center gap-2">
-                                                                <i class="pi pi-link" style="
-                                                                        color: slateblue;
-                                                                    "></i>
-                                                                <span class="font-bold white-space-nowrap m-0">
-                                                                    Document
-                                                                </span>
-                                                                <p-badge value="2" />
-                                                            </div>
-                                                        </ng-template>
-                                                        <div *ngIf="content
-                                                                .pdfContent[contentIndexValue]"
-                                                            class="flex justify-content-center align-content-center">
-                                                            <iframe [src]="
-                                                                    content
-                                                                        .pdfContent[contentIndexValue]
-                                                                " width="100%" height="650px" frameborder="0"
-                                                                allowfullscreen>
-                                                            </iframe>
-                                                        </div>
-                                                    </p-tabPanel>
-                                                </p-tabView>
-                                            </p-panel>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div *ngIf="showQAView" class="flex justify-content-center align-content-center flex-wrap mb-1">
+                    <div class="flex justify-content-center align-content-center flex-wrap mb-1">
                         <p-splitButton label="Download" (onClick)="generatePDF()" [model]="downloadAnsOptions"
                             class="mr-2 custom-splitbutton dropdown-left" />
                         <p-button icon="pi pi-check" [loading]="loading" label="Submit" (onClick)="submitAnswer()"
@@ -394,8 +387,8 @@
                         ></p-inputSwitch> -->
                     </div>
                 </div>
-
-                <div *ngIf="showExcelContent && showTaskView">
+                <!-- Task View -->
+                <div *ngIf="templateName=='taskview' && showExcelContent">
                     <span *ngFor="let category of groupedData; let i = index">
                         <span>
                             <h2 class="text-blue-700">

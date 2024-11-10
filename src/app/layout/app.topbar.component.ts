@@ -244,6 +244,7 @@ export class AppTopBarComponent {
     dialogAction: string = 'save';
     templateSettings: any;
     sheets: any[] = [];
+    templateSetting: any;
     constructor(
         public layoutService: LayoutService,
         private reactService: ReactService,
@@ -323,6 +324,7 @@ export class AppTopBarComponent {
         this.workSheetNames = wb.SheetNames;
         let count = 0;
         let worksheetIndex: number = 0;
+        this.menuItems = [];
         this.workSheetNames.forEach((workSheet: string) => {
             const ws: XLSX.WorkSheet = wb.Sheets[workSheet];
             this.workSheets.push(ws);
@@ -330,7 +332,7 @@ export class AppTopBarComponent {
                 worksheetIndex == 0 &&
                 workSheet.toLowerCase() == 'templatesettings'
             ) {
-                localStorage.setItem(
+                sessionStorage.setItem(
                     'templateSetting',
                     JSON.stringify(XLSX.utils.sheet_to_json(ws))
                 );
@@ -373,7 +375,7 @@ export class AppTopBarComponent {
         //     updateSettingsInfo({ settingsInfo: this.workSheetsJSON[0] })
         // );
         this.store.dispatch(updateSettingsInfo({ settingInfo: { count: 1 } }));
-        this.setExcelPageContent(this.workSheetsJSON[1]);
+        this.setExcelPageContent(this.workSheetsJSON[1], 1);
         this.infoSet();
     }
     setSettingInfo(content: any) {
@@ -456,16 +458,17 @@ export class AppTopBarComponent {
         this.webLogo = specDetail[1]['Actions'];
     }
     menuItemForming(menuItemName: string) {
+        this.templateSetting = sessionStorage.getItem('templateSetting');
         this.menuItems.push({
             label: menuItemName,
             icon: 'pi pi-fw pi-file',
             command: () => {
                 const index: number = this.workSheetNames.indexOf(menuItemName);
-                this.setExcelPageContent(this.workSheetsJSON[index]);
+                this.setExcelPageContent(this.workSheetsJSON[index], index);
             },
         });
     }
-    setExcelPageContent(content: any) {
+    setExcelPageContent(content: any, index: number) {
         this.reactService.setFile({
             excelContents: content,
             specInfo: { contentLabel: ['content'] },
