@@ -105,7 +105,7 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
             if (data) {
                 this.showAddVideo = false;
                 this.showExcelContent = true;
-                this.templateName = 'contentview';
+                this.templateName = data.specInfo.contentLabel;
                 this.showExcelsTable = false;
                 this.data = data.excelContents;
                 this.groupData();

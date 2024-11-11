@@ -458,7 +458,9 @@ export class AppTopBarComponent {
         this.webLogo = specDetail[1]['Actions'];
     }
     menuItemForming(menuItemName: string) {
-        this.templateSetting = sessionStorage.getItem('templateSetting');
+        this.templateSetting = JSON.parse(
+            sessionStorage.getItem('templateSetting')
+        );
         this.menuItems.push({
             label: menuItemName,
             icon: 'pi pi-fw pi-file',
@@ -469,9 +471,16 @@ export class AppTopBarComponent {
         });
     }
     setExcelPageContent(content: any, index: number) {
+        let xlvaues = JSON.parse(
+            this.templateSetting[0].XLValues.replace(/'/g, '"').replace(
+                /(\w+):/g,
+                '"$1":'
+            )
+        );
+        let contentType = xlvaues['Sheet' + index];
         this.reactService.setFile({
             excelContents: content,
-            specInfo: { contentLabel: ['content'] },
+            specInfo: { contentLabel: contentType.toLowerCase() },
         });
     }
     loginRedirect() {
