@@ -3,11 +3,20 @@ import { Component, Input } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { PaginatorModule } from 'primeng/paginator';
 import { PanelModule } from 'primeng/panel';
+import { RadioButtonModule } from 'primeng/radiobutton';
+import { ToggleButtonModule } from 'primeng/togglebutton';
 import { TextToSpeechService } from 'src/app/services/text-to-speech.service';
 @Component({
     selector: 'app-trump-card',
     standalone: true,
-    imports: [CommonModule, PaginatorModule, PanelModule, ButtonModule],
+    imports: [
+        CommonModule,
+        PaginatorModule,
+        PanelModule,
+        ButtonModule,
+        ToggleButtonModule,
+        RadioButtonModule,
+    ],
     providers: [TextToSpeechService],
     templateUrl: './trump-card.component.html',
     styleUrl: './trump-card.component.scss',
@@ -17,9 +26,12 @@ export class TrumpCardComponent {
     selectedValue: string = '';
     currentCardIndex = 0;
     contentIndexValue = 0;
+    selectedStatus: any[] = [];
+    private audio = new Audio();
     cards = [
         {
             name: 'GOLDBERG',
+            status: 'got',
             data: [
                 'Rank: 29',
                 'Height: 6.4',
@@ -38,6 +50,7 @@ export class TrumpCardComponent {
         },
         {
             name: 'JOHN CENA',
+            status: 'got',
             data: [
                 'Rank: 10',
                 'Height: 6.1',
@@ -55,6 +68,7 @@ export class TrumpCardComponent {
         },
         {
             name: 'THE UNDERTAKER',
+            status: 'got',
             data: [
                 'Rank: 2',
                 'Height: 6.10',
@@ -71,6 +85,7 @@ export class TrumpCardComponent {
         },
         {
             name: 'TRIPLE H',
+            status: 'got',
             data: [
                 'Rank: 5',
                 'Height: 6.4',
@@ -87,6 +102,7 @@ export class TrumpCardComponent {
         },
         {
             name: 'THE ROCK',
+            status: 'got',
             data: [
                 'Rank: 3',
                 'Height: 6.5',
@@ -103,6 +119,7 @@ export class TrumpCardComponent {
         },
         {
             name: 'BROCK LESNAR',
+            status: 'got',
             data: [
                 'Rank: 1',
                 'Height: 6.3',
@@ -119,6 +136,7 @@ export class TrumpCardComponent {
         },
         {
             name: 'ROMAN REIGNS',
+            status: 'got',
             data: [
                 'Rank: 4',
                 'Height: 6.3',
@@ -135,6 +153,7 @@ export class TrumpCardComponent {
         },
         {
             name: 'STONE COLD STEVE AUSTIN',
+            status: 'got',
             data: [
                 'Rank: 6',
                 'Height: 6.2',
@@ -151,6 +170,7 @@ export class TrumpCardComponent {
         },
         {
             name: 'SHAWN MICHAELS',
+            status: 'got',
             data: [
                 'Rank: 9',
                 'Height: 6.1',
@@ -167,6 +187,7 @@ export class TrumpCardComponent {
         },
         {
             name: 'KANE',
+            status: 'got',
             data: [
                 'Rank: 7',
                 'Height: 7.0',
@@ -183,6 +204,7 @@ export class TrumpCardComponent {
         },
         {
             name: 'BIG SHOW',
+            status: 'got',
             data: [
                 'Rank: 15',
                 'Height: 7.0',
@@ -199,8 +221,13 @@ export class TrumpCardComponent {
         },
     ];
     constructor(private textToSpeechService: TextToSpeechService) {}
+    ngOnInit() {
+        this.cards.forEach((data: any) => {
+            this.selectedStatus.push(data.statuss);
+        });
+    }
     valueClick(value: string) {
-        this.selectedValue = value;
+        this.selectedValue = value.replace('The WWE Super Star the great ', '');
         this.textToSpeechService.speak(value);
     }
     onCardClick(index: number): void {
@@ -221,5 +248,21 @@ export class TrumpCardComponent {
     submitAnswer(answer: string) {}
     onContentChange(event: any) {
         this.contentIndexValue = event.page;
+    }
+    onAudioOn(audioOn: boolean) {
+        if (audioOn) {
+            this.audio.src =
+                'https://drive.google.com/uc?export=download&id=1P0DHkAaYLkEpboahTypBVpIgu-lz3TAH';
+            this.audio.load();
+            this.audio.volume = 0.5;
+            this.audio.play();
+        } else {
+            this.audio.pause();
+            this.audio.currentTime = 0; // Reset to start
+        }
+    }
+    updateRadioColors() {}
+    onStatusClick(index: number, value: string) {
+        this.selectedStatus[index] = value;
     }
 }

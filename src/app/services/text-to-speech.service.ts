@@ -47,8 +47,8 @@ export class TextToSpeechService {
                 );
             }
 
-            this.utterance.pitch = 1;
-            this.utterance.rate = 1;
+            this.utterance.pitch = 9;
+            this.utterance.rate = 0.6;
 
             this.utterance.onend = () => {
                 console.log('SpeechSynthesisUtterance.onend');

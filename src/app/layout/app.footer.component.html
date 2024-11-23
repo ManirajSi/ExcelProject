@@ -1,5 +1,5 @@
 <form [formGroup]="footerForm">
-    <div class="layout-footer layout-footer-style">
+    <div *ngIf="hideFooter==false" class="layout-footer layout-footer-style">
         <div class="flex justify-content-evenly align-content-center flex-wrap">
             <p-paginator (onPageChange)="onPageChange($event)" [first]="first" [rows]="rows" [totalRecords]="120"
                 [rowsPerPageOptions]="[10, 20, 30]" [showCurrentPageReport]="false" [showPageLinks]="true"

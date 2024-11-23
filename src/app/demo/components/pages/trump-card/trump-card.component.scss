@@ -114,3 +114,13 @@ body {
     font-size: 14px;
     font-weight: bold;
 }
+.radio-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.custom-radio {
+    accent-color: green; /* For modern browsers */
+    margin-right: 5px;
+}

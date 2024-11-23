@@ -14,6 +14,7 @@ export class AppFooterComponent {
     paginationChecked: boolean = false;
     footerForm: FormGroup = this.footerFormGroup();
     isFooterFixed: boolean = false;
+    hideFooter: boolean = false;
     constructor(
         public layoutService: LayoutService,
         public formBuilder: FormBuilder
@@ -34,6 +35,7 @@ export class AppFooterComponent {
     }
 
     toggleFooterPosition() {
+        this.hideFooter = true;
         const footerElement = document.querySelector('.layout-footer');
         if (this.isFooterFixed) {
             footerElement.classList.add('fixed-footer');
