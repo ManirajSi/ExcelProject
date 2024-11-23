@@ -10,6 +10,7 @@
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowfullscreen>
                     </iframe>
+                    <!-- <app-trump-card></app-trump-card> -->
                 </div>
                 <!-- Show Excel sheet to select -->
                 <div *ngIf="showExcelsTable">
@@ -55,6 +56,14 @@
                                 <div [id]="'section-' + i + '-' + j">
                                     <h4 class="text-blue-700">
                                         {{ subCategory.subCategory }}
+                                        <!-- Speak Button -->
+                                        <span class="mr-2"><p-toggleButton formControlName="checked"
+                                                offIcon="pi pi-volume-off" onIcon="pi pi-volume-up" (onChange)="
+                                            onToggle(
+                                                $event,
+                                                subCategory
+                                            )
+                                        " /></span>
                                     </h4>
                                     <!--Main Content  -->
                                     <div *ngFor="
@@ -64,20 +73,25 @@
                                         <div *ngIf="
                                                 content.textContent.length > 0
                                             ">
-                                            <!-- Speak Button -->
-                                            <span class="mr-2"><p-toggleButton formControlName="checked"
-                                                    offIcon="pi pi-volume-off" onIcon="pi pi-volume-up" (onChange)="
-                                                    onToggle(
-                                                        $event,
-                                                        content
-                                                            .textContent[0]
-                                                    )
-                                                " /></span>
+
                                             <!-- Main XLContent Data -->
-                                            <span [innerHTML]="
+                                            <!-- <span [innerHTML]="
                                                     content.textContent[0]
                                                 ">
-                                            </span>
+                                            </span> -->
+                                            <div *ngIf="
+                                                content.textContent.length > 0
+                                            ">
+                                                <div *ngFor="
+                                             let textCont of content.textContent
+                                             ">
+                                                    <div [innerHTML]="
+                                                        textCont
+                                                    ">
+                                                    </div>
+
+                                                </div>
+                                            </div>
 
                                         </div>
                                         <!-- XLCodeContent -->
@@ -422,6 +436,10 @@
                             </span>
                         </span>
                     </span>
+                </div>
+                <!-- trump card view -->
+                <div *ngIf="templateName=='trumpcardview'&& showExcelContent">
+                    <app-trump-card></app-trump-card>
                 </div>
             </div>
         </div>

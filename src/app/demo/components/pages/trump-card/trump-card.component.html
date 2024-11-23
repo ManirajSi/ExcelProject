@@ -1,0 +1,34 @@
+<h3>{{selectedValue}}</h3>
+<ul class="cards">
+    <li *ngFor="let card of cards; let i = index" class="card" [ngClass]="{
+        'card--current': i === currentCardIndex,
+        'card--next': i === nextCardIndex(),
+        'card--out': i === previousCardIndex()
+      }" (click)="onCardClick(i)">
+        <p-panel [toggleable]="true">
+            <ng-template pTemplate="header">
+                <div class="flex align-items-center gap-2">
+                    <span class="ml-2">
+                        <p-paginator (onPageChange)="onContentChange($event)" [first]="0" [rows]="5"
+                            [totalRecords]="20" />
+                    </span>
+                </div>
+            </ng-template>
+            <div class="flex justify-content-center align-content-center">
+                <!-- <iframe [src]="card.images[contentIndexValue]" width="140px" height="150px" frameborder="0"
+                    style="border-radius: 10px;" allowfullscreen></iframe> -->
+                <img [src]="card.images[contentIndexValue]" alt="Goldberg" style="width: 350px; border-radius: 10px;">
+            </div>
+        </p-panel>
+        <div class="tcNameStyle">{{card.name}}</div>
+        <div class="tcDataStyle">
+            <div *ngFor="let val of card.data" class="tcBottonPlaceStyle">
+                <!-- <p-button [label]="val" styleClass="p-button-text p-button-plain" url="https://www.example.com">
+                </p-button> -->
+                <a (click)="valueClick(val)" style="cursor: pointer;">
+                    {{val}}
+                </a>
+            </div>
+        </div>
+    </li>
+</ul>

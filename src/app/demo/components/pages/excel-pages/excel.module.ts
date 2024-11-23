@@ -21,6 +21,7 @@ import { InputSwitchModule } from 'primeng/inputswitch';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ToastModule } from 'primeng/toast';
 import { PaginatorModule } from 'primeng/paginator';
+import { TrumpCardComponent } from '../trump-card/trump-card.component';
 @NgModule({
     declarations: [ExcelPagesComponent],
     imports: [
@@ -45,6 +46,7 @@ import { PaginatorModule } from 'primeng/paginator';
         CheckboxModule,
         ToastModule,
         PaginatorModule,
+        TrumpCardComponent,
     ],
 })
 export class ExcelModule {}

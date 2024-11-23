@@ -1,4 +1,4 @@
-import { Input, OnInit } from '@angular/core';
+import { ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { Component } from '@angular/core';
 import { LayoutService } from './service/app.layout.service';
 import { ReactService } from './service/react.service';
@@ -16,6 +16,9 @@ export class AppMenuComponent implements OnInit {
     @Input() model: any[] = [];
     tutorialLink: any[] = [];
     showTutorialLink: boolean = true;
+    @ViewChild('videoElement', { static: false })
+    videoElement!: ElementRef<HTMLVideoElement>;
+    capturedImage: string | null = null;
     constructor(
         public layoutService: LayoutService,
         private reactService: ReactService
@@ -69,4 +72,31 @@ export class AppMenuComponent implements OnInit {
     }
     onPageChange(event: any) {}
     onChangeListbox(event: any) {}
+    ngAfterViewInit() {
+        this.startCamera();
+    }
+
+    startCamera() {
+        navigator.mediaDevices
+            .getUserMedia({ video: true })
+            .then((stream) => {
+                if (this.videoElement?.nativeElement) {
+                    this.videoElement.nativeElement.srcObject = stream;
+                }
+            })
+            .catch((error) => {
+                console.error('Error accessing camera:', error);
+            });
+    }
+
+    captureImage() {
+        const canvas = document.createElement('canvas');
+        canvas.width = this.videoElement.nativeElement.videoWidth;
+        canvas.height = this.videoElement.nativeElement.videoHeight;
+        const context = canvas.getContext('2d');
+        if (context) {
+            context.drawImage(this.videoElement.nativeElement, 0, 0, 300, 300);
+            this.capturedImage = canvas.toDataURL('image/png'); // Convert the canvas to a base64-encoded image
+        }
+    }
 }

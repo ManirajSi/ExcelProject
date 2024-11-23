@@ -65,9 +65,7 @@ export class AppTopBarComponent {
         {
             label: 'Upload',
             icon: 'pi pi-upload',
-            command: () => {
-                this.browseSelectFile();
-            },
+            command: () => {},
             items: [
                 {
                     label: 'Preview',
@@ -390,9 +388,16 @@ export class AppTopBarComponent {
                 const newRow = {};
                 let colIndex = 0;
                 for (const key in row) {
-                    const newKey = `col${colIndex}|${key}|${templcols[colIndex]['type']}`;
-                    newRow[newKey] = row[key];
-                    colIndex++;
+                    try {
+                        const newKey = `col${colIndex}|${key}|${templcols[colIndex]['type']}`;
+                        newRow[newKey] = row[key];
+                        colIndex++;
+                    } catch {
+                        this.showToast(
+                            2,
+                            'Please check the Template Settings sheet in excel some of the columns may not defined'
+                        );
+                    }
                 }
                 newJsonData.push(newRow);
             });

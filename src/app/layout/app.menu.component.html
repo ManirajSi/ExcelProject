@@ -3,12 +3,23 @@
         <p-listbox [options]="tutorialLink" optionLabel="label" [style]="{'width':'15rem'}"
             [listStyle]="{'max-height': '220px'}" (onChange)="onChangeListbox($event)" />
     </div>
-    <ng-container *ngFor="let item of model; let i = index">
-        <li app-menuitem *ngIf="!item.separator" [item]="item" [index]="i" [root]="true" [ngClass]="item.styleClass"
-            [ngStyle]="item.style">
-        </li>
-        <li *ngIf="item.separator" class="menu-separator"></li>
-    </ng-container>
-    <li>
-    </li>
+    <div style="margin-bottom: 300px;">
+        <ng-container *ngFor="let item of model; let i = index">
+            <li app-menuitem *ngIf="!item.separator" [item]="item" [index]="i" [root]="true" [ngClass]="item.styleClass"
+                [ngStyle]="item.style">
+            </li>
+            <li *ngIf="item.separator" class="menu-separator"></li>
+        </ng-container>
+    </div>
+    <div class="m-0 p-0" style="position: fixed; bottom: 0; width: 300px;">
+        <!-- <div class="m-0 p-0">
+            <video #videoElement width="80%" height="80%" autoplay></video>
+            <button (click)="captureImage()">Capture Image</button>
+        </div>
+        <div *ngIf="capturedImage">
+            <h3>Captured Image:</h3>
+            <img [src]="capturedImage" alt="Captured">
+        </div> -->
+        <!-- <app-camera></app-camera> -->
+    </div>
 </ul>
