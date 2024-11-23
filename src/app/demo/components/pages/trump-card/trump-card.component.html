@@ -38,8 +38,7 @@
                 <img [src]="card.images[contentIndexValue]" alt="WWF" style="width: 350px; border-radius: 10px;">
             </div>
         </p-panel>
-        <div class="tcNameStyle"><a (click)="valueClick('The WWE Super Star the great '+card.name)"
-                style="cursor: pointer;">
+        <div class="tcNameStyle"><a (click)="valueClick(card.name)" style="cursor: pointer;">
                 {{card.name}}
             </a></div>
         <div class="tcDataStyle">

@@ -14,7 +14,7 @@ export class AppFooterComponent {
     paginationChecked: boolean = false;
     footerForm: FormGroup = this.footerFormGroup();
     isFooterFixed: boolean = false;
-    hideFooter: boolean = false;
+    hideFooter: boolean = true;
     constructor(
         public layoutService: LayoutService,
         public formBuilder: FormBuilder
