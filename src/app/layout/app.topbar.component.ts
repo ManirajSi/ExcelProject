@@ -108,14 +108,14 @@ export class AppTopBarComponent {
                     icon: 'pi pi-th-large',
                     command: () => {
                         this.selectedAction = 'Template1';
-                        this.dowloadTemplate('Template1');
+                        this.dowloadTemplate('AllInOne');
                     },
                 },
                 {
                     separator: true,
                 },
                 {
-                    label: 'TrainingSite',
+                    label: 'WebContent',
                     icon: 'pi pi-th-large',
                     command: () => {
                         this.selectedAction = 'Template3';
@@ -124,7 +124,7 @@ export class AppTopBarComponent {
                     },
                 },
                 {
-                    label: 'FeedbackSite',
+                    label: 'Q&A',
                     icon: 'pi pi-th-large',
                     command: () => {
                         this.selectedAction = 'Template2';
@@ -132,42 +132,10 @@ export class AppTopBarComponent {
                     },
                 },
                 {
-                    label: 'PublicSite',
+                    label: 'TrumpCard',
                     icon: 'pi pi-th-large',
                     command: () => {
-                        this.selectedAction = 'Template3';
-                        this.showToast(2, 'Template under construction');
-                    },
-                },
-                {
-                    label: 'GameSite',
-                    icon: 'pi pi-th-large',
-                    command: () => {
-                        this.selectedAction = 'Template3';
-                        this.showToast(2, 'Template under construction');
-                    },
-                },
-                {
-                    label: 'ExpenseManager',
-                    icon: 'pi pi-th-large',
-                    command: () => {
-                        this.selectedAction = 'Template3';
-                        this.showToast(2, 'Template under construction');
-                    },
-                },
-                {
-                    label: 'TimeManager',
-                    icon: 'pi pi-th-large',
-                    command: () => {
-                        this.selectedAction = 'Template3';
-                        this.showToast(2, 'Template under construction');
-                    },
-                },
-                {
-                    label: 'DataAnalyser',
-                    icon: 'pi pi-th-large',
-                    command: () => {
-                        this.selectedAction = 'Template3';
+                        this.selectedAction = 'Template2';
                         this.showToast(2, 'Template under construction');
                     },
                 },
@@ -366,7 +334,6 @@ export class AppTopBarComponent {
         //             rowData[`Column${colNumber}`] = cellValue;
         //         });
         //         sheetData.push(rowData);
-        //         console.log('sheetData==>', sheetData);
         //     });
         // });
         // this.store.dispatch(
@@ -383,7 +350,8 @@ export class AppTopBarComponent {
         let newJsonData = [];
         let templcols: any[] = [];
         if (sheetIndex != 0) {
-            templcols = this.sheets[0]['Columns'];
+            sheetIndex = sheetIndex - 1;
+            templcols = this.sheets[sheetIndex]['Columns'];
             jsonData.forEach((row, rowIndex) => {
                 const newRow = {};
                 let colIndex = 0;
