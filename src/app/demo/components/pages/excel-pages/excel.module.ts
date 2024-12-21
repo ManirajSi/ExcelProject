@@ -23,6 +23,7 @@ import { ToastModule } from 'primeng/toast';
 import { PaginatorModule } from 'primeng/paginator';
 import { TrumpCardComponent } from '../trump-card/trump-card.component';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { CardBookComponent } from '../card-book/card-book.component';
 @NgModule({
     declarations: [ExcelPagesComponent],
     imports: [
@@ -49,6 +50,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
         PaginatorModule,
         TrumpCardComponent,
         ProgressSpinnerModule,
+        CardBookComponent,
     ],
 })
 export class ExcelModule {}

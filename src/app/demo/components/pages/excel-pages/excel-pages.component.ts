@@ -89,6 +89,7 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
     contentIndexValue: number = 0;
     selectedTabIndex: number = 0;
     templateName: string = 'contentview';
+    templateSetting: any;
     constructor(
         private reactService: ReactService,
         private sanitizer: DomSanitizer,
@@ -169,6 +170,11 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
                 this.isFooterFixed = value;
                 this.toggleFooterPosition();
             });
+        if (sessionStorage.getItem('templateSetting')) {
+            this.templateSetting = JSON.parse(
+                sessionStorage.getItem('templateSetting')
+            );
+        }
     }
     ngAfterViewInit() {
         Prism.highlightAll(); // Trigger Prism to highlight the code
@@ -199,9 +205,13 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
             // Common Variables
             let category: string = '';
             let subCategory: string = '';
+            //Taskset
+            let taskSet: string[] = [];
+            if (this.templateName == 'taskview') {
+                // this.templateSetting ={};
+            }
             // Q&A View Variables
             let snoSet: string[] = [];
-            let taskSet: string[] = [];
             let questionSet: string[] = [];
             let optionSet: string[][] = [];
             let answerSet: string[] = [];
@@ -371,9 +381,11 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
                                 );
                             }
                         }
-                        // Task View Data Assign
+                    } // Task View Data Assign
+                    if (this.templateName == 'taskview') {
                         if (keyName.toLowerCase().includes('xltask')) {
                             if (item[key]?.trim().toLowerCase() != 'x') {
+                                keyName;
                                 taskSet.push(
                                     item[key].replace(/\r\n/g, '</br>')
                                 );

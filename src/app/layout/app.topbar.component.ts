@@ -305,7 +305,14 @@ export class AppTopBarComponent {
                 this.templateSettings = XLSX.utils.sheet_to_json(ws);
                 this.templateSettings.forEach((rowdata: any) => {
                     if (rowdata.XLKeys.toLowerCase().includes('sheet')) {
-                        this.sheets.push(JSON.parse(rowdata['XLValues']));
+                        try {
+                            this.sheets.push(JSON.parse(rowdata['XLValues']));
+                        } catch {
+                            this.showToast(
+                                2,
+                                'Please check the Template Settings sheet unable to Parse sheet information "!..Check any ,,COMMOS,, missed or Miss placed at last..!" '
+                            );
+                        }
                     }
                 });
             }

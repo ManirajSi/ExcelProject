@@ -1,5 +1,6 @@
 <form [formGroup]="excelPageForm">
     <p-toast />
+    <!-- <app-card-book></app-card-book> -->
     <div class="grid">
         <div class="col-12">
             <div class="card px-3 py-3">
@@ -428,7 +429,7 @@
                                                 <div class="p-field-checkbox" *ngFor="
                                                     let task of content.taskSet;
                                                     let i = index
-                                                ">
+                                                 ">
                                                     <p-checkbox name="taskControl" value="{{ task }}"
                                                         formControlName="taskControl" inputId="{{ i }}"
                                                         class="mt-2"></p-checkbox>
@@ -442,8 +443,12 @@
                         </span>
                     </div>
                     <!-- trump card view -->
-                    <div *ngIf="templateName=='trumpcardview'&& showExcelContent && data.length>0">
+                    <div *ngIf=" templateName=='trumpcardview' && showExcelContent && data.length>0">
                         <app-trump-card [data]="data"></app-trump-card>
+                    </div>
+                    <!-- Book View -->
+                    <div *ngIf="templateName=='bookview'">
+                        <app-card-book></app-card-book>
                     </div>
                 </div>
             </div>

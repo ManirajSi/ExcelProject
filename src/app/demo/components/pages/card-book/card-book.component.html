@@ -1,0 +1,14 @@
+<div class="card">
+    <div class="grid">
+        <div class="col-12">
+            <div id="page-flip" class="page-flip">
+                <div *ngFor="let page of pageData">
+                    <div class="page">
+                        <div class="scrollable-div" [innerHTML]="page">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

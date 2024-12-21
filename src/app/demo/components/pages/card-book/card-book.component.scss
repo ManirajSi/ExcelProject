@@ -1,0 +1,24 @@
+.page-flip {
+    width: 130%;
+    height: 70%;
+    background: #ffffff;
+}
+
+.page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #ffffff;
+    border: 1px solid #ccc;
+    font-size: 18px;
+    height: 100%;
+    width: 100%;
+}
+.scrollable-div {
+    width: 100%; /* Set width of the div */
+    height: 100%; /* Set height of the div */
+    border: 1px solid #ffffff; /* Optional: Add a border */
+    padding: 10px; /* Optional: Add padding */
+    overflow-y: auto; /* Add vertical scroll if content overflows */
+    overflow-x: hidden; /* Hide horizontal overflow */
+}
