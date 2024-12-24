@@ -451,17 +451,24 @@ export class AppTopBarComponent {
         });
     }
     setExcelPageContent(content: any, index: number) {
-        let xlvaues = JSON.parse(
-            this.templateSetting[0].XLValues.replace(/'/g, '"').replace(
-                /(\w+):/g,
-                '"$1":'
-            )
-        );
-        let contentType = xlvaues['Sheet' + index];
-        this.reactService.setFile({
-            excelContents: content,
-            specInfo: { contentLabel: contentType.toLowerCase() },
-        });
+        try {
+            let xlvaues = JSON.parse(
+                this.templateSetting[0].XLValues.replace(/'/g, '"').replace(
+                    /(\w+):/g,
+                    '"$1":'
+                )
+            );
+            let contentType = xlvaues['Sheet' + index];
+            this.reactService.setFile({
+                excelContents: content,
+                specInfo: { contentLabel: contentType.toLowerCase() },
+            });
+        } catch (e) {
+            this.showToast(
+                2,
+                'In the TemplateSetting sheet JSON format issue, Please check is any additional Commas at last'
+            );
+        }
     }
     loginRedirect() {
         this.router.navigate(['login']);

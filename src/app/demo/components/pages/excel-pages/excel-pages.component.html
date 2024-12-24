@@ -1,4 +1,7 @@
 <form [formGroup]="excelPageForm">
+    <!-- Note for Image display from Gdrive use this format this works only in Iframe
+     -https://drive.google.com/file/d/1vZ9QEvhrLKWJfwPlFrer8NOhSGTqPv8N/preview -->
+    <!-- https://drive.google.com/file/d/1KmrmjtYWwDbwGF7GEWZQRUxqi3n-deoi/view?usp=sharing -->
     <p-toast />
     <!-- <app-card-book></app-card-book> -->
     <div class="grid">
@@ -71,22 +74,65 @@
                                         " /></span>
                                         </h4>
                                         <!--Main Content  -->
+                                        <!-- IdCard view -->
+                                        <div *ngFor="
+                                         let content of subCategory.contents
+                                         ">
+                                            <div *ngIf="content.idCardContent.length > 0">
+                                                <div>
+                                                    <p-card>
+                                                        <ng-template pTemplate="footer">
+
+
+                                                            <div class="grid">
+                                                                <div
+                                                                    class="col-4 lg:col-4 md:col-6 sm:col-12 m-0 pb-0 pt-0 pr-0">
+                                                                    <div class="card p-0 m-1">
+
+                                                                        <iframe [src]="content.idCardContent[0][0]"
+                                                                            width="260px" height="230px" frameborder="0"
+                                                                            allowfullscreen="false"
+                                                                            style="pointer-events:none;background-color: white; border: none;">
+                                                                        </iframe>
+                                                                    </div>
+                                                                </div>
+                                                                <div
+                                                                    class="col-8 lg:col-8 md:col-6 sm:col-12 m-0 pb-0 pt-0 pl-0">
+                                                                    <div class=" card p-2 m-1">
+                                                                        <div
+                                                                            *ngFor="let cont of content.idCardContent;let i=index">
+                                                                            <div *ngIf="i>0" class="grid">
+                                                                                <div class="col-4 ">
+                                                                                    {{cont[0]}}</div>
+                                                                                <div class="col-8 ">{{cont[1]}}
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </ng-template>
+                                                    </p-card>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- IdCard view end -->
                                         <div *ngFor="
                                             let content of subCategory.contents
                                         ">
                                             <!-- Main XLContent -->
                                             <div *ngIf="
                                                 content.textContent.length > 0
-                                            ">
+                                             ">
 
                                                 <!-- Main XLContent Data -->
                                                 <!-- <span [innerHTML]="
                                                     content.textContent[0]
                                                 ">
-                                            </span> -->
+                                             </span> -->
                                                 <div *ngIf="
                                                 content.textContent.length > 0
-                                            ">
+                                             ">
                                                     <div *ngFor="
                                              let textCont of content.textContent
                                              ">

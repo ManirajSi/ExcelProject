@@ -218,6 +218,7 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
             let reasonSet: string[] = [];
             let controlSet: string[] = [];
             // Content View Variables
+            let idCardContent: SafeResourceUrl[] = [];
             let textContent: SafeResourceUrl[] = [];
             let noteContent: SafeResourceUrl[] = [];
             let codeContent: SafeResourceUrl[] = [];
@@ -240,6 +241,31 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
                     }
                     // Content View Data Assign
                     if (this.templateName == 'contentview') {
+                        if (keyName.toLowerCase().includes('xlidcard')) {
+                            if (item[key]?.trim().toLowerCase() != 'x') {
+                                let splittedStr: string[] =
+                                    item[key].split(',');
+                                splittedStr.forEach(
+                                    (spltStr: string, i: number) => {
+                                        if (i != 0) {
+                                            let subSplit: string[] =
+                                                spltStr.split(':');
+                                            idCardContent.push(subSplit);
+                                        } else {
+                                            this.sanitizer.bypassSecurityTrustResourceUrl(
+                                                spltStr
+                                            );
+                                            let subSplit = [
+                                                this.sanitizer.bypassSecurityTrustResourceUrl(
+                                                    spltStr
+                                                ),
+                                            ];
+                                            idCardContent.push(subSplit);
+                                        }
+                                    }
+                                );
+                            }
+                        }
                         if (keyName.toLowerCase().includes('xlcontent')) {
                             if (item[key]?.trim().toLowerCase() != 'x') {
                                 let safeurl: SafeResourceUrl =
@@ -416,6 +442,7 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
                 answerSet: answerSet,
                 reasonSet: reasonSet,
                 controlSet: controlSet,
+                idCardContent: idCardContent,
                 textContent: textContent,
                 codeContent: codeContent,
                 noteContent: noteContent,

@@ -5,10 +5,11 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { ReactService } from 'src/app/layout/service/react.service';
+import { ButtonModule } from 'primeng/button';
 @Component({
     selector: 'app-card-book',
     standalone: true,
-    imports: [CommonModule],
+    imports: [CommonModule, ButtonModule],
     templateUrl: './card-book.component.html',
     styleUrl: './card-book.component.scss',
 })
@@ -17,11 +18,16 @@ export class CardBookComponent {
     pageData: any[] = [];
     @Input() data: any[] = [];
     fileSubscription: Subscription = new Subscription();
+    isItInitalLoad: boolean = true;
     constructor(private reactService: ReactService) {
         this.fileSubscription = this.reactService.file$.subscribe((data) => {
             if (data) {
+                this.data = [];
                 this.data = data.excelContents;
                 this.setData();
+                if (!this.isItInitalLoad) {
+                    this.ngAfterViewInit();
+                }
             }
         });
     }
@@ -58,8 +64,12 @@ export class CardBookComponent {
             });
             this.pageData.push(data);
         });
+        this.isItInitalLoad = false;
     }
-
+    onSpeakerClick() {
+        console.log('Speaker button clicked!');
+        // Add your logic here, e.g., play a sound or perform an action
+    }
     ngOnDestroy(): void {
         if (this.pageFlip) {
             this.pageFlip.destroy();
