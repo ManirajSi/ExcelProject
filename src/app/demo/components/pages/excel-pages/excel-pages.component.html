@@ -82,29 +82,28 @@
                                                 <div>
                                                     <p-card>
                                                         <ng-template pTemplate="footer">
-
-
                                                             <div class="grid">
                                                                 <div
-                                                                    class="col-4 lg:col-4 md:col-6 sm:col-12 m-0 pb-0 pt-0 pr-0">
+                                                                    class="col-12 lg:col-3 md:col-3 sm:col-12 m-0 pb-0 pt-0 pr-0 pl-0">
                                                                     <div class="card p-0 m-1">
-
                                                                         <iframe [src]="content.idCardContent[0][0]"
-                                                                            width="260px" height="230px" frameborder="0"
+                                                                            width="250px" height="230px" frameborder="0"
                                                                             allowfullscreen="false"
                                                                             style="pointer-events:none;background-color: white; border: none;">
                                                                         </iframe>
                                                                     </div>
                                                                 </div>
                                                                 <div
-                                                                    class="col-8 lg:col-8 md:col-6 sm:col-12 m-0 pb-0 pt-0 pl-0">
+                                                                    class="col-12 lg:col-9 md:col-9 sm:col-12 m-0 pb-0 pt-0 pl-0">
                                                                     <div class=" card p-2 m-1">
                                                                         <div
                                                                             *ngFor="let cont of content.idCardContent;let i=index">
                                                                             <div *ngIf="i>0" class="grid">
-                                                                                <div class="col-4 ">
-                                                                                    {{cont[0]}}</div>
-                                                                                <div class="col-8 ">{{cont[1]}}
+                                                                                <div class="col-4 "
+                                                                                    [innerHTML]="cont[0]">
+                                                                                </div>
+                                                                                <div class="col-8 "
+                                                                                    [innerHTML]="cont[1]">
                                                                                 </div>
                                                                             </div>
                                                                         </div>

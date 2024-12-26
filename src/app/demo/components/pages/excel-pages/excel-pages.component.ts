@@ -248,9 +248,30 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
                                 splittedStr.forEach(
                                     (spltStr: string, i: number) => {
                                         if (i != 0) {
+                                            let formedSplitstr: string[] = [];
                                             let subSplit: string[] =
                                                 spltStr.split(':');
-                                            idCardContent.push(subSplit);
+                                            subSplit.forEach(
+                                                (str: string, i: number) => {
+                                                    if (i == 0) {
+                                                        str =
+                                                            '<b>' +
+                                                            str +
+                                                            '</b>';
+                                                    } else {
+                                                        str = str.replace(
+                                                            /[|;]/g,
+                                                            (match) =>
+                                                                match === '|'
+                                                                    ? ','
+                                                                    : ':'
+                                                        );
+                                                    }
+                                                    formedSplitstr.push(str);
+                                                }
+                                            );
+
+                                            idCardContent.push(formedSplitstr);
                                         } else {
                                             this.sanitizer.bypassSecurityTrustResourceUrl(
                                                 spltStr
