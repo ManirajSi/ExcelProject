@@ -24,6 +24,7 @@ import { PaginatorModule } from 'primeng/paginator';
 import { TrumpCardComponent } from '../trump-card/trump-card.component';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { CardBookComponent } from '../card-book/card-book.component';
+// import { TensorFlowAiComponent } from '../tensor-flow-ai/tensor-flow-ai.component';
 @NgModule({
     declarations: [ExcelPagesComponent],
     imports: [
@@ -51,6 +52,7 @@ import { CardBookComponent } from '../card-book/card-book.component';
         TrumpCardComponent,
         ProgressSpinnerModule,
         CardBookComponent,
+        // TensorFlowAiComponent,
     ],
 })
 export class ExcelModule {}

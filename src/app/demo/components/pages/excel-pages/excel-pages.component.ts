@@ -90,6 +90,7 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
     selectedTabIndex: number = 0;
     templateName: string = 'contentview';
     templateSetting: any;
+    selectedTabName: string = 'images';
     constructor(
         private reactService: ReactService,
         private sanitizer: DomSanitizer,
@@ -219,9 +220,10 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
             let controlSet: string[] = [];
             // Content View Variables
             let idCardContent: SafeResourceUrl[] = [];
-            let textContent: SafeResourceUrl[] = [];
-            let noteContent: SafeResourceUrl[] = [];
-            let codeContent: SafeResourceUrl[] = [];
+            let textContent: SafeHtml[] = [];
+            let noteContent: SafeHtml[] = [];
+            let codeContent: SafeHtml[] = [];
+            let cardContent: SafeHtml[] = [];
             let imageContent: SafeResourceUrl[] = [];
             let videoContent: SafeResourceUrl[] = [];
             let gifContent: SafeResourceUrl[] = [];
@@ -303,6 +305,16 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
                                     .split('!!!');
                                 codeArr.forEach((code: any) => {
                                     codeContent.push(code);
+                                });
+                            }
+                        }
+                        if (keyName.toLowerCase().includes('xlcard')) {
+                            if (item[key]?.trim().toLowerCase() != 'x') {
+                                let cardArr: string[] = item[key]
+                                    .replace(/\r\n/g, '</br>')
+                                    .split('!!!');
+                                cardArr.forEach((code: any) => {
+                                    cardContent.push(code);
                                 });
                             }
                         }
@@ -466,6 +478,7 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
                 idCardContent: idCardContent,
                 textContent: textContent,
                 codeContent: codeContent,
+                cardContent: cardContent,
                 noteContent: noteContent,
                 imageContent: imageContent,
                 videoContent: videoContent,
@@ -593,8 +606,11 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
         if (dataContent.codeContent) {
             readContent = readContent + ' ' + dataContent.codeContent.join(' ');
         }
+        if (dataContent.cardContent) {
+            readContent = readContent + ' ' + dataContent.cardContent.join(' ');
+        }
         if (dataContent.noteContent) {
-            readContent = readContent + ' ' + dataContent.codeContent.join(' ');
+            readContent = readContent + ' ' + dataContent.noteContent.join(' ');
         }
         if (event.checked) {
             this.textToSpeechService.speak(
@@ -712,6 +728,45 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
     }
     onTabChange(event: any) {
         this.selectedTabIndex = event.index;
+        if (this.selectedTabIndex == 0) {
+            this.selectedTabName = 'images';
+        } else if (this.selectedTabIndex == 1) {
+            this.selectedTabName = 'gifs';
+        } else if (this.selectedTabIndex == 2) {
+            this.selectedTabName = 'videos';
+        } else if (this.selectedTabIndex == 3) {
+            this.selectedTabName = 'urls';
+        } else if (this.selectedTabIndex == 4) {
+            this.selectedTabName = 'docs';
+        }
+    }
+    getTotalRecords(content: any): number {
+        let returnvalue: number = 0;
+        let tabName = this.selectedTabName;
+        if (tabName == 'images') {
+            returnvalue = content.imageContent.length;
+        } else if (tabName == 'gifs') {
+            returnvalue = content.gifContent.length;
+        } else if (tabName == 'videos') {
+            returnvalue = content.videoContent.length;
+        } else if (tabName == 'urls') {
+            returnvalue = content.urlRefContent.length;
+        } else if (tabName == 'docs') {
+            returnvalue = content.pdfContent.length;
+        } else {
+            returnvalue = 0;
+        }
+        return returnvalue;
+    }
+    copyText(text: string): void {
+        navigator.clipboard.writeText(text).then(
+            () => {
+                this.showToast(1, 'Code copied!');
+            },
+            (err) => {
+                console.error('Failed to copy text: ', err);
+            }
+        );
     }
     ngOnDestroy(): void {
         this.fileSubscription.unsubscribe();

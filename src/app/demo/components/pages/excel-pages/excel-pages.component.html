@@ -15,6 +15,7 @@
                         allowfullscreen>
                     </iframe>
                     <!-- <app-trump-card></app-trump-card> -->
+                    <!-- <app-tensor-flow-ai></app-tensor-flow-ai> -->
                 </div>
                 <!-- Show Excel sheet to select -->
                 <div *ngIf="showExcelsTable">
@@ -147,11 +148,31 @@
                                             <!-- XLCodeContent -->
                                             <div *ngIf="
                                                 content.codeContent.length > 0
-                                            ">
+                                             ">
                                                 <div *ngFor="
                                              let code of content.codeContent
+                                             ">
+                                                    <div class="code-card">
+                                                        <div class="code-header">
+                                                            <p-button icon="pi pi-copy" [text]="true"
+                                                                (click)="copyText(code)" />
+                                                        </div>
+                                                        <div class="code-content">
+                                                            <pre><code><span [innerHTML]="
+                                                                code
+                                                             ">
+                                                                </span></code></pre>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div *ngIf="
+                                                content.cardContent.length > 0
                                             ">
-                                                    <div class="code-card2 shadow-4">
+                                                <div *ngFor="
+                                             let code of content.cardContent
+                                            ">
+                                                    <div class="card-card2 shadow-4">
                                                         <span [innerHTML]="
                                                         code
                                                     ">
@@ -181,7 +202,7 @@
                                                     content?.gifContent?.length>0 ||
                                                     content?.videoContent?.length>0 ||
                                                     content?.urlRefContent?.length>0 ||
-                                                    content?.pdfsContent?.length>0
+                                                    content?.pdfContent?.length>0
                                                 ">
                                                 <ng-template pTemplate="header">
                                                     <div class="flex align-items-center gap-2">
@@ -190,7 +211,8 @@
                                                         </span>
                                                         <span class="ml-2">
                                                             <p-paginator (onPageChange)="onContentChange($event)"
-                                                                [first]="0" [rows]="5" [totalRecords]="20" />
+                                                                [first]="0" [rows]="1"
+                                                                [totalRecords]="getTotalRecords(content)" />
                                                         </span>
 
                                                     </div>
@@ -200,7 +222,7 @@
                                                     content?.gifContent?.length>0 ||
                                                     content?.videoContent?.length>0 ||
                                                     content?.urlRefContent?.length>0 ||
-                                                    content?.pdfsContent?.length>0
+                                                    content?.pdfContent?.length>0
                                                     " styleClass="tabview-custom" (onChange)="onTabChange($event)">
                                                     <p-tabPanel class="p-0" *ngIf="
                                                             content
@@ -286,7 +308,7 @@
                                                                         color: slateblue;
                                                                     "></i>
                                                                 <span class="font-bold white-space-nowrap m-0">
-                                                                    Website
+                                                                    URL's
                                                                 </span>
                                                                 <p-badge value="2" />
                                                             </div>
@@ -321,7 +343,7 @@
                                                         " header="URLs">
                                                         <ng-template pTemplate="header">
                                                             <div class="flex align-items-center gap-2">
-                                                                <i class="pi pi-link" style="
+                                                                <i class="pi pi-book" style="
                                                                         color: slateblue;
                                                                     "></i>
                                                                 <span class="font-bold white-space-nowrap m-0">

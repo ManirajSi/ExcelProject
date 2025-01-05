@@ -108,7 +108,7 @@ iframe {
     font-size: 0.85rem;
     font-weight: bold;
 }
-.code-card2 {
+.card-card2 {
     background-color: #ffffff;
     color: #557fda;
     border-radius: 8px;
@@ -210,4 +210,33 @@ code {
 .scroll-footer {
     position: relative;
     background-color: #f8f9fa;
+}
+
+.code-card {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 1rem;
+    background: #f9f9f9;
+    border-radius: 8px;
+}
+
+.code-header {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 0.5rem;
+}
+
+.code-content {
+    background-color: #272822; /* Dark background for code */
+    color: #f8f8f2; /* Light font for code */
+    padding: 1rem;
+    border-radius: 8px;
+    overflow-x: auto;
+}
+
+pre {
+    margin: 0;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 14px;
 }
