@@ -1,124 +1,97 @@
-<!-- Category For loop -->
-<div *ngFor="let category of groupedData; let i = index">
-    <div>
-        <h2 class="text-blue-700">
-            {{ category.category }}
-        </h2>
-        <!-- SubCategory For loop -->
-        <div *ngFor="
+<form [formGroup]="dynamicForm" (onSubmit)="saveData()">
+    <p-toast />
+    <!-- Category For loop -->
+    <div *ngFor="let category of groupedData; let i = index">
+        <div>
+            <h2 class="text-blue-700">
+                {{ category.category }}
+            </h2>
+            <!-- SubCategory For loop -->
+            <div *ngFor="
                 let subCategory of category.subCategories;
                 let j = index
             ">
-            <div [id]="'section-' + i + '-' + j">
-                <h6 class="text-purple-600 font-bold">
-                    {{ subCategory.subCategory }}
-                    <!-- Speak Button -->
-                    <span class="mr-2"><p-toggleButton formControlName="checked" offIcon="pi pi-volume-off"
-                            onIcon="pi-volume-up" (onChange)="
-                        onToggle(
-                            $event,
-                            subCategory
-                        )
-                    " /></span>
-                </h6>
-                <!--Main Content  -->
-                <div *ngFor="
+                <div [id]="'section-' + i + '-' + j">
+                    <h6 class="text-purple-600 font-bold">
+                        {{ subCategory.subCategory }}
+                    </h6>
+                    <div *ngFor="
                         let content of subCategory.contents
                     ">
-                    <!-- Main XLContent -->
-                    <p-card class="m-1">
-                        <ng-template pTemplate="header">
-                            <div class="flex justify-content-between flex-wrap">
-                                <div class="flex justify-content-start flex-wrap">
-                                    <div *ngIf="content.innerHeader.length > 0">
-                                        <div *ngFor="let innerHeader of content.innerHeader">
-                                            <div class="m-1 text-lg font-bold text-pink-600" [innerHTML]="innerHeader">
+                        <p-card class="m-1">
+                            <ng-template pTemplate="header">
+                                <div class="flex justify-content-between flex-wrap">
+                                    <div class="flex justify-content-start flex-wrap">
+                                        <div *ngIf="content.innerHeader.length > 0">
+                                            <div *ngFor="let innerHeader of content.innerHeader">
+                                                <div class="m-1 text-lg font-bold text-pink-600"
+                                                    [innerHTML]="innerHeader">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="m-1" *ngIf="content.headerNote.length > 0">
+                                            <div *ngFor="let headerNote of content.headerNote">
+                                                <div [innerHTML]="headerNote">
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="m-1" *ngIf="content.headerNote.length > 0">
-                                        <div *ngFor="let headerNote of content.headerNote">
-                                            <div [innerHTML]="headerNote">
+                                    <div class="ml-2">
+                                        <p-button icon="pi pi-pencil" aria-label="edit" (click)="onEdit(content)" />
+                                    </div>
+                                </div>
+                            </ng-template>
+                            <p> </p>
+                            <ng-template pTemplate="footer">
+                                <div class="grid">
+                                    <div class="col-4">
+                                        <div *ngIf="content.detail.length > 0">
+                                            <div class="m-1 p-1" *ngFor="let detail of content.detail">
+                                                <span [innerHTML]="detail "></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div *ngIf="content.sideNote.length > 0">
+                                            <div *ngFor="let sideNote of content.sideNote">
+                                                <span [innerHTML]="sideNote">
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div *ngIf="content.value.length > 0">
+                                            <div class="font-bold text-pink-600" *ngFor="let value of content.value">
+                                                {{value| currency:'INR':'symbol':'1.2-2' }}
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-
-                                <div class="ml-2">
-                                    <p-button icon="pi pi-pencil" aria-label="edit" (click)="onEdit(content)" />
-                                </div>
-                            </div>
-                        </ng-template>
-                        <p> </p>
-                        <ng-template pTemplate="footer">
-                            <div class="grid">
-                                <div class="col-4">
-                                    <div *ngIf="content.detail.length > 0">
-                                        <div class="m-1 p-1" *ngFor="let detail of content.detail">
-                                            <span [innerHTML]="detail "></span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div *ngIf="content.sideNote.length > 0">
-                                        <div *ngFor="let sideNote of content.sideNote">
-                                            <span [innerHTML]="sideNote">
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div *ngIf="content.value.length > 0">
-                                        <div class="font-bold text-pink-600" *ngFor="let value of content.value">
-                                            {{value| currency:'INR':'symbol':'1.2-2' }}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </ng-template>
-                    </p-card>
-                    <!-- <p-card class="m-2 p-1">
-                        <ng-template ptemplate="header">
-                            <h1>hello</h1>
-
-                        </ng-template>
-                        <p></p>
-                        <ng-template pTemplate="footer">
-
-                        </ng-template>
-                    </p-card> -->
-                    <!-- <div class="p-card custom-card p-shadow-8 m-4">
-                        <div class="p-card-header">
-                            <hr>
-                        </div>
-                        <div class="p-card-body">
-                        </div>
-                        <div class="p-card-footer">
-                        </div>
-                    </div> -->
-                    <!-- xxxxxxxxxx -->
+                            </ng-template>
+                        </p-card>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-<div class="add-button-container">
-    <button p-button class="add-button" (click)="onAddClick()"><i class="pi pi-plus"
-            style="font-size: 2rem"></i></button>
-    <!-- <p-button class="add-button" icon="pi pi-plus" [rounded]="true" severity="warn" /> -->
-</div>
-<p-dialog header="Edit Profile" [modal]="true" [(visible)]="visible" [style]="{ width: 'auto',height:'auto' }">
-    <div class="m-2" *ngFor="let key of keyNames">
-        <div class="grid">
-            <div class="col-3">
-                <label for="key" class="center-label font-bold text-pink-600">{{key}}</label>
-            </div>
-            <div class="col-9">
-                <input pInputText id="key" aria-describedby="key-help" />
+    <div class="add-button-container">
+        <button p-button class="add-button" (click)="onAddClick()"><i class="pi pi-plus"
+                style="font-size: 2rem"></i></button>
+    </div>
+    <p-dialog header="Edit Profile" [modal]="true" [(visible)]="visible" [style]="{ width: 'auto',height:'auto' }">
+        <div class="m-2" *ngFor="let key of keyNames">
+            <div class="grid">
+                <div class="col-3">
+                    <label for="key" class="center-label font-bold text-pink-600">{{key}}</label>
+                </div>
+                <div class="col-9">
+                    <input pInputText [id]="key" [formControlName]="key" [type]="getType(key)"
+                        aria-describedby="key-help" />
+                </div>
             </div>
         </div>
-    </div>
-    <div class="flex justify-content-center gap-2">
-        <p-button label="Save" (click)="saveData()" />
-    </div>
-</p-dialog>
+        <div class="flex justify-content-center gap-2">
+            <p-button label="Save" (click)="saveData()" />
+        </div>
+    </p-dialog>
+</form>

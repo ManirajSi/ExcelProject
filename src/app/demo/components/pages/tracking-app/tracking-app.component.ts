@@ -12,7 +12,15 @@ import { StringOperationPipe } from 'src/app/pipes/string-operation.pipe';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+    FormBuilder,
+    FormGroup,
+    ReactiveFormsModule,
+    Validators,
+} from '@angular/forms';
+import { Message, MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
+import { ExcelService } from 'src/app/services/excel.service';
 
 interface GroupedData {
     category: string;
@@ -31,9 +39,12 @@ interface GroupedData {
         ButtonModule,
         DialogModule,
         InputTextModule,
+        ToastModule,
+        ReactiveFormsModule,
     ],
     templateUrl: './tracking-app.component.html',
     styleUrl: './tracking-app.component.scss',
+    providers: [MessageService],
 })
 export class TrackingAppComponent {
     fileSubscription: Subscription = new Subscription();
@@ -43,17 +54,32 @@ export class TrackingAppComponent {
     visible: boolean = false;
     keyNames: string[] = [];
     dynamicForm: FormGroup;
+    excelData: any[] = [];
+    columnKeys: string[] = [];
     constructor(
         private reactService: ReactService,
         private sanitizer: DomSanitizer,
-        private fb: FormBuilder
+        private fb: FormBuilder,
+        private messageService: MessageService,
+        private excelService: ExcelService
     ) {
         this.dynamicForm = this.fb.group({});
         this.fileSubscription = this.reactService.file$.subscribe((data) => {
             if (data) {
                 this.data = data.excelContents;
-                console.log('this.data==>', this.data);
-                debugger;
+                this.excelData = [];
+                this.data.forEach((exData: any) => {
+                    let newData: any = {};
+                    Object.keys(exData).forEach((key: any) => {
+                        let keyname = this.getValueFromSplit(key, 1);
+                        if (newData) {
+                            newData[keyname] = exData[key];
+                        } else {
+                            newData = { keyname: exData[key] };
+                        }
+                    });
+                    this.excelData.push(newData);
+                });
                 this.groupData();
             }
         });
@@ -62,7 +88,6 @@ export class TrackingAppComponent {
         // this.setData();
     }
     groupData() {
-        debugger;
         const categoryMap = new Map<
             string,
             Map<string, (SafeHtml | string[])[]>
@@ -130,7 +155,6 @@ export class TrackingAppComponent {
                             });
                         }
                     } else if (keyName.toLowerCase().includes('xlsidenote')) {
-                        console.log('item[key]===>', item[key]);
                         if (item[key]?.trim().toLowerCase() != 'x') {
                             let sideNoteArr: string[] = item[key]
                                 .replace(/\r\n/g, '</br>')
@@ -197,7 +221,9 @@ export class TrackingAppComponent {
         this.addControls();
     }
 
-    onEdit(content: any) {}
+    onEdit(content: any) {
+        this.visible = true;
+    }
     addControls() {
         this.keyNames.forEach((control) => {
             this.dynamicForm.addControl(
@@ -206,11 +232,50 @@ export class TrackingAppComponent {
             );
         });
     }
+    onTextChange(event: any, key: String) {}
     saveData() {
         if (this.dynamicForm.valid) {
-            console.log(this.dynamicForm.value);
+            let newData: any = {};
+            this.keyNames.forEach((key: string) => {
+                if (newData) {
+                    newData[key] = this.dynamicForm.get(key)?.value;
+                } else {
+                    newData = { key: this.dynamicForm.get(key)?.value };
+                }
+            });
+            this.excelData.push(newData);
+            this.excelService.saveExcelFile(this.excelData, 1);
+            this.showToast(1, 'Succesfully Saved');
+            this.visible = false;
         } else {
-            console.log('Form is invalid');
+            this.showToast(2, 'Please fill all mandatry fields');
         }
+    }
+    showToast(type: number, message: string) {
+        switch (type) {
+            case 1:
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Success',
+                    detail: message,
+                });
+                break;
+            case 2:
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: message,
+                });
+                break;
+        }
+    }
+    getType(key: string) {
+        let retStr: string = '';
+        if (key.toLowerCase() == 'amount' || key.toLowerCase() == 'sno') {
+            retStr = 'number';
+        } else {
+            retStr = 'text';
+        }
+        return retStr;
     }
 }

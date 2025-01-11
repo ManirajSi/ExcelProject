@@ -14,6 +14,7 @@ import { SettingsConst } from '../language/common.constants';
 import { settingState } from '../store/state';
 import { Store } from '@ngrx/store';
 import { updateSettingsInfo } from '../store/actions';
+import { ExcelService } from '../services/excel.service';
 @Component({
     selector: 'app-topbar',
     templateUrl: './app.topbar.component.html',
@@ -219,6 +220,7 @@ export class AppTopBarComponent {
         private router: Router,
         private http: HttpClient,
         private messageService: MessageService,
+        private excelService: ExcelService,
         private store: Store<{ settingsInfo: settingState }>
     ) {
         this.loginSubscription = this.reactService.loginInfo$.subscribe(
@@ -284,6 +286,7 @@ export class AppTopBarComponent {
             this.readFiles(wb);
         };
         reader.readAsBinaryString(file);
+        this.excelService.loadExcelFile(file);
         ref.clear();
     }
     readFiles(wb: any) {
