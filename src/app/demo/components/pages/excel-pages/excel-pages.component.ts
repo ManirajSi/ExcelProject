@@ -743,7 +743,7 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
     getTotalRecords(content: any): number {
         let returnvalue: number = 0;
         let tabName = this.selectedTabName;
-        if (tabName == 'images') {
+        if (this.selectedTabIndex == 0) {
             returnvalue = content.imageContent.length;
         } else if (tabName == 'gifs') {
             returnvalue = content.gifContent.length;
