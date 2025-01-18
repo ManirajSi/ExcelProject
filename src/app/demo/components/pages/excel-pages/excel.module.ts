@@ -25,6 +25,7 @@ import { TrumpCardComponent } from '../trump-card/trump-card.component';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { CardBookComponent } from '../card-book/card-book.component';
 import { TrackingAppComponent } from '../tracking-app/tracking-app.component';
+import { FullCalendarComponent } from '../full-calendar/full-calendar.component';
 // import { TensorFlowAiComponent } from '../tensor-flow-ai/tensor-flow-ai.component';
 @NgModule({
     declarations: [ExcelPagesComponent],
@@ -54,6 +55,7 @@ import { TrackingAppComponent } from '../tracking-app/tracking-app.component';
         ProgressSpinnerModule,
         CardBookComponent,
         TrackingAppComponent,
+        FullCalendarComponent,
         // TensorFlowAiComponent,
     ],
 })

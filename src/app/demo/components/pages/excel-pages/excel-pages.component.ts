@@ -301,7 +301,7 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
                         if (keyName.toLowerCase().includes('xlcode')) {
                             if (item[key]?.trim().toLowerCase() != 'x') {
                                 let codeArr: string[] = item[key]
-                                    .replace(/\r\n/g, '</br>')
+                                    //.replace(/\r\n/g, '</br>')
                                     .split('!!!');
                                 codeArr.forEach((code: any) => {
                                     codeContent.push(code);

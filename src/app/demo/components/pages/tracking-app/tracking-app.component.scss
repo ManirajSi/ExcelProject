@@ -23,6 +23,15 @@
 .add-button:hover {
     background-color: #5742ca;
 }
+:host::ng-deep {
+    .p-card .p-card-footer {
+        padding: 0.25rem 0 0 0;
+    }
+    .layout-wrapper .layout-main-container {
+        margin-left: 0;
+        padding-left: 1rem;
+    }
+}
 
 // .custom-card {
 //     border-radius: 8px; /* Rounded corners */

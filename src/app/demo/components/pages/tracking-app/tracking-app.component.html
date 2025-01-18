@@ -12,23 +12,17 @@
                 let j = index
             ">
                 <div [id]="'section-' + i + '-' + j">
-                    <h6 class="text-purple-600 font-bold">
-                        {{ subCategory.subCategory }}
-                    </h6>
+
                     <div *ngFor="
                         let content of subCategory.contents
-                    ">
+                    " class="m-0">
                         <p-card class="m-1">
                             <ng-template pTemplate="header">
                                 <div class="flex justify-content-between flex-wrap">
                                     <div class="flex justify-content-start flex-wrap">
-                                        <div *ngIf="content.innerHeader.length > 0">
-                                            <div *ngFor="let innerHeader of content.innerHeader">
-                                                <div class="m-1 text-lg font-bold text-pink-600"
-                                                    [innerHTML]="innerHeader">
-                                                </div>
-                                            </div>
-                                        </div>
+                                        <h6 class="text-purple-600 font-bold mt-1 mb-0">
+                                            {{ subCategory.subCategory }}
+                                        </h6>
                                         <div class="m-1" *ngIf="content.headerNote.length > 0">
                                             <div *ngFor="let headerNote of content.headerNote">
                                                 <div [innerHTML]="headerNote">
@@ -43,7 +37,36 @@
                             </ng-template>
                             <p> </p>
                             <ng-template pTemplate="footer">
-                                <div class="grid">
+                                <div class="flex justify-content-between flex-wrap">
+                                    <div class="flex justify-content-start flex-wrap">
+                                        <div *ngIf="content.innerHeader.length > 0">
+                                            <div *ngFor="let innerHeader of content.innerHeader">
+                                                <div class="m-1 text-md font-bold text-pink-600"
+                                                    [innerHTML]="innerHeader">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div *ngIf="content.detail.length > 0">
+                                            <div class="m-1 p-1" *ngFor="let detail of content.detail">
+                                                <span [innerHTML]="detail "></span>
+                                            </div>
+                                        </div>
+                                        <div class="m-2" *ngIf="content.sideNote.length > 0">
+                                            <div *ngFor="let sideNote of content.sideNote">
+                                                <span [innerHTML]="sideNote">
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="ml-2">
+                                        <div *ngIf="content.value.length > 0">
+                                            <div class="font-bold text-pink-600" *ngFor="let value of content.value">
+                                                {{value| currency:'INR':'symbol':'1.2-2' }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- <div class="grid">
                                     <div class="col-4">
                                         <div *ngIf="content.detail.length > 0">
                                             <div class="m-1 p-1" *ngFor="let detail of content.detail">
@@ -66,7 +89,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
                             </ng-template>
                         </p-card>
                     </div>
@@ -78,7 +101,7 @@
         <button p-button class="add-button" (click)="onAddClick()"><i class="pi pi-plus"
                 style="font-size: 2rem"></i></button>
     </div>
-    <p-dialog header="Edit Profile" [modal]="true" [(visible)]="visible" [style]="{ width: 'auto',height:'auto' }">
+    <p-dialog header="Add Info" [modal]="true" [(visible)]="visible" [style]="{ width: 'auto',height:'auto' }">
         <div class="m-2" *ngFor="let key of keyNames">
             <div class="grid">
                 <div class="col-3">
