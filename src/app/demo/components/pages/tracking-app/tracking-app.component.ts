@@ -21,6 +21,10 @@ import {
 import { Message, MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { ExcelService } from 'src/app/services/excel.service';
+import { TabViewModule } from 'primeng/tabview';
+import { ChartModule } from 'primeng/chart';
+import { DropdownModule } from 'primeng/dropdown';
+import { FormsModule } from '@angular/forms';
 
 interface GroupedData {
     category: string;
@@ -41,6 +45,10 @@ interface GroupedData {
         InputTextModule,
         ToastModule,
         ReactiveFormsModule,
+        TabViewModule,
+        ChartModule,
+        DropdownModule,
+        FormsModule,
     ],
     templateUrl: './tracking-app.component.html',
     styleUrl: './tracking-app.component.scss',
@@ -56,6 +64,22 @@ export class TrackingAppComponent {
     dynamicForm: FormGroup;
     excelData: any[] = [];
     columnKeys: string[] = [];
+    subCategorySum: number = 0;
+    chartData: any;
+    chartOptions: any;
+    chartTypes = [
+        { label: 'line', value: 'line' },
+        { label: 'bar', value: 'bar' },
+        { label: 'radar', value: 'radar' },
+        { label: 'doughnut', value: 'doughnut' },
+        { label: 'pie', value: 'pie' },
+        { label: 'polarArea', value: 'polarArea' },
+        { label: 'bubble', value: 'bubble' },
+        { label: 'scatter', value: 'scatter' },
+        { label: 'polarArea', value: 'polarArea' },
+    ];
+    selectedChartType: string = 'line';
+    chartEnable: boolean = true;
     constructor(
         private reactService: ReactService,
         private sanitizer: DomSanitizer,
@@ -85,7 +109,45 @@ export class TrackingAppComponent {
         });
     }
     ngOnInit() {
-        // this.setData();
+        this.chartData = {
+            labels: [
+                'January',
+                'February',
+                'March',
+                'April',
+                'May',
+                'June',
+                'July',
+            ],
+            datasets: [
+                {
+                    label: 'My First Dataset',
+                    data: [65, 59, 80, 81, 56, 55, 40],
+                    fill: false,
+                    borderColor: '#42A5F5',
+                    tension: 0.4,
+                },
+                {
+                    label: 'My Second Dataset',
+                    data: [28, 48, 40, 19, 86, 27, 90],
+                    fill: false,
+                    borderColor: '#FFA726',
+                    tension: 0.4,
+                },
+            ],
+        };
+
+        this.chartOptions = {
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Line Chart Example',
+                },
+            },
+        };
     }
     groupData() {
         const categoryMap = new Map<
@@ -277,5 +339,19 @@ export class TrackingAppComponent {
             retStr = 'text';
         }
         return retStr;
+    }
+    getSumAmount(amount: number, index: number) {
+        if (index == 0) {
+            this.subCategorySum = 0;
+        } else {
+            this.subCategorySum = this.subCategorySum + amount;
+        }
+        return index > 0 ? this.subCategorySum : amount;
+        //return this.subCategorySum;
+    }
+    onTabChange(event: any) {}
+    onTypeChange(event: any) {
+        this.chartEnable = !this.chartEnable;
+        this.selectedChartType = event.value;
     }
 }
