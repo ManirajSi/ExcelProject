@@ -10,7 +10,8 @@ export class EmailService {
     sendEmail(formData: any): Promise<EmailJSResponseStatus> {
         return emailjs.send(
             'service_73ugpre',
-            'template_ehoivmo',
+            //'template_ehoivmo',
+            'template_9p29sjd',
             formData,
             'rNTbDtSwB97dvGzBr'
         );

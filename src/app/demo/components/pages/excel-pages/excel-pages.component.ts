@@ -91,6 +91,8 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
     templateName: string = 'contentview';
     templateSetting: any;
     selectedTabName: string = 'images';
+    simpleIdFlag: boolean = false;
+    showProgressBar: boolean = false;
     constructor(
         private reactService: ReactService,
         private sanitizer: DomSanitizer,
@@ -105,6 +107,7 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
         //Subscription call for get file from local and cloud
         this.fileSubscription = this.reactService.file$.subscribe((data) => {
             if (data) {
+                this.showProgressBar = true;
                 this.showAddVideo = false;
                 this.showExcelContent = true;
                 this.templateName = data.specInfo.contentLabel;
@@ -139,8 +142,9 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
                     this.selectedFiles = data.selectedFiles;
                     this.searchExcelText = data.searchTags.name;
                     this.selectedFiles.forEach((file) => {
+                        let fileName: string[] = file.split(';');
                         this.products.push({
-                            name: file,
+                            name: fileName[1],
                             tags: 'tag1,tag2,tag3',
                             type: 'Template1',
                         });
@@ -220,6 +224,7 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
             let controlSet: string[] = [];
             // Content View Variables
             let idCardContent: SafeResourceUrl[] = [];
+            let simpleIdCardContent: SafeResourceUrl[] = [];
             let textContent: SafeHtml[] = [];
             let noteContent: SafeHtml[] = [];
             let codeContent: SafeHtml[] = [];
@@ -285,6 +290,30 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
                                             ];
                                             idCardContent.push(subSplit);
                                         }
+                                    }
+                                );
+                            }
+                        }
+                        if (keyName.toLowerCase().includes('xlsimpleidcard')) {
+                            if (item[key]?.trim().toLowerCase() != 'x') {
+                                let splittedStr: string[] =
+                                    item[key].split(';');
+                                splittedStr.forEach(
+                                    (spltStr: string, i: number) => {
+                                        let formedSplitstr: string[] = [];
+                                        let subSplit: string[] =
+                                            spltStr.split(':');
+                                        subSplit.forEach(
+                                            (str: string, i: number) => {
+                                                if (i == 0) {
+                                                    str = '<b>' + str + '</b>';
+                                                }
+                                                formedSplitstr.push(str);
+                                            }
+                                        );
+                                        simpleIdCardContent.push(
+                                            formedSplitstr
+                                        );
                                     }
                                 );
                             }
@@ -476,6 +505,7 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
                 reasonSet: reasonSet,
                 controlSet: controlSet,
                 idCardContent: idCardContent,
+                simpleIdCardContent: simpleIdCardContent,
                 textContent: textContent,
                 codeContent: codeContent,
                 cardContent: cardContent,
@@ -500,6 +530,7 @@ export class ExcelPagesComponent implements OnInit, OnDestroy {
             })
         );
         this.reactService.setMenu(this.groupedData);
+        this.showProgressBar = false;
     }
     replaceXLTagsWithHtml(content: string): string {
         let updatedContent = content.replace(

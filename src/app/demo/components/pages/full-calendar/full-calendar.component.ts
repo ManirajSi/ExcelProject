@@ -67,7 +67,6 @@ export class FullCalendarComponent {
         data.forEach((xldata: any) => {
             let newObject: any = {};
             Object.keys(xldata).forEach((keyname: string) => {
-                debugger;
                 let eventName = '';
                 let keyNameFormed = keyname.toLowerCase().trim();
                 if (keyNameFormed.includes('xlstartdatetime')) {

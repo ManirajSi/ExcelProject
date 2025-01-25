@@ -15,6 +15,8 @@ import { settingState } from '../store/state';
 import { Store } from '@ngrx/store';
 import { updateSettingsInfo } from '../store/actions';
 import { ExcelService } from '../services/excel.service';
+import { DefaultGlobalValues } from '../Defaults/defaultValues';
+import { FirestoreService } from '../services/firestore.service';
 @Component({
     selector: 'app-topbar',
     templateUrl: './app.topbar.component.html',
@@ -39,6 +41,17 @@ export class AppTopBarComponent {
     isLoggedIn: boolean = false;
     autoCompleteitems = [];
     selectedAction: string = 'Template1';
+    defaultGlobalValues = DefaultGlobalValues;
+    uploadBtnText: string =
+        sessionStorage.getItem('userName') != undefined
+            ? sessionStorage.getItem('userName').replace(/\s+/g, '')
+            : 'Upload';
+    userMailText: string =
+        sessionStorage.getItem('email') != undefined
+            ? sessionStorage.getItem('email').replace(/\s+/g, '')
+            : 'User';
+    templatesList: any[] = [];
+    helpSitesList: any[] = [];
     speedDialitems = [
         {
             icon: 'pi pi-download',
@@ -62,140 +75,7 @@ export class AppTopBarComponent {
             url: 'http://angular.io',
         },
     ];
-    nestedActionitems = [
-        {
-            label: 'Upload',
-            icon: 'pi pi-upload',
-            command: () => {},
-            items: [
-                {
-                    label: 'Preview',
-                    icon: 'pi pi-window-maximize',
-                    command: () => {
-                        this.browseSelectFile();
-                    },
-                },
-                {
-                    label: 'Save',
-                    icon: 'pi pi-save',
-                    command: () => {
-                        if (!this.selectedFile) {
-                            this.showToast(2, 'File not selected for saving');
-                            this.browseSelectFile();
-                        } else {
-                            if (
-                                localStorage.getItem('email') ==
-                                    'test@mail.com' &&
-                                localStorage.getItem('password') == 'test123'
-                            ) {
-                                this.saveConfimration();
-                            } else {
-                                this.showToast(
-                                    2,
-                                    'Please login to save the file'
-                                );
-                            }
-                        }
-                    },
-                },
-            ],
-        },
-        {
-            label: 'Templates',
-            icon: 'pi pi-th-large',
-            items: [
-                {
-                    label: 'AllInOne',
-                    icon: 'pi pi-th-large',
-                    command: () => {
-                        this.selectedAction = 'Template1';
-                        this.dowloadTemplate('AllInOne');
-                    },
-                },
-                {
-                    separator: true,
-                },
-                {
-                    label: 'WebContent',
-                    icon: 'pi pi-th-large',
-                    command: () => {
-                        this.selectedAction = 'Template3';
-                        this.showToast(2, 'Template under construction');
-                        //this.dowloadTemplate('Template3');
-                    },
-                },
-                {
-                    label: 'Q&A',
-                    icon: 'pi pi-th-large',
-                    command: () => {
-                        this.selectedAction = 'Template2';
-                        this.showToast(2, 'Template under construction');
-                    },
-                },
-                {
-                    label: 'TrumpCard',
-                    icon: 'pi pi-th-large',
-                    command: () => {
-                        this.selectedAction = 'Template2';
-                        this.showToast(2, 'Template under construction');
-                    },
-                },
-            ],
-        },
-        {
-            label: 'RedirectSites',
-            icon: 'pi pi-fw pi-directions',
-            items: [
-                {
-                    label: 'Create Gif',
-                    icon: 'pi pi-fw pi-user-plus',
-                    command: () => {
-                        this.urlRedirection('https://ezgif.com/maker');
-                    },
-                },
-                {
-                    label: 'Goolge Photos Direct Link',
-                    icon: 'pi pi-fw pi-user-minus',
-                    command: () => {
-                        this.urlRedirection(
-                            'https://www.labnol.org/embed/google/photos/'
-                        );
-                    },
-                },
-                {
-                    label: 'imgur Link for gif and image',
-                    icon: 'pi pi-fw pi-user-minus',
-                    command: () => {
-                        this.urlRedirection('https://imgur.com/');
-                    },
-                },
-            ],
-        },
-        {
-            separator: true,
-        },
-        {
-            label: 'Users',
-            icon: 'pi pi-fw pi-user',
-            items: [
-                {
-                    label: 'Login',
-                    icon: 'pi pi-fw pi-user-plus',
-                    command: () => {
-                        this.loginRedirect();
-                    },
-                },
-                {
-                    label: 'Logout',
-                    icon: 'pi pi-fw pi-user-minus',
-                    command: () => {
-                        localStorage.removeItem('email');
-                        localStorage.removeItem('password');
-                    },
-                },
-            ],
-        },
-    ];
+    nestedActionitems: any[] = [];
     loginSubscription: Subscription = new Subscription();
     selectedExcelInfoSubscription: Subscription = new Subscription();
     filePath: string;
@@ -212,6 +92,8 @@ export class AppTopBarComponent {
     templateSettings: any;
     sheets: any[] = [];
     templateSetting: any;
+    templateStrs: string[] = [];
+    appsStr: string[] = [];
     constructor(
         public layoutService: LayoutService,
         private reactService: ReactService,
@@ -221,12 +103,18 @@ export class AppTopBarComponent {
         private http: HttpClient,
         private messageService: MessageService,
         private excelService: ExcelService,
+        private firestoreService: FirestoreService,
         private store: Store<{ settingsInfo: settingState }>
     ) {
         this.loginSubscription = this.reactService.loginInfo$.subscribe(
             (data) => {
                 if (data) {
                     this.isLoggedIn = data.isLoggedIn;
+                    this.uploadBtnText = sessionStorage
+                        .getItem('userName')
+                        .replace(/\s+/g, '');
+                    this.userMailText = sessionStorage.getItem('email');
+                    this.loadFiles();
                 }
             }
         );
@@ -239,6 +127,84 @@ export class AppTopBarComponent {
     }
     ngOnInit() {
         this.loadFiles();
+        this.getData();
+    }
+    initialButtonSet() {
+        this.nestedActionitems = [
+            {
+                label: 'Upload',
+                icon: 'pi pi-upload',
+                command: () => {},
+                items: [
+                    {
+                        label: 'Preview',
+                        icon: 'pi pi-window-maximize',
+                        command: () => {
+                            this.browseSelectFile();
+                        },
+                    },
+                    {
+                        label: 'Save',
+                        icon: 'pi pi-save',
+                        command: () => {
+                            if (!this.selectedFile) {
+                                this.showToast(
+                                    2,
+                                    'File not selected for saving'
+                                );
+                                this.browseSelectFile();
+                            } else {
+                                //if (this.defaultGlobalValues.loginUserName != '') {
+                                if (sessionStorage.getItem('email') != '') {
+                                    this.saveConfirmation();
+                                } else {
+                                    this.showToast(
+                                        2,
+                                        'Please login to save the file'
+                                    );
+                                }
+                            }
+                        },
+                    },
+                ],
+            },
+            {
+                label: 'Templates',
+                icon: 'pi pi-th-large',
+                items: this.templatesList,
+            },
+            {
+                label: 'HelpSites',
+                icon: 'pi pi-fw pi-directions',
+                items: this.helpSitesList,
+            },
+            {
+                separator: true,
+            },
+            {
+                label: this.userMailText,
+                icon: 'pi pi-fw pi-user',
+                items: [
+                    {
+                        label: 'Login',
+                        icon: 'pi pi-fw pi-user-plus',
+                        command: () => {
+                            this.loginRedirect();
+                        },
+                    },
+                    {
+                        label: 'Logout',
+                        icon: 'pi pi-fw pi-user-minus',
+                        command: () => {
+                            sessionStorage.removeItem('email');
+                            sessionStorage.removeItem('userName');
+                            this.uploadBtnText = 'Upload';
+                            this.userMailText = 'User';
+                        },
+                    },
+                ],
+            },
+        ];
     }
     urlRedirection(url: string) {
         window.open(url, '_blank');
@@ -248,24 +214,6 @@ export class AppTopBarComponent {
     }
     recentActionCall() {
         this.browseSelectFile();
-        // switch (this.recetAction) {
-        //     case 'Preview':
-        //         this.browseSelectFile();
-        //         break;
-        //     case 'Save':
-        //         if (this.isLoggedIn) {
-        //             this.saveConfimration();
-        //         }
-        //         break;
-        //     case 'Download':
-        //         this.downloadFile(this.selectedItem.name);
-        //         break;
-        //     case 'Search':
-        //         this.onSearchClick();
-        //         break;
-        //     default:
-        //         break;
-        // }
     }
     browseSelectFile() {
         this.fileUpload.basicFileInput.nativeElement.click();
@@ -384,14 +332,17 @@ export class AppTopBarComponent {
         }
         return newJsonData;
     }
-    saveConfimration() {
+    saveConfirmation() {
         let content = ['Are you sure you want to save the file?'];
         this.dialogAction = 'save';
         this.showDialog(content);
     }
     saveFileInCloud() {
+        const filePrefix: string[] =
+            //this.defaultGlobalValues.loginUserName.split('@');
+            sessionStorage.getItem('email').split('@');
         const file = this.selectedFileEvent.currentFiles[0];
-        const filePath = `excel/${file.name}`;
+        const filePath = `excel/${filePrefix[0] + ';' + file.name}`;
         const fileRef = this.storage.ref(filePath);
         const task = this.storage.upload(filePath, file);
         task.snapshotChanges()
@@ -404,13 +355,23 @@ export class AppTopBarComponent {
                 })
             )
             .subscribe();
+        this.loadFiles();
     }
     loadFiles() {
         this.autoCompleteitems = [];
         this.storageService.listFiles(this.directory).subscribe((files) => {
             this.files = files;
             this.files.forEach((file: any) => {
-                this.autoCompleteitems.push({ name: file });
+                let fileName: string[] = file.split(';');
+                let userName: string[] =
+                    //this.defaultGlobalValues.loginUserName.split('@');
+                    sessionStorage.getItem('email').split('@');
+                if (
+                    fileName.length > 1 &&
+                    (fileName[0] == userName[0] || fileName[0] == 'common')
+                ) {
+                    this.autoCompleteitems.push({ name: fileName[1] });
+                }
             });
         });
     }
@@ -528,6 +489,36 @@ export class AppTopBarComponent {
             this.saveFileInCloud();
         }
         this.visible = false;
+    }
+    getData() {
+        debugger;
+        this.templatesList = [];
+        this.firestoreService.getData('templates').subscribe((value) => {
+            console.log('value===>', value);
+            value.forEach((template: any) => {
+                this.templatesList.push({
+                    label: template.label,
+                    icon: template.icon,
+                    command: () => {
+                        this.dowloadTemplate(template.fileName);
+                    },
+                });
+            });
+            this.initialButtonSet();
+        });
+        this.firestoreService.getData('Apps').subscribe((value) => {
+            console.log('value===>', value);
+            value.forEach((helpSite: any) => {
+                this.helpSitesList.push({
+                    label: helpSite.label,
+                    icon: helpSite.icon,
+                    command: () => {
+                        this.urlRedirection(helpSite.routerPath);
+                    },
+                });
+            });
+            this.initialButtonSet();
+        });
     }
     ngOnDestroy(): void {
         this.loginSubscription.unsubscribe();

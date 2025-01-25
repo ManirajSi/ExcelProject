@@ -9,7 +9,7 @@
             <div class="card px-3 py-3">
                 <!-- Advertisement Home Screen -->
                 <div *ngIf="showAddVideo && !showExcelContent" class="video-container mt-3">
-                    <iframe width="1010" height="560"
+                    <iframe width="1000" height="560"
                         src="https://www.youtube.com/embed/IC6rjfBIElM?si=QbM_EY7DIWHTranw" frameborder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowfullscreen>
@@ -46,7 +46,7 @@
                 </div>
                 <!-- Main excel web page content -->
                 <div *ngIf="!showExcelsTable">
-                    <div *ngIf="data.length==0" class="flex justify-content-center align-content-center">
+                    <div *ngIf="showProgressBar" class="flex justify-content-center align-content-center">
                         <p-progressSpinner ariaLabel="loading" />
                     </div>
                     <!-- Content View -->
@@ -107,6 +107,25 @@
                                                                                     [innerHTML]="cont[1]">
                                                                                 </div>
                                                                             </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </ng-template>
+                                                    </p-card>
+                                                </div>
+                                            </div>
+                                            <div *ngIf="content.simpleIdCardContent.length > 0">
+                                                <div>
+                                                    <p-card>
+                                                        <ng-template pTemplate="footer">
+                                                            <div class=" card p-2 m-1">
+                                                                <div
+                                                                    *ngFor="let cont of content.simpleIdCardContent;let i=index">
+                                                                    <div class="grid">
+                                                                        <div class="col-4 " [innerHTML]="cont[0]">
+                                                                        </div>
+                                                                        <div class="col-8 " [innerHTML]="cont[1]">
                                                                         </div>
                                                                     </div>
                                                                 </div>

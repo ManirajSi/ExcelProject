@@ -13,9 +13,9 @@ export class AppSidebarComponent {
         public el: ElementRef,
         public formBuilder: FormBuilder
     ) {}
-    @ViewChild('videoElement', { static: false })
-    videoElement!: ElementRef<HTMLVideoElement>;
-    capturedImage: string | null = null;
+    // @ViewChild('videoElement', { static: false })
+    // videoElement!: ElementRef<HTMLVideoElement>;
+    // capturedImage: string | null = null;
     isFooterFixed: boolean = false;
     sidebarFormGroup(): FormGroup {
         return this.formBuilder.group({

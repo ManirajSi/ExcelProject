@@ -11,7 +11,7 @@
         />
         <span class="topbarHeading">{{ webName }}</span>
     </a> -->
-    <p-splitButton label="Upload" (onClick)="recentActionCall()" [model]="nestedActionitems"
+    <p-splitButton [label]="uploadBtnText" (onClick)="recentActionCall()" [model]="nestedActionitems"
         class="mr-2 custom-splitbutton dropdown-left" [appendTo]="'body'" />
     <button #topbarmenubutton class="p-link layout-topbar-menu-button layout-topbar-button"
         (click)="layoutService.showProfileSidebar()">
@@ -28,7 +28,7 @@
     <!-- <div><p-speedDial [model]="items" direction="down" /></div> -->
     <div class="p-inputgroup">
         <p-dropdown [options]="autoCompleteitems" [(ngModel)]="selectedItem" [showClear]="true"
-            placeholder="Select a Excel content" [editable]="true" optionLabel="name" (onChange)="onSearchClick()" />
+            placeholder="Select a cloud excel" [editable]="true" optionLabel="name" (onChange)="onSearchClick()" />
     </div>
     <div #topbarmenu class="layout-topbar-menu" [ngClass]="{
             'layout-topbar-menu-mobile-active':

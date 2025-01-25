@@ -1,19 +1,24 @@
-<app-menu></app-menu>
+<!-- <app-menu></app-menu> -->
 
 
-<!-- <div class="flex flex-column h-screen border-right-1 surface-border">
+<div class="flex flex-column h-screen border-right-1 surface-border">
     <div class="flex-1 p-3 overflow-auto custom-scrollbar">
         <app-menu></app-menu>
     </div>
 
     <div class="m-0 p-0" style="position: fixed; bottom: 0; width: 300px;">
         <div class="m-0 p-0">
-            <video #videoElement width="80%" height="80%" autoplay></video>
-            <button (click)="captureImage()">Capture Image</button>
+            <!-- <video #videoElement width="80%" height="80%" autoplay></video>
+            <button (click)="captureImage()">Capture Image</button> -->
+            <iframe width="90%" height="99%" src="https://www.youtube.com/embed/IC6rjfBIElM?si=QbM_EY7DIWHTranw"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen>
+            </iframe>
         </div>
-        <div *ngIf="capturedImage">
+        <!-- <div *ngIf="capturedImage">
             <h3>Captured Image:</h3>
             <img [src]="capturedImage" alt="Captured">
-        </div>
+        </div> -->
     </div>
-</div> -->
+</div>

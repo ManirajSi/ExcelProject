@@ -43,12 +43,12 @@ export class SettingsComponent {
         // this.setting$
         //     .pipe(
         //         tap((settingsInfo) => {
-        //             debugger;
+        //
         //             console.log('settingsInfo:', settingsInfo);
         //         })
         //     )
         //     .subscribe((settingsInfo) => {
-        //         debugger;
+        //
         //         console.log('settingsInfo:', settingsInfo); // This will log the actual count value
         //     });
 

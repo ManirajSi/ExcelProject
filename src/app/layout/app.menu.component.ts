@@ -39,16 +39,7 @@ export class AppMenuComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.tutorialLink = [
-            {
-                label: 'Advertise',
-                link: 'https://www.youtube.com/embed/ritCbHUx18I?si=HIeJYR5eaDpDAwhY',
-            },
-            {
-                label: 'Demo',
-                link: 'https://www.youtube.com/embed/-55qPQH1R-E?si=CW2Fkb-X_PXoaPze',
-            },
-        ];
+        this.tutorialLink = [];
     }
 
     initializeSideNav() {
